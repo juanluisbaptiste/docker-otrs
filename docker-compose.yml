@@ -1,0 +1,27 @@
+otrs:
+  build: otrs
+  ports:
+  - "80:80"
+# If running behind a proxy container, expose the ports instead
+# and link the proxy container to this one.
+#  expose: 
+#  - "80"
+  links:
+  - mariadb:mariadb
+  - postfix:postfix
+# If you want to run the installer, uncomment this:
+#   environment:
+#       RUN_INSTALLER: "yes"
+mariadb:
+  build: mariadb
+  expose:
+  - "3306"
+  volumes:
+  - /var/lib/mysql
+  environment:
+      MYSQL_ROOT_PASSWORD: changeme
+postfix:
+   image: juanluisbaptiste/postfix:latest
+   expose: 
+   - "25"
+   env_file: credentials-smtp.env
