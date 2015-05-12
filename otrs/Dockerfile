@@ -15,6 +15,8 @@ RUN yum install -y epel-release && \
 
 COPY run.sh /
 RUN chmod 755 /run.sh
+#Add configuration file
+COPY Config.pm /opt/otrs/docker/defaults/Config.pm.default
 #Configure supervisord
 RUN sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf
 #RUN echo [include] >> /etc/supervisord.conf
