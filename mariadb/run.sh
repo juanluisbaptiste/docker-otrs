@@ -1,6 +1,7 @@
 #!/bin/bash
 
 #Do normal startup
+rm -f /var/lib/mysql/ib_logfile*
 /start.sh 2>&1>/dev/null&
 
 #If it's the first time the container is run, load up the DB data
@@ -16,7 +17,7 @@ while true; do
   sleep 2
 done
   rm /var/lib/mysql/ib_logfile*
-  echo "First time DB inicialization, loading data..."
+  echo "First time DB inicialization..."
   /usr/bin/mysqladmin -u root -pmysqlPassword password $MYSQL_ROOT_PASSWORD
   echo "root password set."
   echo "Setting root user permissions..."
