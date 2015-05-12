@@ -89,6 +89,7 @@ if [ "$DEFAULT_INSTALL" == "yes" ]; then
     load_backup
   fi
   /opt/otrs/bin/Cron.sh start otrs
+  /usr/bin/perl /opt/otrs//bin/otrs.Scheduler.pl -w 1
   /opt/otrs/bin/otrs.RebuildConfig.pl
 fi
 #If neither of previous cases is true the installer will be run.
