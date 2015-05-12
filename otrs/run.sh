@@ -1,22 +1,98 @@
 #!/bin/bash
-#service mysqld start &
-#wait
-#mysql -uroot -e "CREATE DATABASE otrs;CREATE USER 'otrs'@'localhost' IDENTIFIED BY 'otrs';GRANT ALL PRIVILEGES ON otrs.* TO 'otrs'@'localhost' WITH GRANT OPTION;"&
-#wait
-#mysql -f -u root otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql &
-#wait
-#mysql -f -u root otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql &
-#wait
-#/opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost root &
-#wait
-#/opt/otrs/bin/otrs.RebuildConfig.pl &
-#wait
-#/opt/otrs/bin/Cron.sh start otrs &
-#wait
-#curl -o /tmp/Znuny4OTRS-Repo.opm http://portal.znuny.com/api/addon_repos/public/1420
-#/opt/otrs/bin/otrs.PackageManager.pl -a install -p /tmp/Znuny4OTRS-Repo.opm &
-#wait
-#service httpd start
-#wait
-#service crond start
-#exec /usr/sbin/sshd -D
+# Startup script for this OTRS container. 
+#
+# The script by default loads a fresh OTRS install ready to be customized through 
+# the admin web interface. 
+#
+# If the environment variable DEFAULT_INSTALL is set to no, then the default web 
+# installer can be run from localhost/otrs/installer.pl.
+#
+# If the environment variable LOAD_BACKUP is set, then the configuration backup 
+# files will be loaded from /opt/otrs/docker/backup. This means you need to build 
+# the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
+# host volume to map where you store the backup files to /opt/otrs/docker/backup.
+#
+# To change the default database and admin interface user passwords you can define 
+# the following env vars too:
+# - OTRS_DB_PASSWORD to set the database password
+# - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
+#
+
+DEFAULT_OTRS_PASSWORD="changeme"
+
+[ -z "${LOAD_BACKUP}" ] && LOAD_BACKUP="no"
+[ -z "${DEFAULT_INSTALL}" ] && DEFAULT_INSTALL="yes"
+
+[ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 4 | head -n 1`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
+[ ! -z "${OTRS_ADMIN_EMAIL}" ] && echo "setting admin email to '$OTRS_ADMIN_EMAIL'"
+[ ! -z "${OTRS_ORGANIZATION}" ] && echo "setting organization to '$OTRS_ORGANIZATION'"
+[ -z "${OTRS_DB_PASSWORD}" ] && echo "OTRS_DB_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_DB_PASSWORD=$DEFAULT_OTRS_PASSWORD
+[ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+
+mysqlcmd="mysql -uroot -h $MARIADB_PORT_3306_TCP_ADDR -p$MARIADB_ENV_MYSQL_ROOT_PASSWORD "
+
+function create_db(){
+  echo -e "Creating OTRS database..."
+  $mysqlcmd -e "CREATE DATABASE otrs;"
+  $mysqlcmd -e "CREATE USER 'otrs'@'%' IDENTIFIED BY '$OTRS_DB_PASSWORD';GRANT ALL PRIVILEGES ON otrs.* TO 'otrs'@'%' WITH GRANT OPTION;"
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1  
+}  
+
+function restore_backup(){
+    /opt/otrs/scripts/restore.pl -b /tmp/2015-05-04_17-30/ -d /opt/otrs/
+    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
+}
+
+function load_defaults(){
+  create_db
+  echo -e "Loading default db schema..."  
+  $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
+  echo -e "Loading initial db inserts..."
+  $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+  echo -e "Copying configuration file: $2"
+  cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1      
+}
+   
+function load_backup(){
+  echo -e "Loading SQL file: /opt/otrs/docker/backup/otrs-latest.sql"
+  $mysqlcmd otrs < /opt/otrs/docker/backup/otrs-latest.sql
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS SQL file !!\n" && exit 1
+  
+  echo -e "Copying configuration file: $2"
+  cp -f /opt/otrs/docker/backup/Config.pm.latest /opt/otrs/Kernel/Config.pm
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1  
+}
+
+while true; do
+  out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
+  if [ $? -eq 0 ]; then
+    echo -e "\n\e[92mServer is up !\e[0m\n"
+    break
+  fi
+  echo -e "\nDB server still isn't up, sleeping a little bit ...\n"
+  sleep 2
+done
+
+#If DEFAULT_INSTALL isn't defined load a default install
+if [ "$DEFAULT_INSTALL" == "yes" ]; then
+  if [ "$LOAD_BACKUP" != "yes" ]; then
+    #Load default install
+    load_defaults
+    #Set default admin user password
+    echo -e "Setting password for default admin account root@localhost..."
+    /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+  # If LOAD_BACKUP is defined load the backup files in /opt/otrs/docker
+  elif [ "$LOAD_BACKUP" == "yes" ];then
+    load_backup
+  fi
+  /opt/otrs/bin/Cron.sh start otrs
+  /opt/otrs/bin/otrs.RebuildConfig.pl
+fi
+#If neither of previous cases is true the installer will be run.
+
+#Launch supervisord
+echo -e "Starting supervisord..."
+supervisord
