@@ -19,7 +19,7 @@ COPY run.sh /
 RUN chmod 755 /run.sh
 #Add configuration file
 COPY Config.pm /opt/otrs/docker/defaults/Config.pm.default
-#RUN sed -i -e"s/mod_perl.c/mod_perl.so/" /etc/httpd/conf.d/zzz_otrs.conf
+RUN sed -i -e"s/mod_perl.c/mod_perl.so/" /etc/httpd/conf.d/zzz_otrs.conf
 
 #reconfigure httpd
 RUN sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf
