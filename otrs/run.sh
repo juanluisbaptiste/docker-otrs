@@ -23,7 +23,7 @@ DEFAULT_OTRS_PASSWORD="changeme"
 [ -z "${LOAD_BACKUP}" ] && LOAD_BACKUP="no"
 [ -z "${DEFAULT_INSTALL}" ] && DEFAULT_INSTALL="yes"
 
-[ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 4 | head -n 1`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
+[ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
 [ ! -z "${OTRS_ADMIN_EMAIL}" ] && echo "setting admin email to '$OTRS_ADMIN_EMAIL'"
 [ ! -z "${OTRS_ORGANIZATION}" ] && echo "setting organization to '$OTRS_ORGANIZATION'"
 [ -z "${OTRS_DB_PASSWORD}" ] && echo "OTRS_DB_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_DB_PASSWORD=$DEFAULT_OTRS_PASSWORD
