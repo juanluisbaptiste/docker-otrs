@@ -14,6 +14,7 @@ RUN yum install -y epel-release && \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
     supervisor tar which http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}-01.noarch.rpm
 
+# Add run script
 COPY run.sh /
 RUN chmod 755 /run.sh
 #Add configuration file
@@ -25,8 +26,6 @@ RUN sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.con
 
 #Configure supervisord
 RUN sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf
-#RUN echo [include] >> /etc/supervisord.conf
-#RUN echo 'files = /etc/supervisord.d/*.ini' >> /etc/supervisord.conf
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
 RUN cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf
 
