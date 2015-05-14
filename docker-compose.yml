@@ -9,6 +9,7 @@ otrs:
   links:
   - mariadb:mariadb
   - postfix:postfix
+  env_file: otrs-setup.env
 # If you want to run the installer, uncomment this:
 #   environment:
 #       RUN_INSTALLER: "yes"
