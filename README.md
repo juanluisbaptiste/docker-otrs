@@ -69,7 +69,8 @@ To start them individually (not recommended, better use `docker-compose`):
     docker run -d -P --name postfix \ 
         -e SMTP_SERVER=xxxxxx \
         -e SMTP_USERNAME=xxxx \ 
-        -e SMTP_PASSWORD=xxxx \ 
+        -e SMTP_PASSWORD=xxxx \
+        -e SERVER_HOSTNAME=smtp.example.com \
         juanluisbaptiste/postfix 
     docker run -d -p "80:80" --name otrs \
         --link="mariadb:mariadb" \
