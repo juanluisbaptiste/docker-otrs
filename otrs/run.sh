@@ -17,14 +17,14 @@
 # - OTRS_DB_PASSWORD to set the database password
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
 #
-
+set +x
 DEFAULT_OTRS_PASSWORD="changeme"
 DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
 DEFAULT_OTRS_ORGANIZATION="Example Company"
 DEFAULT_OTRS_SYSTEM_ID="98"
 
 [ -z "${LOAD_BACKUP}" ] && LOAD_BACKUP="no"
-[ -z "${DEFAULT_INSTALL}" ] && DEFAULT_INSTALL="yes"
+[ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
 [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
 [ -z "${OTRS_ADMIN_EMAIL}" ] && echo "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
@@ -84,23 +84,27 @@ while true; do
   sleep 2
 done
 
-#If DEFAULT_INSTALL isn't defined load a default install
-if [ "$DEFAULT_INSTALL" == "yes" ]; then
-  if [ "$LOAD_BACKUP" != "yes" ]; then
+#If OTRS_INSTALL isn't defined load a default install
+if [ "$OTRS_INSTALL" == "no" ]; then
+  if [ "$OTRS_INSTALL" != "backup" ]; then
     #Load default install
+    echo -e "\n\e[92mStarting a clean\e[0m OTRS \e[92minstallation ready to be configured !!\n\e[0m"
     load_defaults
     #Set default admin user password
     echo -e "Setting password for default admin account root@localhost..."
     /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
   # If LOAD_BACKUP is defined load the backup files in /opt/otrs/docker
-  elif [ "$LOAD_BACKUP" == "yes" ];then
+  elif [ "$OTRS_INSTALL" == "backup" ];then
     load_backup
   fi
+  #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
   /usr/bin/perl /opt/otrs//bin/otrs.Scheduler.pl -w 1
   /opt/otrs/bin/otrs.RebuildConfig.pl
+else
+  #If neither of previous cases is true the installer will be run.
+  echo -e "\n\e[92mStarting \e[0m OTRS \e[92minstaller !!\n\e[0m"
 fi
-#If neither of previous cases is true the installer will be run.
 
 #Launch supervisord
 echo -e "Starting supervisord..."

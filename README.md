@@ -33,9 +33,9 @@ By default, when the container is run it will load a default vanilla OTRS
 installation that is ready to be configured as you need. However, you can load 
 a backup or run the installer by defining one of these env variables:
 
-* `LOAD_BACKUP=yes` Will look for *otrs-latest.sql* and *Config.pm.latest* at 
+* `OTRS_INSTALL=backup` Will look for *otrs-latest.sql* and *Config.pm.latest* at 
 */opt/otrs/docker/backup* and load them.
-* `DEFAULT_INSTALL=no` Will run the installer.
+* `OTRS_INSTALL=yes` Will run the installer.
 
 There are also some other environment variables that can be set to customize
 the default install:
