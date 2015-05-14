@@ -19,5 +19,5 @@ RUN sed -i.bk -r '/^\[mysqld\]$/a collation-server = utf8_general_ci' /etc/my.cn
 RUN sed -i.bk -r "/^\[mysqld\]$/a init-connect=\'SET NAMES utf8\'" /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a character-set-server = utf8' /etc/my.cnf
 VOLUME [ "/var/lib/mysql" ]
-EXPOSE 3306 22
+EXPOSE 3306
 CMD ["/usr/bin/run.sh"]
