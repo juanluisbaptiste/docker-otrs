@@ -19,6 +19,8 @@ COPY run.sh /
 RUN chmod 755 /run.sh
 #Add configuration file
 COPY Config.pm /opt/otrs/docker/defaults/Config.pm.default
+#Enable mod_filter
+RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf
 #reconfigure httpd
 RUN sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf
 
