@@ -35,7 +35,11 @@ a backup or run the installer by defining one of these env variables:
 
 * `OTRS_INSTALL=backup` Will look for *otrs-latest.sql* and *Config.pm.latest* at 
 */opt/otrs/docker/backup* and load them.
-* `OTRS_INSTALL=yes` Will run the installer.
+* `OTRS_INSTALL=yes` Will run the installer which you can access at:
+
+    http://localhost/otrs/install.pl
+
+If you are running the container remotely, replace *localhost* with the server's hostname. 
 
 There are also some other environment variables that can be set to customize
 the default install:
@@ -83,7 +87,7 @@ After the containers finish starting up you can access the OTRS system at the fo
 addresses:
 
 ####Administration Interface
-    http://localhost/otrs/index.pl
+    http://$OTRS_HOSTNAME/otrs/index.pl
     
 ####Customer Interface
-    http://localhost/otrs/customer.pl
+    http://$OTRS_HOSTNAME/otrs/customer.pl
