@@ -1,3 +1,4 @@
+#OTRS ticketing system docker image.
 FROM centos:6.6
 MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
 ENV OTRS_VERSION 4.0.7
