@@ -1,7 +1,7 @@
 #OTRS ticketing system docker image.
 FROM centos:6.6
 MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
-ENV OTRS_VERSION 4.0.7
+ENV OTRS_VERSION 4.0.8-02
 
 RUN yum install -y epel-release && \ 
     yum update -y && \
@@ -13,7 +13,7 @@ RUN yum install -y epel-release && \
     "perl(Encode::HanExtra)" "perl(GD)" "perl(GD::Text)" "perl(GD::Graph)" \ 
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" \ 
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
-    supervisor tar which http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}-01.noarch.rpm
+    supervisor tar which http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
 
 # Add run script
 COPY run.sh /
