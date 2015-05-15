@@ -6,7 +6,7 @@ We also include a *MariaDB Dockerfile* for a pre-configured image with the [requ
 
 The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it 
 much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you 
-can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix SMTP container.
+can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix container.
 
 These images are based on the [official CentOS images](https://registry.hub.docker.com/_/centos/) and 
 include the latest OTRS version. Older images will be tagged with the OTRS version they run. 
