@@ -2,7 +2,9 @@
 
 #Do normal startup
 rm -f /var/lib/mysql/ib_logfile*
-/start.sh 2>&1>/dev/null&
+echo -e "Starting database..."
+/docker-entrypoint.sh mysqld_safe & #2>&1>/dev/null&
+
 
 #If it's the first time the container is run, load up the DB data
 while true; do
@@ -13,7 +15,7 @@ while true; do
     echo -e "\n\e[92mServer is up !\e[0m\n"
     break
   fi
-  echo -e "\nMariaDB server still isn't up, sleeping a little bit ...\n"
+  echo -e "\n\e[92mMariaDB\e[0m server still isn't up, sleeping a little bit ...\n"
   sleep 2
 done
   rm /var/lib/mysql/ib_logfile*
