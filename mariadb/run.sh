@@ -1,4 +1,5 @@
 #!/bin/bash
+env
 
 #Do normal startup
 rm -f /var/lib/mysql/ib_logfile*

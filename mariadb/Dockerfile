@@ -10,7 +10,6 @@ RUN chmod 755 /usr/bin/run.sh
 RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=20M' /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a query_cache_size=32M' /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a innodb_log_file_size=256M' /etc/my.cnf
-#Delete the innodb log file because of the new config parameters
 
 #Enable utf8 support
 RUN sed -i.bk -r '/^\[mysqld\]$/a skip-character-set-client-handshake' /etc/my.cnf
