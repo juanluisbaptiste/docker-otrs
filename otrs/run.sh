@@ -75,6 +75,7 @@ function load_backup(){
 
 while true; do
   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
+  echo -e $out
   if [ $? -eq 0 ]; then
     echo -e "\n\e[92mServer is up !\e[0m\n"
     break
