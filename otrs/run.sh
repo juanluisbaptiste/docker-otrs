@@ -62,6 +62,9 @@ function load_defaults(){
   cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1      
   
+  #Change database password on configuration file
+  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$OTRS_DB_PASSWORD';/" /opt/otrs/Kernel/Config.pm
+  
   #Add default config options
   sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';" /opt/otrs/Kernel/Config.pm
   
