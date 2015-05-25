@@ -101,12 +101,15 @@ done
 #If OTRS_INSTALL isn't defined load a default install
 if [ "$OTRS_INSTALL" == "no" ]; then
   if [ "$OTRS_INSTALL" != "backup" ]; then
-    #Load default install
-    echo -e "\n\e[92mStarting a clean\e[0m OTRS \e[92minstallation ready to be configured !!\n\e[0m"
-    load_defaults
-    #Set default admin user password
-    echo -e "Setting password for default admin account root@localhost..."
-    /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+    if [ -e "/opt/otrs/var/tmp/firsttime" ]; then
+      #Load default install
+      echo -e "\n\e[92mStarting a clean\e[0m OTRS \e[92minstallation ready to be configured !!\n\e[0m"
+      load_defaults
+      #Set default admin user password
+      echo -e "Setting password for default admin account root@localhost..."
+      /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+      rm -fr /opt/otrs/var/tmp/firsttime
+    fi  
   # If LOAD_BACKUP is defined load the backup files in /opt/otrs/docker
   elif [ "$OTRS_INSTALL" == "backup" ];then
     load_backup

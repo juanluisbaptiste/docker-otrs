@@ -34,6 +34,8 @@ RUN cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf
 #RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config
 #RUN echo "root:root" | chpasswd
 
+RUN touch /opt/otrs/var/tmp/firsttime
+
 EXPOSE 80
 VOLUME ["/opt/otrs/var"]
 VOLUME ["/opt/otrs/Kernel"]
