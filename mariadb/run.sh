@@ -2,7 +2,6 @@
 env
 
 #Do normal startup
-rm -f /var/lib/mysql/ib_logfile*
 echo -e "Starting database..."
 /docker-entrypoint.sh mysqld_safe & #2>&1>/dev/null&
 
@@ -19,7 +18,7 @@ while true; do
   echo -e "\n\e[92mMariaDB\e[0m server still isn't up, sleeping a little bit ...\n"
   sleep 2
 done
-  rm /var/lib/mysql/ib_logfile*
+#  rm /var/lib/mysql/ib_logfile*
   echo "First time DB inicialization..."
   /usr/bin/mysqladmin -u root -pmysqlPassword password $MYSQL_ROOT_PASSWORD
   echo "root password set."
