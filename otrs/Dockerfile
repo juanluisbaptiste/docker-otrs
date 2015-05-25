@@ -36,4 +36,6 @@ RUN cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf
 
 USER root
 EXPOSE 22 80
+VOLUME ["/opt/otrs/var"]
+VOLUME ["/opt/otrs/Kernel"]
 CMD ["/run.sh"]
