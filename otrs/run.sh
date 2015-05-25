@@ -29,9 +29,11 @@ mysqlcmd="mysql -uroot -h $MARIADB_PORT_3306_TCP_ADDR -p$MARIADB_ENV_MYSQL_ROOT_
 
 function create_db(){
   echo -e "Creating OTRS database..."
-  $mysqlcmd -e "CREATE DATABASE otrs;"
-  $mysqlcmd -e "CREATE USER 'otrs'@'%' IDENTIFIED BY '$OTRS_DB_PASSWORD';GRANT ALL PRIVILEGES ON otrs.* TO 'otrs'@'%' WITH GRANT OPTION;"
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1  
+  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS otrs;"
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1    
+  $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
+    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create database user !!\n" && exit 1  
+
 }  
 
 function restore_backup(){
