@@ -53,16 +53,20 @@ function load_defaults(){
   [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && echo "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
 
-  create_db
-  echo -e "Loading default db schema..."  
-  $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
-  echo -e "Loading initial db inserts..."
-  $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+  #Check if database doesn't exists yet (it could if this is a container redeploy)
+  $mysqlcmd -e 'use otrs'
+  if [ $? -gt 0 ]; then
+    create_db
+    echo -e "Loading default db schema..."  
+    $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
+    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
+    echo -e "Loading initial db inserts..."
+    $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
+    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+  fi
   echo -e "Copying configuration file: $2"
   cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1      
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
   
   #Change database password on configuration file
   sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$OTRS_DB_PASSWORD';/" /opt/otrs/Kernel/Config.pm
