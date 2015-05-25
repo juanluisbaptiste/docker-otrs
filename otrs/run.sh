@@ -4,10 +4,10 @@
 # The script by default loads a fresh OTRS install ready to be customized through 
 # the admin web interface. 
 #
-# If the environment variable DEFAULT_INSTALL is set to no, then the default web 
+# If the environment variable OTRS_INSTALL is set to yes, then the default web 
 # installer can be run from localhost/otrs/installer.pl.
 #
-# If the environment variable LOAD_BACKUP is set, then the configuration backup 
+# If the environment variable OTRS_INSTALL="backup", then the configuration backup 
 # files will be loaded from /opt/otrs/docker/backup. This means you need to build 
 # the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
 # host volume to map where you store the backup files to /opt/otrs/docker/backup.
