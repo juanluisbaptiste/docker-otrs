@@ -7,10 +7,10 @@
 # If the environment variable OTRS_INSTALL is set to yes, then the default web 
 # installer can be run from localhost/otrs/installer.pl.
 #
-# If the environment variable OTRS_INSTALL="backup", then the configuration backup 
-# files will be loaded from /opt/otrs/docker/backup. This means you need to build 
+# If the environment variable OTRS_INSTALL="restore", then the configuration backup 
+# files will be loaded from /opt/otrs/backups. This means you need to build 
 # the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
-# host volume to map where you store the backup files to /opt/otrs/docker/backup.
+# host volume to map where you store the backup files to /opt/otrs/backups.
 #
 # To change the default database and admin interface user passwords you can define 
 # the following env vars too:
@@ -76,16 +76,6 @@ function load_defaults(){
   
 }
    
-function load_backup(){
-  echo -e "Loading SQL file: /opt/otrs/docker/backup/otrs-latest.sql"
-  $mysqlcmd otrs < /opt/otrs/docker/backup/otrs-latest.sql
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS SQL file !!\n" && exit 1
-  
-  echo -e "Copying configuration file: $2"
-  cp -f /opt/otrs/docker/backup/Config.pm.latest /opt/otrs/Kernel/Config.pm
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1  
-}
-
 while true; do
   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
   echo -e $out
