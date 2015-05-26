@@ -9,6 +9,8 @@ otrs:
   links:
   - mariadb:mariadb
   - postfix:postfix
+  volumes:
+  - "otrs/backup:/opt/otrs/backups"
   env_file: otrs-setup.env
 # If you want to run the installer, uncomment this:
 #   environment:
