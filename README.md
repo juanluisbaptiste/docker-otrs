@@ -30,11 +30,15 @@ which can be pulled with this command:
 ### How to run it
 
 By default, when the container is run it will load a default vanilla OTRS 
-installation that is ready to be configured as you need. However, you can load 
+installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load 
 a backup or run the installer by defining one of these env variables:
 
-* `OTRS_INSTALL=backup` Will look for *otrs-latest.sql* and *Config.pm.latest* at 
-*/opt/otrs/docker/backup* and load them.
+* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` 
+environment variable, inside the */opt/otrs/backups* directory, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`.
+
+You need to mount that volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting 
+a host volume which contains the backup files.
+
 * `OTRS_INSTALL=yes` Will run the installer which you can access at:
 
     http://localhost/otrs/install.pl
