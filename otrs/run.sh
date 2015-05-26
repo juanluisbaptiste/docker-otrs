@@ -45,13 +45,33 @@ function random_string(){
   echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 6 | head -n 1`
 }
 
-function load_defaults(){
+function update_config_password(){
+  #Change database password on configuration file
+  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" /opt/otrs/Kernel/Config.pm
+}
+
+function copy_default_config(){
+  echo -e "Copying configuration file..."
+  cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
+}
+
+function set_variables(){
   [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
   [ -z "${OTRS_ADMIN_EMAIL}" ] && echo "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
   [ -z "${OTRS_ORGANIZATION}" ] && echo "OTRS_ORGANIZATION setting organization to '$DEFAULT_OTRS_ORGANIZATION'" && OTRS_ORGANIZATION=$DEFAULT_OTRS_ORGANIZATION
   [ -z "${OTRS_SYSTEM_ID}" ] && echo "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
   [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && echo "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+}
+
+function load_defaults(){
+  set_variables
+  copy_default_config
+  update_config_password $OTRS_DB_PASSWORD
+  
+  #Add default config options
+  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';" /opt/otrs/Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
@@ -64,16 +84,6 @@ function load_defaults(){
     $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
     [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
   fi
-  echo -e "Copying configuration file: $2"
-  cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
-  
-  #Change database password on configuration file
-  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$OTRS_DB_PASSWORD';/" /opt/otrs/Kernel/Config.pm
-  
-  #Add default config options
-  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';" /opt/otrs/Kernel/Config.pm
-  
 }
    
 while true; do
