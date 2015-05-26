@@ -30,15 +30,23 @@ mysqlcmd="mysql -uroot -h $MARIADB_PORT_3306_TCP_ADDR -p$MARIADB_ENV_MYSQL_ROOT_
 function create_db(){
   echo -e "Creating OTRS database..."
   $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS otrs;"
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1    
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1
   $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
-    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create database user !!\n" && exit 1  
-
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create database user !!\n" && exit 1
 }  
 
 function restore_backup(){
-    /opt/otrs/scripts/restore.pl -b /tmp/2015-05-04_17-30/ -d /opt/otrs/
-    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
+  set_variables
+  copy_default_config
+  create_db
+  update_config_password $OTRS_DB_PASSWORD
+  
+  #Run restore backup command
+  /opt/otrs/scripts/restore.pl -b /opt/otrs/backups/$1 -d /opt/otrs/
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
+  
+  #Restore configured password overwritten by restore
+  update_config_password $OTRS_DB_PASSWORD
 }
 
 function random_string(){
@@ -111,8 +119,9 @@ if [ "$OTRS_INSTALL" == "no" ]; then
       rm -fr /opt/otrs/var/tmp/firsttime
     fi  
   # If LOAD_BACKUP is defined load the backup files in /opt/otrs/docker
-  elif [ "$OTRS_INSTALL" == "backup" ];then
-    load_backup
+  elif [ "$OTRS_INSTALL" == "restore" ];then
+    echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: \n\e[0m"
+    restore_backup "2015-05-26_00-32/"
   fi
   #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
