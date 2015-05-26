@@ -36,6 +36,7 @@ function create_db(){
 }  
 
 function restore_backup(){
+  [ -z $1 ] && echo -e "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   set_variables
   copy_default_config
   create_db
@@ -121,10 +122,10 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
       /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
       rm -fr /opt/otrs/var/tmp/firsttime
     fi  
-  # If LOAD_BACKUP is defined load the backup files in /opt/otrs/docker
+  # If OTRS_INSTALL == restore, load the backup files in /opt/otrs/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
     echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: \n\e[0m"
-    restore_backup "2015-05-26_00-32/"
+    restore_backup $OTRS_BACKUP_DATE
   fi
   #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
