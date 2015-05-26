@@ -85,12 +85,15 @@ function load_defaults(){
   $mysqlcmd -e 'use otrs'
   if [ $? -gt 0 ]; then
     create_db
-    echo -e "Loading default db schema..."  
-    $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
-    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
-    echo -e "Loading initial db inserts..."
-    $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
-    [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+    #Check that a backup isn't being restored
+    if [ "$OTRS_INSTALL" == "no" ]; then
+      echo -e "Loading default db schema..."
+      $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
+      [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
+      echo -e "Loading initial db inserts..."
+      $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
+      [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+    fi
   fi
 }
    
@@ -107,8 +110,8 @@ while true; do
 done
 
 #If OTRS_INSTALL isn't defined load a default install
-if [ "$OTRS_INSTALL" == "no" ]; then
-  if [ "$OTRS_INSTALL" != "backup" ]; then
+if [ "$OTRS_INSTALL" != "yes" ]; then
+  if [ "$OTRS_INSTALL" == "no" ]; then
     if [ -e "/opt/otrs/var/tmp/firsttime" ]; then
       #Load default install
       echo -e "\n\e[92mStarting a clean\e[0m OTRS \e[92minstallation ready to be configured !!\n\e[0m"
