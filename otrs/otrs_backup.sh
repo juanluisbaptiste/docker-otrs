@@ -7,7 +7,7 @@ TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/opt/otrs/backups"
 
 function get_current_date(){
-   date "+[%d-%m-%Y_%H:%m]"
+   date "+[%d-%m-%Y_%H:%M]"
 }
 
 echo -e "`get_current_date` Staring OTRS backup..."
