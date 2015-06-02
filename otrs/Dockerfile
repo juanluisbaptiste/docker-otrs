@@ -21,8 +21,8 @@ RUN chmod 755 /run.sh
 #Add configuration file
 COPY Config.pm /opt/otrs/docker/defaults/Config.pm.default
 #Add backup script
-COPY otrs_backup.sh /opt/otrs/backups
-RUN chmod 755 /opt/otrs/backups/otrs_backup.sh
+COPY otrs_backup.sh /opt/otrs/scripts/
+RUN chmod 755 /opt/otrs/scripts/otrs_backup.sh
 #Enable mod_filter
 RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf
 #reconfigure httpd
