@@ -90,8 +90,8 @@ To start them individually (not recommended, better use `docker-compose`):
 After the containers finish starting up you can access the OTRS system at the following
 addresses:
 
-####Administration Interface
+### Administration Interface
     http://$OTRS_HOSTNAME/otrs/index.pl
     
-####Customer Interface
+### Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
