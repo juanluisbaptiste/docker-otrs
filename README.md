@@ -95,3 +95,9 @@ addresses:
     
 ### Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
+
+### Backing up the container configuration
+
+Run `/opt/otrs/backups/otrs_backup.sh` script to create a full backup that will be copied to /opt/otrs/backups. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
+
+    docker exec otrs /opt/otrs/backups/otrs_backup.sh
