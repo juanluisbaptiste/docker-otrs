@@ -5,15 +5,19 @@
 
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/opt/otrs/backups"
+DEFAULT_BACKUP_TYPE="fullbackup"
 
 function get_current_date(){
    date "+[%d-%m-%Y_%H:%M]"
 }
 
+BACKUP_TYPE=$1
+[ -z $BACKUP_TYPE ] && BACKUP_TYPE=$DEFAULT_BACKUP_TYPE
+
 echo -e "`get_current_date` Staring OTRS backup..."
 [ ! -e $TEMP_BACKUP_DIR ] && mkdir -p $TEMP_BACKUP_DIR
 
-/opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t fullbackup
+/opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE
 
 if [ $? -eq 0 ]; then
   mv $TEMP_BACKUP_DIR/* $OTRS_BACKUP_DIR
