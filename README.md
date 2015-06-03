@@ -34,7 +34,7 @@ installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. How
 a backup or run the installer by defining one of these env variables:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` 
-environment variable, inside the */opt/otrs/backups* directory, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`.
+environment variable, inside the */var/otrs/backups* directory, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`.
 
 You need to mount that volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting 
 a host volume which contains the backup files.
@@ -98,6 +98,6 @@ addresses:
 
 ### Backing up the container configuration
 
-Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */opt/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
+Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
     docker exec otrs /opt/otrs/scripts/otrs_backup.sh

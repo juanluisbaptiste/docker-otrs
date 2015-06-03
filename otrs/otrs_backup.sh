@@ -1,10 +1,10 @@
 #!/bin/bash
-#Backup script. It will make a full backup on a temp directory and the 
+#Backup script. It will make a full backup on a temp directory and then 
 #move it to the container's mounted backup directory.
 #
 
 TEMP_BACKUP_DIR=`mktemp -d`
-OTRS_BACKUP_DIR="/opt/otrs/backups"
+OTRS_BACKUP_DIR="/var/otrs/backups"
 DEFAULT_BACKUP_TYPE="fullbackup"
 
 function get_current_date(){
@@ -20,6 +20,7 @@ echo -e "`get_current_date` Staring OTRS backup..."
 /opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE
 
 if [ $? -eq 0 ]; then
+  [ ! -e $OTRS_BACKUP_DIR ] && mkdir -p $OTRS_BACKUP_DIR
   mv $TEMP_BACKUP_DIR/* $OTRS_BACKUP_DIR
   if [ $? -gt 0 ]; then
     echo -e "Backup files move to $OTRS_BACKUP_DIR failed."
