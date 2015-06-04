@@ -23,6 +23,9 @@ COPY Config.pm /opt/otrs/docker/defaults/Config.pm.default
 #Add backup script
 COPY otrs_backup.sh /opt/otrs/scripts/
 RUN chmod 755 /opt/otrs/scripts/otrs_backup.sh
+#Add change email fetch time script
+COPY otrs_postmaster_time.sh /opt/otrs/scripts/
+RUN chmod 755 /opt/otrs/scripts/otrs_postmaster_time.sh
 #Enable mod_filter
 RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf
 #reconfigure httpd

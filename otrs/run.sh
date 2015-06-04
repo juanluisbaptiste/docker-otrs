@@ -97,7 +97,14 @@ function load_defaults(){
     fi
   fi
 }
-   
+
+function set_fetch_email_time(){
+  if [ ! -z $OTRS_POSTMASTER_FETCH_TIME ]; then
+    echo -e "Setting Postmaster fetch emails time to \e[92m$OTRS_POSTMASTER_FETCH_TIME\e[0m minutes"
+    /opt/otrs/scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
+  fi
+}
+
 while true; do
   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
   echo -e $out
@@ -130,6 +137,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
   /usr/bin/perl /opt/otrs//bin/otrs.Scheduler.pl -w 1
+  set_fetch_email_time  
   /opt/otrs/bin/otrs.RebuildConfig.pl
 else
   #If neither of previous cases is true the installer will be run.
