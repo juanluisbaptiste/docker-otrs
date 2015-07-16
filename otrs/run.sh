@@ -131,13 +131,13 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   if [ "$OTRS_INSTALL" == "no" ]; then
     if [ -e "/opt/otrs/var/tmp/firsttime" ]; then
       #Load default install
-      echo -e "\n\e[92mStarting a clean\e[0m OTRS \e[92minstallation ready to be configured !!\n\e[0m"
+      echo -e "\n\e[92mStarting a clean\e[0m OTRS $OTRS_VERSION \e[92minstallation ready to be configured !!\n\e[0m"
       load_defaults
       #Set default admin user password
       echo -e "Setting password for default admin account root@localhost..."
       /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
       rm -fr /opt/otrs/var/tmp/firsttime
-    fi  
+    fi
   # If OTRS_INSTALL == restore, load the backup files in /opt/otrs/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
     echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: \n\e[0m"
@@ -150,7 +150,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   /opt/otrs/bin/otrs.RebuildConfig.pl
 else
   #If neither of previous cases is true the installer will be run.
-  echo -e "\n\e[92mStarting \e[0m OTRS \e[92minstaller !!\n\e[0m"
+  echo -e "\n\e[92mStarting \e[0m OTRS $OTRS_VERSION \e[92minstaller !!\n\e[0m"
 fi
 
 #Launch supervisord
