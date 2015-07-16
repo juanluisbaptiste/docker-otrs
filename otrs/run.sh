@@ -148,6 +148,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   /usr/bin/perl /opt/otrs//bin/otrs.Scheduler.pl -w 1
   set_fetch_email_time  
   /opt/otrs/bin/otrs.RebuildConfig.pl
+  /opt/otrs/bin/otrs.DeleteCache.pl
 else
   #If neither of previous cases is true the installer will be run.
   echo -e "\n\e[92mStarting \e[0m OTRS $OTRS_VERSION \e[92minstaller !!\n\e[0m"
