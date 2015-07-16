@@ -17,7 +17,6 @@
 # - OTRS_DB_PASSWORD to set the database password
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
 #
-env
 
 DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
 DEFAULT_OTRS_ORGANIZATION="Example Company"
