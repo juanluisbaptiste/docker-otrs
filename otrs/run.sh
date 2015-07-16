@@ -102,7 +102,15 @@ function load_defaults(){
 function set_fetch_email_time(){
   if [ ! -z $OTRS_POSTMASTER_FETCH_TIME ]; then
     echo -e "Setting Postmaster fetch emails time to \e[92m$OTRS_POSTMASTER_FETCH_TIME\e[0m minutes"
-    /opt/otrs/scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
+
+    if [ $OTRS_POSTMASTER_FETCH_TIME -eq 0 ]; then
+
+      #Disable email fetching
+      sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*/#/' /var/spool/cron/otrs
+    else
+      #sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*//' /var/spool/cron/otrs
+      /opt/otrs/scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
+    fi
   fi
 }
 
