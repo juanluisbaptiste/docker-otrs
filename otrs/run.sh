@@ -144,7 +144,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   fi
   #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
-  /usr/bin/perl /opt/otrs//bin/otrs.Scheduler.pl -w 1
+  /usr/bin/perl /opt/otrs/bin/otrs.Scheduler.pl -w 1
   set_fetch_email_time  
   /opt/otrs/bin/otrs.RebuildConfig.pl
   /opt/otrs/bin/otrs.DeleteCache.pl
