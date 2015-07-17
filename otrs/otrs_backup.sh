@@ -5,7 +5,7 @@
 
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/var/otrs/backups"
-DEFAULT_BACKUP_TYPE="fullbackup"
+DEFAULT_BACKUP_TYPE="nofullbackup"
 
 function get_current_date(){
    date "+[%d-%m-%Y_%H:%M]"
