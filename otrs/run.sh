@@ -45,9 +45,31 @@ function restore_backup(){
   #Run restore backup command
   /opt/otrs/scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d /opt/otrs/
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
+
+  backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
+  OTRS_INSTALLED_VERSION=`echo $OTRS_VERSION|cut -d '-' -f1`
+  echo -e "\e[92mOTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
+  echo -e "\e[92mOTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
   
+  check_version $OTRS_INSTALLED_VERSION $backup_version
+  if [ $? != 0 ]; then
+    echo -e "Backup version older than current OTRS version, fixing..."
+    #Update version on /opt/otrs/RELEASE so it the website shows the correct version.
+    sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" /opt/otrs/RELEASE
+    echo -e "Done."
+  fi
+
   #Restore configured password overwritten by restore
   update_config_password $OTRS_DB_PASSWORD
+}
+
+# return 0 if program version is equal or greater than check version
+check_version()
+{
+    local version=$1 check=$2
+    local winner=$(echo -e "$version\n$check" | sed '/^$/d' | sort -nr | head -1)
+    [[ "$winner" = "$version" ]] && return 0
+    return 1
 }
 
 function random_string(){
