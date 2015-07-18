@@ -163,13 +163,13 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
       #Set default admin user password
       echo -e "Setting password for default admin account root@localhost..."
       /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
-      rm -fr /opt/otrs/var/tmp/firsttime
     fi
   # If OTRS_INSTALL == restore, load the backup files in /opt/otrs/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
     echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: $OTRS_BACKUP_DATE\n\e[0m"
     restore_backup $OTRS_BACKUP_DATE
   fi
+  rm -fr /opt/otrs/var/tmp/firsttime
   #Start OTRS
   /opt/otrs/bin/Cron.sh start otrs
   /usr/bin/perl /opt/otrs/bin/otrs.Scheduler.pl -w 1
