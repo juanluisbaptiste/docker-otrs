@@ -34,10 +34,12 @@ installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. How
 a backup or run the installer by defining one of these env variables:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` 
-environment variable, inside the */var/otrs/backups* directory, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`.
+environment variable. 
+* `OTRS_BACKUP_DATE` is the backup name to restore, in the same *date_time* format that the OTRS backup 
+script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`. Backups must be inside the */var/otrs/backups* directory (you should host mount it).
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
 
-You need to mount that volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting 
+You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting 
 a host volume which contains the backup files.
 
 * `OTRS_INSTALL=yes` Will run the installer which you can access at:
