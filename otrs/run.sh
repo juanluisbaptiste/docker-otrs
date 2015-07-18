@@ -39,6 +39,12 @@ function restore_backup(){
   [ -z $1 ] && echo -e "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   set_variables
   copy_default_config
+
+  #As this is a restore, drop database first.
+  $mysqlcmd -e 'use otrs'
+  if [ $? -eq 0 ]; then
+    $mysqlcmd -e 'drop database otrs'
+  fi
   create_db
   update_config_password $OTRS_DB_PASSWORD
   

@@ -17,6 +17,7 @@ RUN sed -i.bk -r "/^\[mysqld\]$/a init_connect='SET collation_connection = utf8_
 RUN sed -i.bk -r '/^\[mysqld\]$/a collation-server = utf8_general_ci' /etc/my.cnf
 RUN sed -i.bk -r "/^\[mysqld\]$/a init-connect=\'SET NAMES utf8\'" /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a character-set-server = utf8' /etc/my.cnf
+RUN touch /var/lib/mysql/firsttime
 
 #Use a separate volume for data.
 VOLUME [ "/var/lib/mysql" ]
