@@ -41,10 +41,17 @@ function restore_backup(){
   copy_default_config
 
   #As this is a restore, drop database first.
+
   $mysqlcmd -e 'use otrs'
-  if [ $? -eq 0 ]; then
-    $mysqlcmd -e 'drop database otrs'
+  if [ $? -eq 0  ]; then
+    if [ "$OTRS_DROP_DATABASE" == "yes" ]; then
+      echo -e "\nOTRS_DROP_DATABASE=\e[92m$OTRS_DROP_DATABASE\e[0m, Dropping existing database\n"
+      $mysqlcmd -e 'drop database otrs'
+    else
+      echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup, databse already exists !!\n" && exit 1
+    fi  
   fi
+
   create_db
   update_config_password $OTRS_DB_PASSWORD
   
@@ -111,9 +118,11 @@ function load_defaults(){
   sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';" /opt/otrs/Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
+
   $mysqlcmd -e 'use otrs'
   if [ $? -gt 0 ]; then
     create_db
+
     #Check that a backup isn't being restored
     if [ "$OTRS_INSTALL" == "no" ]; then
       echo -e "Loading default db schema..."
