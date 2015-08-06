@@ -131,7 +131,16 @@ function load_defaults(){
   update_config_password $OTRS_DB_PASSWORD
   
   #Add default config options
-  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';" /opt/otrs/Kernel/Config.pm
+  #sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';" /opt/otrs/Kernel/Config.pm
+  sed -i "/$Self->{'SecureMode'} = 1;/a \
+ \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
+\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
+\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
+\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
+\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
+\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';"\
+ /opt/otrs/Kernel/Config.pm
+
 
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
