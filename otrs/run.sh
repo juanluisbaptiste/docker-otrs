@@ -136,6 +136,7 @@ function load_defaults(){
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
+  #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
   if [ $? -gt 0 ]; then
     create_db
