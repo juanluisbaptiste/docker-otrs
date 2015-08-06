@@ -100,6 +100,55 @@ addresses:
 ### Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
 
+### Changing OTRS default skins
+
+The default skins and logos for the agent and customer interfaces can be controlled with the following
+environment variables:
+
+To set the agent interface skin set `OTRS_AGENT_SKIN` environment variable, for example:
+
+    OTRS_AGENT_SKIN: "ivory"
+
+To set the agent Interface logo set `OTRS_AGENT_LOGO`:
+
+    OTRS_AGENT_LOGO: skins/Agent/ivory/img/your_logo.png
+
+You can also control the logo's size and placement (set in px units):
+
+    OTRS_AGENT_LOGO_HEIGHT: 50
+    OTRS_AGENT_LOGO_RIGHT: 40
+    OTRS_AGENT_LOGO_TOP: 5
+    OTRS_AGENT_LOGO_WIDTH: 240
+
+To set the customer interface skin set `OTRS_CUSTOMER_SKIN` environment variable, for example:
+
+    OTRS_CUSTOMER_SKIN: "ivory"
+
+To set the customer Interface logo set `OTRS_CUSTOMER_LOGO`:
+
+    OTRS_CUSTOMER_LOGO: skins/Customer/ivory/img/your_logo.png
+
+You can also control the logo's size and placement (set in px units):
+
+    OTRS_CUSTOMER_LOGO_HEIGHT: 50
+    OTRS_CUSTOMER_LOGO_RIGHT: 40
+    OTRS_CUSTOMER_LOGO_TOP: 5
+    OTRS_CUSTOMER_LOGO_WIDTH: 240
+
+
+If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and the skin files there. You can also set all the environment variables in there too, for example:
+
+    FROM juanluisbaptiste/otrs:latest
+    MAINTAINER Foo Barr <foo@bar.com>
+    ENV OTRS_DEFAULT_SKIN mycompany
+    ENV OTRS_ROOT /opt/otrs/
+    ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
+
+    COPY skins/Agent/$OTRS_DEFAULT_SKIN $SKINS_PATH/Agent/$OTRS_DEFAULT_SKIN
+    RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
+    COPY skins/Agent/MyCompanySkin.xml $OTRS_ROOT/Kernel/Config/Files/
+    RUN $OTRS_ROOT/bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
+
 ### Backing up the container configuration
 
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
