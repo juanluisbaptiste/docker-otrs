@@ -17,8 +17,13 @@ otrs:
 #       OTRS_INSTALL: "yes"
 # If you want to restore a backup, uncomment this:
   environment:
-      OTRS_INSTALL: "restore"
-      OTRS_BACKUP_DATE: "2015-05-26_00-32"
+#       OTRS_INSTALL: "restore"
+#       OTRS_BACKUP_DATE: "2015-06-02_06-22"
+# To change email time fetching set OTRS_POSTMASTER_FETCH_TIME (set it to 0 to disable email fetching):
+      OTRS_POSTMASTER_FETCH_TIME: 0
+# To set the default skin:
+      OTRS_DEFAULT_THEME: "Ivory"
+#       OTRS_DROP_DATABASE: "yes"
 mariadb:
   build: mariadb
   expose:
