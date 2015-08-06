@@ -113,7 +113,7 @@ function set_variables(){
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
 
   #Set default skin to use for Agent interface
-  [ ! -z "${OTRS_SKIN}" ] && echo "Setting Skin to '$OTRS_SKIN'"
+  [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Skin to '$OTRS_AGENT_SKIN'"
   if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
     echo "Setting Agent Logo to '$OTRS_AGENT_LOGO'"
     [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && echo "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
@@ -131,9 +131,7 @@ function load_defaults(){
   update_config_password $OTRS_DB_PASSWORD
   
   #Add default config options
-  #sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'DefaultTheme'} =  '$OTRS_SKIN';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_SKIN';" /opt/otrs/Kernel/Config.pm
-  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_SKIN';" /opt/otrs/Kernel/Config.pm
-  #Check if database doesn't exists yet (it could if this is a container redeploy)
+  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';" /opt/otrs/Kernel/Config.pm
 
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
