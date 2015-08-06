@@ -21,6 +21,10 @@
 DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
 DEFAULT_OTRS_ORGANIZATION="Example Company"
 DEFAULT_OTRS_SYSTEM_ID="98"
+DEFAULT_OTRS_AGENT_LOGO_HEIGHT="67"
+DEFAULT_OTRS_AGENT_LOGO_RIGHT="38"
+DEFAULT_OTRS_AGENT_LOGO_TOP="4"
+DEFAULT_OTRS_AGENT_LOGO_WIDTH="270"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -110,8 +114,15 @@ function set_variables(){
 
   #Set default skin to use for Agent interface
   [ ! -z "${OTRS_SKIN}" ] && echo "Setting Skin to '$OTRS_SKIN'"
-  [ ! -z "${OTRS_AGENT_LOGO}" ] && echo "Setting Agent Logo to '$OTRS_AGENT_LOGO'"
+  if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
+    echo "Setting Agent Logo to '$OTRS_AGENT_LOGO'"
+    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && echo "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
+    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && echo "OTRS_AGENT_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_RIGHT'" && OTRS_AGENT_LOGO_RIGHT=$DEFAULT_OTRS_AGENT_LOGO_RIGHT
+    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && echo "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
+    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
+  fi
   [ ! -z "${OTRS_CUSTOMER_LOGO}" ] && echo "Setting Customer Logo to '$OTRS_CUSTOMER_LOGO'"
+
 }
 
 function load_defaults(){
@@ -144,7 +155,7 @@ function load_defaults(){
 }
 
 function set_agent_logo() {
-  sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'AgentLogo'} =  {\n'StyleHeight' => '67px',\n'StyleRight' => '38px',\n'StyleTop' => '4px',\n'StyleWidth' => '270px',\n'URL' => '$OTRS_AGENT_LOGO'\n};" /opt/otrs/Kernel/Config.pm
+  sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'AgentLogo'} =  {\n'StyleHeight' => '${OTRS_AGENT_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_AGENT_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_AGENT_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_AGENT_LOGO_WIDTH}px',\n'URL' => '$OTRS_AGENT_LOGO'\n};" /opt/otrs/Kernel/Config.pm
 }
 
 function set_fetch_email_time(){
