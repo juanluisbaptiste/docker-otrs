@@ -107,6 +107,11 @@ function set_variables(){
   [ -z "${OTRS_SYSTEM_ID}" ] && echo "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
   [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && echo "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+
+  #Set default skin to use for Agent interface
+  [ ! -z "${OTRS_SKIN}" ] && echo "Setting Skin to '$OTRS_SKIN'"
+  [ ! -z "${OTRS_AGENT_LOGO}" ] && echo "Setting Agent Logo to '$OTRS_AGENT_LOGO'"
+  [ ! -z "${OTRS_CUSTOMER_LOGO}" ] && echo "Setting Customer Logo to '$OTRS_CUSTOMER_LOGO'"
 }
 
 function load_defaults(){
@@ -115,9 +120,12 @@ function load_defaults(){
   update_config_password $OTRS_DB_PASSWORD
   
   #Add default config options
-  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';" /opt/otrs/Kernel/Config.pm
-
+  #sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'DefaultTheme'} =  '$OTRS_SKIN';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_SKIN';" /opt/otrs/Kernel/Config.pm
+  sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_SKIN';" /opt/otrs/Kernel/Config.pm
   #Check if database doesn't exists yet (it could if this is a container redeploy)
+
+  #Set Agent interface logo
+  [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
   $mysqlcmd -e 'use otrs'
   if [ $? -gt 0 ]; then
@@ -133,6 +141,10 @@ function load_defaults(){
       [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
     fi
   fi
+}
+
+function set_agent_logo() {
+  sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'AgentLogo'} =  {\n'StyleHeight' => '67px',\n'StyleRight' => '38px',\n'StyleTop' => '4px',\n'StyleWidth' => '270px',\n'URL' => '$OTRS_AGENT_LOGO'\n};" /opt/otrs/Kernel/Config.pm
 }
 
 function set_fetch_email_time(){
