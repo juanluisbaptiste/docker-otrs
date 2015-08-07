@@ -18,6 +18,7 @@
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
 #
 
+#Default configuration values
 DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
 DEFAULT_OTRS_ORGANIZATION="Example Company"
 DEFAULT_OTRS_SYSTEM_ID="98"
@@ -25,6 +26,10 @@ DEFAULT_OTRS_AGENT_LOGO_HEIGHT="67"
 DEFAULT_OTRS_AGENT_LOGO_RIGHT="38"
 DEFAULT_OTRS_AGENT_LOGO_TOP="4"
 DEFAULT_OTRS_AGENT_LOGO_WIDTH="270"
+DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT="50"
+DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT="25"
+DEFAULT_OTRS_CUSTOMER_LOGO_TOP="2"
+DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -115,14 +120,19 @@ function set_variables(){
   #Set default skin to use for Agent interface
   [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Skin to '$OTRS_AGENT_SKIN'"
   if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
-    echo "Setting Agent Logo to '$OTRS_AGENT_LOGO'"
+    echo "Setting Agent Logo to: '$OTRS_AGENT_LOGO'"
     [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && echo "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
     [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && echo "OTRS_AGENT_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_RIGHT'" && OTRS_AGENT_LOGO_RIGHT=$DEFAULT_OTRS_AGENT_LOGO_RIGHT
     [ -z "${OTRS_AGENT_LOGO_TOP}" ] && echo "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
     [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
   fi
-  [ ! -z "${OTRS_CUSTOMER_LOGO}" ] && echo "Setting Customer Logo to '$OTRS_CUSTOMER_LOGO'"
-
+  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then 
+    echo "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
+    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
+    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
+    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && echo "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
+    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && echo "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
+  fi  
 }
 
 function load_defaults(){
@@ -145,6 +155,9 @@ function load_defaults(){
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
+  #Set Customer interface logo
+  [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
+
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
   if [ $? -gt 0 ]; then
@@ -163,8 +176,32 @@ function load_defaults(){
 }
 
 function set_agent_logo() {
-  sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'AgentLogo'} =  {\n'StyleHeight' => '${OTRS_AGENT_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_AGENT_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_AGENT_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_AGENT_LOGO_WIDTH}px',\n'URL' => '$OTRS_AGENT_LOGO'\n};" /opt/otrs/Kernel/Config.pm
+  set_logo "Agent" $OTRS_AGENT_LOGO_HEIGHT $OTRS_AGENT_LOGO_RIGHT $OTRS_AGENT_LOGO_TOP $OTRS_AGENT_LOGO_WIDTH $OTRS_AGENT_LOGO
 }
+
+function set_customer_logo() {
+  set_logo "Customer" $OTRS_CUSTOMER_LOGO_HEIGHT $OTRS_CUSTOMER_LOGO_RIGHT $OTRS_CUSTOMER_LOGO_TOP $OTRS_CUSTOMER_LOGO_WIDTH $OTRS_CUSTOMER_LOGO
+}
+
+function set_logo () {
+  interface=$1
+  logo_height=$2
+  logo_right=$3
+  logo_top=$4
+  logo_width=$5
+  logo_url=$6
+  
+  sed -i "/$Self->{'SecureMode'} = 1;/a \
+ \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
+\n'StyleRight' => '${logo_right}px',\
+\n'StyleTop' => '${logo_top}px',\
+\n'StyleWidth' => '${logo_width}px',\
+\n'URL' => '$logo_url'\n};" /opt/otrs/Kernel/Config.pm
+}
+
+# function set_customer_logo() {
+#   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" /opt/otrs/Kernel/Config.pm
+# }
 
 function set_fetch_email_time(){
   if [ ! -z $OTRS_POSTMASTER_FETCH_TIME ]; then
