@@ -83,6 +83,8 @@ function restore_backup(){
 
   #Restore configured password overwritten by restore
   update_config_password $OTRS_DB_PASSWORD
+  #Update the skin preferences  in the users from the backup
+  set_users_skin
 }
 
 # return 0 if program version is equal or greater than check version
@@ -141,22 +143,12 @@ function load_defaults(){
   update_config_password $OTRS_DB_PASSWORD
   
   #Add default config options
-  #sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';" /opt/otrs/Kernel/Config.pm
   sed -i "/$Self->{'SecureMode'} = 1;/a \
  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
 \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
-\n\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
-\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';"\
+\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
  /opt/otrs/Kernel/Config.pm
-
-
-  #Set Agent interface logo
-  [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
-
-  #Set Customer interface logo
-  [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
@@ -174,6 +166,25 @@ function load_defaults(){
     fi
   fi
 }
+
+function set_skins() {
+  [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
+\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
+\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';"\
+ /opt/otrs/Kernel/Config.pm
+ 
+  #Set Agent interface logo
+  [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
+
+  #Set Customer interface logo
+  [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
+}
+
+function set_users_skin(){
+  echo -e "Updating default skin for users in backup..."
+  $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '$OTRS_AGENT_SKIN' WHERE preferences_key = 'UserSkin'" otrs
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n" 
+}  
 
 function set_agent_logo() {
   set_logo "Agent" $OTRS_AGENT_LOGO_HEIGHT $OTRS_AGENT_LOGO_RIGHT $OTRS_AGENT_LOGO_TOP $OTRS_AGENT_LOGO_WIDTH $OTRS_AGENT_LOGO
@@ -246,6 +257,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
     echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: $OTRS_BACKUP_DATE\n\e[0m"
     restore_backup $OTRS_BACKUP_DATE
   fi
+  set_skins
   rm -fr /opt/otrs/var/tmp/firsttime
   #Start OTRS
   /opt/otrs/bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
