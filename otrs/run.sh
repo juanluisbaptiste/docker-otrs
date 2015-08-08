@@ -120,7 +120,7 @@ function set_variables(){
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
 
   #Set default skin to use for Agent interface
-  [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Skin to '$OTRS_AGENT_SKIN'"
+  [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
   if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
     echo "Setting Agent Logo to: '$OTRS_AGENT_LOGO'"
     [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && echo "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
@@ -128,6 +128,7 @@ function set_variables(){
     [ -z "${OTRS_AGENT_LOGO_TOP}" ] && echo "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
     [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
   fi
+  [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && echo "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
   if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then 
     echo "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
     [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
@@ -147,6 +148,7 @@ function load_defaults(){
  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
 \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
+\n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
  /opt/otrs/Kernel/Config.pm
 
@@ -170,7 +172,7 @@ function load_defaults(){
 function set_skins() {
   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
-\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_AGENT_SKIN';"\
+\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
  /opt/otrs/Kernel/Config.pm
  
   #Set Agent interface logo
