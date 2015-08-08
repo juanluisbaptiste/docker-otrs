@@ -136,18 +136,20 @@ You can also control the logo's size and placement (set in px units):
     OTRS_CUSTOMER_LOGO_WIDTH: 240
 
 
-If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and the skin files there. You can also set all the environment variables in there too, for example:
+If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and the `COPY` the skin files there. You can also set all the environment variables in there too, for example:
 
     FROM juanluisbaptiste/otrs:latest
-    MAINTAINER Foo Barr <foo@bar.com>
-    ENV OTRS_DEFAULT_SKIN mycompany
+    MAINTAINER Foo Bar <foo@bar.com>
+    ENV OTRS_AGENT_SKIN mycompany
+    ENV OTRS_AGENT_LOGO=skins/Agent/mycompany/img/logo.png
+    ENV OTRS_CUSTOMER_LOGO=skins/Customer/default/img/logo_customer.png
     ENV OTRS_ROOT /opt/otrs/
     ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
 
     COPY skins/Agent/$OTRS_DEFAULT_SKIN $SKINS_PATH/Agent/$OTRS_DEFAULT_SKIN
+    COPY skins/Customer/default/img/logo_customer.png $SKINS_PATH/Customer/default/img/
     RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
     COPY skins/Agent/MyCompanySkin.xml $OTRS_ROOT/Kernel/Config/Files/
-    RUN $OTRS_ROOT/bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
 
 ### Backing up the container configuration
 
