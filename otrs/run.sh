@@ -63,7 +63,11 @@ function restore_backup(){
 
   create_db
   update_config_password $OTRS_DB_PASSWORD
-  
+
+  #Make a copy of installed skins so they aren't overwritten by the backup.
+  tmpdir=`mktemp -d`
+  [ ! -z $OTRS_AGENT_SKIN ] && cp -rp /opt/otrs/var/httpd/htdocs/skins/Agent $tmpdir/
+  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp /opt/otrs/var/httpd/htdocs/skins/Customer $tmpdir/
   #Run restore backup command
   /opt/otrs/scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d /opt/otrs/
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
@@ -83,6 +87,9 @@ function restore_backup(){
 
   #Restore configured password overwritten by restore
   update_config_password $OTRS_DB_PASSWORD
+  #Copy back skins over restored files
+  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* /opt/otrs/var/httpd/htdocs/skins/ && rm -fr $tmpdir
+
   #Update the skin preferences  in the users from the backup
   set_users_skin
 }
