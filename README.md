@@ -141,8 +141,8 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
     FROM juanluisbaptiste/otrs:latest
     MAINTAINER Foo Bar <foo@bar.com>
     ENV OTRS_AGENT_SKIN mycompany
-    ENV OTRS_AGENT_LOGO=skins/Agent/mycompany/img/logo.png
-    ENV OTRS_CUSTOMER_LOGO=skins/Customer/default/img/logo_customer.png
+    ENV OTRS_AGENT_LOGO skins/Agent/mycompany/img/logo.png
+    ENV OTRS_CUSTOMER_LOGO skins/Customer/default/img/logo_customer.png
     ENV OTRS_ROOT /opt/otrs/
     ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
 
