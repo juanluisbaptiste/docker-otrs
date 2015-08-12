@@ -58,7 +58,7 @@ the default install:
 * `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
 * `OTRS_POSTMASTER_FETCH_TIME` Sets the time interval (at otrs user's crontab) OTRS should fetch emails from the configured postmaster accounts. This value it's 10 minutes by default, but I like to set it to 5 minutes. Email fetching can be disabled altogether by setting this variable to 0 (useful while configuring).
-* `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For ex, "es" for spanish).
+* `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 
