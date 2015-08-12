@@ -176,6 +176,18 @@ function load_defaults(){
   fi
 }
 
+function set_ticker_counter() {
+  if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
+    echo -e "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
+    echo "$OTRS_TICKET_COUNTER" > /opt/otrs/var/log/TicketCounter.log
+  fi
+  if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
+    echo -e "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
+    sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
+     /opt/otrs/Kernel/Config.pm
+  fi
+}
+
 function set_skins() {
   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
@@ -272,7 +284,8 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   /opt/otrs/bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
   /opt/otrs/bin/Cron.sh start otrs
   /usr/bin/perl /opt/otrs/bin/otrs.Scheduler.pl -w 1
-  set_fetch_email_time  
+  set_fetch_email_time
+  set_ticker_counter
   /opt/otrs/bin/otrs.RebuildConfig.pl
   /opt/otrs/bin/otrs.DeleteCache.pl
 else
