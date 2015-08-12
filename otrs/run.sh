@@ -125,6 +125,7 @@ function set_variables(){
   [ -z "${OTRS_SYSTEM_ID}" ] && echo "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
   [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && echo "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
   [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+  [ ! -z "${OTRS_LANGUAGE}" ] && echo "Setting OTRS_LANGUAGE to '$OTRS_LANGUAGE'"
 
   #Set default skin to use for Agent interface
   [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
@@ -156,7 +157,8 @@ function load_defaults(){
 \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
+\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
+\n\$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
  /opt/otrs/Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
