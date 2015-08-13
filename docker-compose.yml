@@ -9,9 +9,9 @@ otrs:
   links:
   - mariadb:mariadb
   - postfix:postfix
-  volumes:
-  - "otrs/backup:/opt/otrs/backups"
   env_file: otrs-setup.env
+  volumes_from:
+  - data  
 # If you want to run the installer, uncomment this:
 #   environment:
 #       OTRS_INSTALL: "yes"
@@ -28,8 +28,8 @@ mariadb:
   build: mariadb
   expose:
   - "3306"
-  volumes:
-  - /var/lib/mysql
+  volumes_from:
+  - data
   environment:
       MYSQL_ROOT_PASSWORD: changeme
 postfix:
@@ -37,3 +37,10 @@ postfix:
    expose: 
    - "25"
    env_file: credentials-smtp.env
+data:
+  image: centos:latest
+  volumes:
+  - /var/lib/mysql
+  - "otrs/backup:/var/otrs/backups"
+  
+  command: /bin/true

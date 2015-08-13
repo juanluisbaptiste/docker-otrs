@@ -46,6 +46,4 @@ RUN mkdir -p ${OTRS_ROOT}var/{run,tmp}/
 RUN touch ${OTRS_ROOT}var/tmp/firsttime
 
 EXPOSE 80
-VOLUME ["${OTRS_ROOT}var"]
-VOLUME ["${OTRS_ROOT}Kernel"]
 CMD ["/run.sh"]
