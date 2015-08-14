@@ -49,14 +49,14 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
     restore_backup $OTRS_BACKUP_DATE
   fi
   set_skins
+  set_ticker_counter
+  set_default_language  
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
   ${OTRS_ROOT}bin/Cron.sh start otrs
   /usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
-  set_fetch_email_time
-  set_ticker_counter
-  set_default_language
+  set_fetch_email_time  
   ${OTRS_ROOT}bin/otrs.RebuildConfig.pl
   ${OTRS_ROOT}bin/otrs.DeleteCache.pl
 else
