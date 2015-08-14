@@ -19,7 +19,8 @@ RUN yum install -y epel-release && \
 
 # Add run script
 COPY run.sh /
-RUN chmod 755 /run.sh
+COPY functions.sh /
+RUN chmod 755 /*.sh
 #Add configuration file
 COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
 #Add backup script
