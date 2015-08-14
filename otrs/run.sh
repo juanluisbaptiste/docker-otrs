@@ -8,9 +8,9 @@
 # installer can be run from localhost/otrs/installer.pl.
 #
 # If the environment variable OTRS_INSTALL="restore", then the configuration backup 
-# files will be loaded from /opt/otrs/backups. This means you need to build 
+# files will be loaded from ${OTRS_ROOT}/backups. This means you need to build 
 # the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
-# host volume to map where you store the backup files to /opt/otrs/backups.
+# host volume to map where you store the backup files to ${OTRS_ROOT}/backups.
 #
 # To change the default database and admin interface user passwords you can define 
 # the following env vars too:
@@ -66,10 +66,10 @@ function restore_backup(){
 
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
-  [ ! -z $OTRS_AGENT_SKIN ] && cp -rp /opt/otrs/var/httpd/htdocs/skins/Agent $tmpdir/
-  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp /opt/otrs/var/httpd/htdocs/skins/Customer $tmpdir/
+  [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
+  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Run restore backup command
-  /opt/otrs/scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d /opt/otrs/
+  ${OTRS_ROOT}scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d ${OTRS_ROOT}
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
 
   backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
@@ -80,15 +80,15 @@ function restore_backup(){
   check_version $OTRS_INSTALLED_VERSION $backup_version
   if [ $? -eq 0 ]; then
     echo -e "Backup version older than current OTRS version, fixing..."
-    #Update version on /opt/otrs/RELEASE so it the website shows the correct version.
-    sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" /opt/otrs/RELEASE
+    #Update version on ${OTRS_ROOT}/RELEASE so it the website shows the correct version.
+    sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" ${OTRS_ROOT}RELEASE
     echo -e "Done."
   fi
 
   #Restore configured password overwritten by restore
   update_config_password $OTRS_DB_PASSWORD
   #Copy back skins over restored files
-  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* /opt/otrs/var/httpd/htdocs/skins/ && rm -fr $tmpdir
+  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* ${SKINS_PATH} && rm -fr $tmpdir
 
   #Update the skin preferences  in the users from the backup
   set_users_skin
@@ -109,12 +109,12 @@ function random_string(){
 
 function update_config_password(){
   #Change database password on configuration file
-  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" /opt/otrs/Kernel/Config.pm
+  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" ${OTRS_ROOT}Kernel/Config.pm
 }
 
 function copy_default_config(){
   echo -e "Copying configuration file..."
-  cp -f /opt/otrs/docker/defaults/Config.pm.default /opt/otrs/Kernel/Config.pm
+  cp -f ${OTRS_ROOT}docker/defaults/Config.pm.default ${OTRS_ROOT}Kernel/Config.pm
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
 }
 
@@ -157,7 +157,7 @@ function load_defaults(){
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
- /opt/otrs/Kernel/Config.pm
+ ${OTRS_ROOT}Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
@@ -167,10 +167,10 @@ function load_defaults(){
     #Check that a backup isn't being restored
     if [ "$OTRS_INSTALL" == "no" ]; then
       echo -e "Loading default db schema..."
-      $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-schema.mysql.sql
+      $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-schema.mysql.sql
       [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
       echo -e "Loading initial db inserts..."
-      $mysqlcmd otrs < /opt/otrs/scripts/database/otrs-initial_insert.mysql.sql
+      $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
       [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
     fi
   fi
@@ -181,19 +181,19 @@ function set_default_language(){
     echo -e "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \
     \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
-    /opt/otrs/Kernel/Config.pm
+    ${OTRS_ROOT}Kernel/Config.pm
  fi
 }
 
 function set_ticker_counter() {
   if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
     echo -e "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
-    echo "$OTRS_TICKET_COUNTER" > /opt/otrs/var/log/TicketCounter.log
+    echo "$OTRS_TICKET_COUNTER" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
     echo -e "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
-     /opt/otrs/Kernel/Config.pm
+     ${OTRS_ROOT}Kernel/Config.pm
   fi
 }
 
@@ -201,7 +201,7 @@ function set_skins() {
   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
 \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
- /opt/otrs/Kernel/Config.pm
+ ${OTRS_ROOT}Kernel/Config.pm
  
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
@@ -237,11 +237,11 @@ function set_logo () {
 \n'StyleRight' => '${logo_right}px',\
 \n'StyleTop' => '${logo_top}px',\
 \n'StyleWidth' => '${logo_width}px',\
-\n'URL' => '$logo_url'\n};" /opt/otrs/Kernel/Config.pm
+\n'URL' => '$logo_url'\n};" ${OTRS_ROOT}Kernel/Config.pm
 }
 
 # function set_customer_logo() {
-#   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" /opt/otrs/Kernel/Config.pm
+#   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" ${OTRS_ROOT}Kernel/Config.pm
 # }
 
 function set_fetch_email_time(){
@@ -254,7 +254,7 @@ function set_fetch_email_time(){
       sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*/#/' /var/spool/cron/otrs
     else
       #sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*//' /var/spool/cron/otrs
-      /opt/otrs/scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
+      ${OTRS_ROOT}scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
     fi
   fi
 }
@@ -274,30 +274,30 @@ done
 #If OTRS_INSTALL isn't defined load a default install
 if [ "$OTRS_INSTALL" != "yes" ]; then
   if [ "$OTRS_INSTALL" == "no" ]; then
-    if [ -e "/opt/otrs/var/tmp/firsttime" ]; then
+    if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
       echo -e "\n\e[92mStarting a clean\e[0m OTRS $OTRS_VERSION \e[92minstallation ready to be configured !!\n\e[0m"
       load_defaults
       #Set default admin user password
       echo -e "Setting password for default admin account root@localhost..."
-      /opt/otrs/bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+      ${OTRS_ROOT}bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
     fi
-  # If OTRS_INSTALL == restore, load the backup files in /opt/otrs/backups
+  # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
     echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: $OTRS_BACKUP_DATE\n\e[0m"
     restore_backup $OTRS_BACKUP_DATE
   fi
   set_skins
-  rm -fr /opt/otrs/var/tmp/firsttime
+  rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
-  /opt/otrs/bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
-  /opt/otrs/bin/Cron.sh start otrs
-  /usr/bin/perl /opt/otrs/bin/otrs.Scheduler.pl -w 1
+  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
+  ${OTRS_ROOT}bin/Cron.sh start otrs
+  /usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
   set_fetch_email_time
   set_ticker_counter
   set_default_language
-  /opt/otrs/bin/otrs.RebuildConfig.pl
-  /opt/otrs/bin/otrs.DeleteCache.pl
+  ${OTRS_ROOT}bin/otrs.RebuildConfig.pl
+  ${OTRS_ROOT}bin/otrs.DeleteCache.pl
 else
   #If neither of previous cases is true the installer will be run.
   echo -e "\n\e[92mStarting \e[0m OTRS $OTRS_VERSION \e[92minstaller !!\n\e[0m"
