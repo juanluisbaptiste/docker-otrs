@@ -22,7 +22,7 @@ otrs:
 # To change email time fetching set OTRS_POSTMASTER_FETCH_TIME (set it to 0 to disable email fetching):
       OTRS_POSTMASTER_FETCH_TIME: 0
 # To set the default skin:
-      OTRS_AGENT_SKIN: "ivory"
+#      OTRS_AGENT_SKIN: "ivory"
 #      OTRS_DROP_DATABASE: "yes"
 #      OTRS_TICKET_COUNTER: 500
 #      OTRS_NUMBER_GENERATOR: "AutoIncrement"
