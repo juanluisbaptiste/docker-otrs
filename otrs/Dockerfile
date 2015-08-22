@@ -33,7 +33,9 @@ RUN chmod 755 ${OTRS_ROOT}scripts/otrs_postmaster_time.sh
 RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf
 #reconfigure httpd
 RUN sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf
-
+#Fix pam permissions for crond
+RUN echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf
+RUN sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond
 #Configure supervisord
 RUN sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
