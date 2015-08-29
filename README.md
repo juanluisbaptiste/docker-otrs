@@ -77,23 +77,9 @@ The default database password is `changeme`, to change it, edit the `docker-comp
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before 
 running `docker-compose`.
 
-To start them individually (not recommended, better use `docker-compose`):
+To start the containers in production mode use this [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file that points to images to be pulled and run instead of Dockerfiles being built:
 
-    docker run -d -P --name mariadb -v /var/lib/mysql \ 
-        -e MYSQL_ROOT_PASSWORD=xxxxx \ 
-        juanluisbaptiste/otrs-mariadb
-    docker run -d -P --name postfix \ 
-        -e SMTP_SERVER=xxxxxx \
-        -e SMTP_USERNAME=xxxx \ 
-        -e SMTP_PASSWORD=xxxx \
-        -e SERVER_HOSTNAME=smtp.example.com \
-        juanluisbaptiste/postfix 
-    docker run -d -p "80:80" --name otrs \
-        --link="mariadb:mariadb" \
-        --link="postfix:postfix" \
-        -e OTRS_DB_PASSWORD=xxxxx \
-        -e OTRS_ROOT_PASSWORD=xxxxx \
-        juanluisbaptiste/otrs
+    sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
 
 After the containers finish starting up you can access the OTRS system at the following
 addresses:
@@ -147,8 +133,6 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
     ENV OTRS_AGENT_SKIN mycompany
     ENV OTRS_AGENT_LOGO skins/Agent/mycompany/img/logo.png
     ENV OTRS_CUSTOMER_LOGO skins/Customer/default/img/logo_customer.png
-    ENV OTRS_ROOT /opt/otrs/
-    ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
 
     COPY skins/ $SKINS_PATH/
     RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
