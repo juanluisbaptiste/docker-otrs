@@ -126,7 +126,7 @@ You can also control the logo's size and placement (set in px units):
     OTRS_CUSTOMER_LOGO_WIDTH: 240
 
 
-If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and the `COPY` the skin files there. You can also set all the environment variables in there too, for example:
+If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. You can also set all the environment variables in there too, for example:
 
     FROM juanluisbaptiste/otrs:latest
     MAINTAINER Foo Bar <foo@bar.com>
