@@ -40,10 +40,9 @@ RUN sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond
 RUN sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
 RUN cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf
-
-#set up sshd
-#RUN ssh-keygen -q -N "" -t dsa -f /etc/ssh/ssh_host_dsa_key && ssh-keygen -q -N "" -t rsa -f /etc/ssh/ssh_host_rsa_key && sed -i "s/#UsePrivilegeSeparation.*/UsePrivilegeSeparation no/g" /etc/ssh/sshd_config && sed -i "s/UsePAM.*/UsePAM no/g" /etc/ssh/sshd_config
-#RUN echo "root:root" | chpasswd
+#Fix PostmasterFollowUpState config var, this line on Ticket.xml disallow the edition
+#of that field through SysConfig
+RUN sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/Ticket.xml
 
 RUN mkdir -p ${OTRS_ROOT}var/{run,tmp}/
 RUN touch ${OTRS_ROOT}var/tmp/firsttime
