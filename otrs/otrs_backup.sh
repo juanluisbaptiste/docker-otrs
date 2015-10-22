@@ -14,7 +14,7 @@ function get_current_date(){
 BACKUP_TYPE=$1
 [ -z $BACKUP_TYPE ] && BACKUP_TYPE=$DEFAULT_BACKUP_TYPE
 
-echo -e "`get_current_date` Staring OTRS backup..."
+echo -e "`get_current_date` Starting OTRS backup for host ${OTRS_HOSTNAME}..."
 [ ! -e $TEMP_BACKUP_DIR ] && mkdir -p $TEMP_BACKUP_DIR
 
 /opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE

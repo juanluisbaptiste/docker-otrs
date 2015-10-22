@@ -45,7 +45,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
-    echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: $OTRS_BACKUP_DATE\n\e[0m"
+    echo -e "\n\e[92mRestoring \e[0m OTRS \e[92m backup: $OTRS_BACKUP_DATE for host ${OTRS_HOSTNAME}\n\e[0m"
     restore_backup $OTRS_BACKUP_DATE
   fi
   set_skins
