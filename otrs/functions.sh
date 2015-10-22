@@ -78,7 +78,7 @@ function restore_backup(){
   echo -e "\e[92mOTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
 
   check_version $OTRS_INSTALLED_VERSION $backup_version
-  if [ $? -eq 0 ]; then
+  if [ $? -eq 1 ]; then
     echo -e "Backup version older than current OTRS version, fixing..."
     #Update version on ${OTRS_ROOT}/RELEASE so it the website shows the correct version.
     sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" ${OTRS_ROOT}RELEASE
