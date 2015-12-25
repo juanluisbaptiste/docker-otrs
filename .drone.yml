@@ -20,3 +20,6 @@ publish:
       - DOCKER_LAUNCH_DEBUG=true
     #Temporal fix while running on CentOS
     #storage_driver: vfs
+cache:
+  mount:
+    - docker/image.tar
