@@ -18,5 +18,5 @@ publish:
       tag: latest
     environment:
       - DOCKER_LAUNCH_DEBUG=true
-    ##Temporal fix while running on CentOS
+    #Temporal fix while running on CentOS
     #storage_driver: vfs
