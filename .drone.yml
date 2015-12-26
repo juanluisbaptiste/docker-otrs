@@ -17,7 +17,7 @@ publish:
     load: docker/image.tar
     save:
       destination: docker/image.tar
-      tag: latest
+#      tag: latest
     environment:
       - DOCKER_LAUNCH_DEBUG=true
     #Temporal fix while running on CentOS
