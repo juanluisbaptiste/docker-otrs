@@ -2,7 +2,9 @@ notify:
   email:
     recipients:
       - juan.baptiste@gmail.com
-
+    from: build@drone-g.ctecsas.com
+    host: postfix
+    port: 25
 publish:
   docker:
     username: juanluisbaptiste
