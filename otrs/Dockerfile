@@ -15,7 +15,8 @@ RUN yum install -y epel-release && \
     "perl(Encode::HanExtra)" "perl(GD)" "perl(GD::Text)" "perl(GD::Graph)" \ 
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" \ 
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
-    supervisor tar which http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
+    supervisor tar which
+RUN yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
 
 # Add run script
 COPY run.sh /
