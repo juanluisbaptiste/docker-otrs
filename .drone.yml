@@ -15,14 +15,32 @@ publish:
       - latest
     file: otrs/Dockerfile
     context: otrs
-    load: docker/image.tar
+    load: docker/image-otrs.tar
     save:
-      destination: docker/image.tar
+      destination: docker/image-otrs.tar
 #      tag: latest
     environment:
       - DOCKER_LAUNCH_DEBUG=true
     #Temporal fix while running on CentOS
     #storage_driver: vfs
-cache:
-  mount:
-    - docker/image.tar
+  cache:
+    mount:
+      - docker/image-otrs.tar
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
+    repo: $$DOCKER_USER/otrs-mariadb
+    tag: 
+      - latest
+    file: mariadb/Dockerfile
+    context: mariadb
+    load: docker/image-mariadb.tar
+    save:
+      destination: docker/image-mariadb.tar
+      tag: latest
+    environment:
+      - DOCKER_LAUNCH_DEBUG=true
+    cache:
+      mount:
+        - docker/image-mariadb.tar
