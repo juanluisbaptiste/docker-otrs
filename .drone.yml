@@ -43,6 +43,6 @@ publish:
       tag: latest
     environment:
       - DOCKER_LAUNCH_DEBUG=true
-    cache:
-      mount:
-        - docker/image-mariadb.tar
+  cache:
+    mount:
+      - docker/image-mariadb.tar
