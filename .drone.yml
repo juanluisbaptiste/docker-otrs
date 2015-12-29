@@ -9,7 +9,7 @@ publish:
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
-    email: juan.baptiste@gmail.com
+    email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs
     tag: 
       - latest
