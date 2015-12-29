@@ -7,14 +7,14 @@ notify:
     port: $$SMTP_PORT
     username: $$SMTP_USERNAME
     password: $$SMTP_PASSWORD
-branches:
-    - 4.0.14
 publish:
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs
+    branches:
+      - 4.0.14
     tag: 
       - latest
     file: otrs/Dockerfile
