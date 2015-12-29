@@ -7,11 +7,12 @@ notify:
     port: 25
 publish:
   docker:
-    username: juanluisbaptiste
-    password: m43ztr01
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
     email: juan.baptiste@gmail.com
-    repo: juanluisbaptiste/otrs
-    tag: $$BRANCH
+    repo: $$DOCKER_USER/otrs
+    tag: 
+      - latest
     file: otrs/Dockerfile
     context: otrs
     load: docker/image.tar
