@@ -7,8 +7,7 @@ notify:
     port: $$SMTP_PORT
     username: $$SMTP_USERNAME
     password: $$SMTP_PASSWORD
-build:
-  branches:
+branches:
     - 4.0.14
 publish:
   docker:
