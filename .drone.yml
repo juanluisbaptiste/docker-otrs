@@ -17,12 +17,13 @@ publish:
       - 4.0.14
     tag: 
       - latest
+      - 4.0.14-$$COMMIT
     file: otrs/Dockerfile
     context: otrs
     load: docker/image-otrs.tar
     save:
       destination: docker/image-otrs.tar
-#      tag: latest
+      tag: latest
     environment:
       - DOCKER_LAUNCH_DEBUG=true
     #Temporal fix while running on CentOS
@@ -37,6 +38,7 @@ publish:
     repo: $$DOCKER_USER/otrs-mariadb
     tag: 
       - latest
+      - 4.0.14-$$COMMIT
     file: mariadb/Dockerfile
     context: mariadb
     load: docker/image-mariadb.tar
