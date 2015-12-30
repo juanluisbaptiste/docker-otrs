@@ -13,8 +13,6 @@ publish:
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs
-    branches:
-      - 4.0.14
     tag: 
       - latest
       - 4.0.14-$$COMMIT
