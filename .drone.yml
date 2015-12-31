@@ -7,6 +7,9 @@ notify:
     port: $$SMTP_PORT
     username: $$SMTP_USERNAME
     password: $$SMTP_PASSWORD
+  trigger:
+    server: $$DOWNSTREAM_DRONE_SERVER
+    repositories: [ "$$DOWNSTREAM_DRONE_REPOS" ]
 publish:
   docker:
     username: $$DOCKER_USER
