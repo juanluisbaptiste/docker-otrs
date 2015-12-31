@@ -7,9 +7,13 @@ notify:
     port: $$SMTP_PORT
     username: $$SMTP_USERNAME
     password: $$SMTP_PASSWORD
-  trigger:
+  downstream:
     server: $$DOWNSTREAM_DRONE_SERVER
     repositories: [ "$$DOWNSTREAM_DRONE_REPOS" ]
+    when:
+      event: push
+      branch: master
+      success: true
 publish:
   docker:
     username: $$DOCKER_USER
