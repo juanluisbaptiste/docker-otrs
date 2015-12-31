@@ -9,7 +9,7 @@ notify:
     password: $$SMTP_PASSWORD
   downstream:
     server: $$DOWNSTREAM_DRONE_SERVER
-    repositories: [ "$$DOWNSTREAM_DRONE_REPOS" ]
+    repositories: $$DOWNSTREAM_DRONE_REPOS
     token: $$DOWNSTREAM_DRONE_TOKEN
     when:
       event: push
