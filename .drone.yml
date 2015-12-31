@@ -9,7 +9,11 @@ notify:
     password: $$SMTP_PASSWORD
   downstream:
     server: $$DOWNSTREAM_DRONE_SERVER
-    repositories: $$DOWNSTREAM_DRONE_REPOS
+    repositories:
+      - jbaptiste_cs/ctecsas-otrs
+      - jbaptiste_cs/apukay-otrs
+      - jbaptiste_cs/cachesimple-otrs
+  
     token: $$DOWNSTREAM_DRONE_TOKEN
     when:
       event: push
