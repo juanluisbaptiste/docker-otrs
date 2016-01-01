@@ -1,3 +1,5 @@
+#tutum.co stack file for juanluisbaptiste/otrs container
+
 data:
   image: 'centos:latest'
   command: /bin/true
