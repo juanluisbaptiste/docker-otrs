@@ -22,6 +22,6 @@ otrs:
     - '80'
   links:
     - mariadb
-    - 'postfix.base-services:postfix'
+    - 'postfix:postfix'
   volumes_from:
     - data
