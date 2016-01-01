@@ -11,6 +11,7 @@ notify:
     server: $$DOWNSTREAM_DRONE_SERVER
     repositories:
       - jbaptiste_cs/ctecsas-otrs
+      - jbaptiste_cs/apukay-otrs
   
     token: $$DOWNSTREAM_DRONE_TOKEN
     when:
