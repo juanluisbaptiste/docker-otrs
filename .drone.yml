@@ -41,9 +41,9 @@ publish:
 #  cache:
 #    mount:
 #      - docker/image-otrs.tar
-  dockerhub:
-      token: 34deefd6-0539-4650-adf5-8d9944846c2e
-      repo: juanluisbaptiste/otrs
+#  dockerhub:
+#      token: 34deefd6-0539-4650-adf5-8d9944846c2e
+#      repo: juanluisbaptiste/otrs
 #    username: $$DOCKER_USER
 #  docker:
 #    password: $$DOCKER_PASSWORD
