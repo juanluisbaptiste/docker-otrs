@@ -43,7 +43,7 @@ publish:
 #      - docker/image-otrs.tar
   dockerhub:
       token: 34deefd6-0539-4650-adf5-8d9944846c2e
-      repo: juanluisbaptiste/otrs@master
+      repo: juanluisbaptiste/otrs
 #    username: $$DOCKER_USER
 #  docker:
 #    password: $$DOCKER_PASSWORD
@@ -65,4 +65,4 @@ publish:
 #      - docker/image-mariadb.tar
   dockerhub:
       token: 34deefd6-0539-4650-adf5-8d9944846c2e
-      repo: juanluisbaptiste/otrs-mariadb@master
+      repo: juanluisbaptiste/otrs-mariadb
