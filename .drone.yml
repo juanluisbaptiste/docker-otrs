@@ -12,7 +12,8 @@ notify:
     repositories:
       - jbaptiste_cs/ctecsas-otrs
       - jbaptiste_cs/apukay-otrs
-  
+      - jbaptiste_cs/cachesimple-otrs
+
     token: $$DOWNSTREAM_DRONE_TOKEN
     when:
       event: push
@@ -24,7 +25,7 @@ publish:
 #    password: $$DOCKER_PASSWORD
 #    email: $$DOCKER_EMAIL
 #    repo: $$DOCKER_USER/otrs
-#    tag: 
+#    tag:
 #      - latest
 #      - 4.0.14-$$COMMIT
 #    file: otrs/Dockerfile
@@ -48,7 +49,7 @@ publish:
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs-mariadb
-    tag: 
+    tag:
       - latest
       - 4.0.14-$$COMMIT
     file: mariadb/Dockerfile
