@@ -19,27 +19,30 @@ notify:
       branch: master
       success: true
 publish:
-  docker:
-    username: $$DOCKER_USER
-    password: $$DOCKER_PASSWORD
-    email: $$DOCKER_EMAIL
-    repo: $$DOCKER_USER/otrs
-    tag: 
-      - latest
-      - 4.0.14-$$COMMIT
-    file: otrs/Dockerfile
-    context: otrs
-    load: docker/image-otrs.tar
-    save:
-      destination: docker/image-otrs.tar
-      tag: latest
-    environment:
-      - DOCKER_LAUNCH_DEBUG=true
+#  docker:
+#    username: $$DOCKER_USER
+#    password: $$DOCKER_PASSWORD
+#    email: $$DOCKER_EMAIL
+#    repo: $$DOCKER_USER/otrs
+#    tag: 
+#      - latest
+#      - 4.0.14-$$COMMIT
+#    file: otrs/Dockerfile
+#    context: otrs
+#    load: docker/image-otrs.tar
+#    save:
+#      destination: docker/image-otrs.tar
+#      tag: latest
+#    environment:
+#      - DOCKER_LAUNCH_DEBUG=true
     #Temporal fix while running on CentOS
     #storage_driver: vfs
-  cache:
-    mount:
-      - docker/image-otrs.tar
+#  cache:
+#    mount:
+#      - docker/image-otrs.tar
+  dockerhub:
+      token: 34deefd6-0539-4650-adf5-8d9944846c2e
+      repo: juanluisbaptiste/otrs
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
