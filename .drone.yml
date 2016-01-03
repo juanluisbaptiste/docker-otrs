@@ -20,49 +20,49 @@ notify:
       branch: master
       success: true
 publish:
-#  docker:
-#    username: $$DOCKER_USER
-#    password: $$DOCKER_PASSWORD
-#    email: $$DOCKER_EMAIL
-#    repo: $$DOCKER_USER/otrs
-#    tag:
-#      - latest
-#      - 4.0.14-$$COMMIT
-#    file: otrs/Dockerfile
-#    context: otrs
-#    load: docker/image-otrs.tar
-#    save:
-#      destination: docker/image-otrs.tar
-#      tag: latest
-#    environment:
-#      - DOCKER_LAUNCH_DEBUG=true
-    #Temporal fix while running on CentOS
-    #storage_driver: vfs
-#  cache:
-#    mount:
-#      - docker/image-otrs.tar
-  dockerhub:
-      token: 34deefd6-0539-4650-adf5-8d9944846c2e
-      repo: juanluisbaptiste/otrs
-#    username: $$DOCKER_USER
-#  docker:
-#    password: $$DOCKER_PASSWORD
-#    email: $$DOCKER_EMAIL
-#    repo: $$DOCKER_USER/otrs-mariadb
-#    tag:
-#      - latest
-#      - 4.0.14-$$COMMIT
-#    file: mariadb/Dockerfile
-#    context: mariadb
-#    load: docker/image-mariadb.tar
-#    save:
-#      destination: docker/image-mariadb.tar
-#      tag: latest
-#    environment:
-#      - DOCKER_LAUNCH_DEBUG=true
-#  cache:
-#    mount:
-#      - docker/image-mariadb.tar
-  dockerhub:
-      token: 94fd83d7-b8d1-4353-8cfc-c248623b8799
-      repo: juanluisbaptiste/otrs-mariadb
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
+    repo: $$DOCKER_USER/otrs
+    tag:
+      - latest
+      - 4.0.14-$$COMMIT
+    file: otrs/Dockerfile
+    context: otrs
+    load: docker/image-otrs.tar
+    save:
+      destination: docker/image-otrs.tar
+      tag: latest
+    environment:
+      - DOCKER_LAUNCH_DEBUG=true
+  #Temporal fix while running on CentOS
+  #storage_driver: vfs
+  cache:
+    mount:
+      - docker/image-otrs.tar
+#  dockerhub:
+#      token: 34deefd6-0539-4650-adf5-8d9944846c2e
+#      repo: juanluisbaptiste/otrs
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL
+    repo: $$DOCKER_USER/otrs-mariadb
+    tag:
+      - latest
+      - 4.0.14-$$COMMIT
+    file: mariadb/Dockerfile
+    context: mariadb
+    load: docker/image-mariadb.tar
+    save:
+      destination: docker/image-mariadb.tar
+      tag: latest
+    environment:
+      - DOCKER_LAUNCH_DEBUG=true
+  cache:
+    mount:
+      - docker/image-mariadb.tar
+#  dockerhub:
+#      token: 94fd83d7-b8d1-4353-8cfc-c248623b8799
+#      repo: juanluisbaptiste/otrs-mariadb
