@@ -42,9 +42,9 @@ postfix:
    - "25"
    env_file: credentials-smtp.env
 data:
-  image: centos:latest
+  image: centos/mariadb:latest
   volumes:
   - /var/lib/mysql
-  - "otrs/backup:/var/otrs/backups"
+  - "./otrs/backup:/var/otrs/backups"
   
   command: /bin/true

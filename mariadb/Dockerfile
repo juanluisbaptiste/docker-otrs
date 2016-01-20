@@ -2,9 +2,9 @@ FROM centos/mariadb:latest
 MAINTAINER "Juan Luis Baptiste" <juan.baptiste@gmail.com>
 ENV MYSQL_ROOT_PASSWORD changeme
 
-RUN yum install -y epel-release
-COPY run.sh /usr/bin/
-RUN chmod 755 /usr/bin/run.sh
+#mariadb image runs as mysql user (uid 27) but we need to do some configuration
+#changes so we need to temporarly switch to root
+USER root
 
 #Change db configuration as required by official install docs:
 RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=20M' /etc/my.cnf
@@ -17,10 +17,11 @@ RUN sed -i.bk -r "/^\[mysqld\]$/a init_connect='SET collation_connection = utf8_
 RUN sed -i.bk -r '/^\[mysqld\]$/a collation-server = utf8_general_ci' /etc/my.cnf
 RUN sed -i.bk -r "/^\[mysqld\]$/a init-connect=\'SET NAMES utf8\'" /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a character-set-server = utf8' /etc/my.cnf
-RUN touch /var/lib/mysql/firsttime
 
 #Use a separate volume for data.
-VOLUME [ "/var/lib/mysql" ]
-EXPOSE 3306
+#VOLUME [ "/var/lib/mysql" ]
+#EXPOSE 3306
+#Switch to mysql user back
+USER 27
 #Call launch script
-CMD ["/usr/bin/run.sh"]
+#CMD ["/usr/bin/run.sh"]
