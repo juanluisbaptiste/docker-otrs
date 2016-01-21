@@ -52,6 +52,8 @@ publish:
     tag:
       - latest
       - 4.0.14-$$COMMIT
+    when:
+      branch: master
     file: mariadb/Dockerfile
     context: mariadb
     load: docker/image-mariadb.tar
