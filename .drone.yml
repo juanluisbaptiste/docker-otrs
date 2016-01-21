@@ -52,8 +52,6 @@ publish:
     tag:
       - latest
       - 4.0.14-$$COMMIT
-    when:
-      branch: master
     file: mariadb/Dockerfile
     context: mariadb
     load: docker/image-mariadb.tar
@@ -68,3 +66,18 @@ publish:
 #  dockerhub:
 #      token: 94fd83d7-b8d1-4353-8cfc-c248623b8799
 #      repo: juanluisbaptiste/otrs-mariadb
+deploy:
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL  
+    repo:$$DOCKER_USER/otrs
+    when:
+      branch: master
+  docker:
+    username: $$DOCKER_USER
+    password: $$DOCKER_PASSWORD
+    email: $$DOCKER_EMAIL  
+    repo:$$DOCKER_USER/otrs-mariadb
+    when:
+      branch: master
