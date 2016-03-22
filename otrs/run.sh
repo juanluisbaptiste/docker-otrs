@@ -55,8 +55,8 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
-  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
   ${OTRS_ROOT}bin/Cron.sh start otrs
+  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
   #/usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
   set_fetch_email_time  
   #${OTRS_ROOT}bin/otrs.RebuildConfig.pl
@@ -70,4 +70,12 @@ fi
 
 #Launch supervisord
 echo -e "Starting supervisord..."
-supervisord
+supervisord&
+echo -e "Restarting OTRS daemon..."
+su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+sleep 2
+su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
+
+while true; do
+  sleep 1000
+done
