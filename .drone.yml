@@ -24,7 +24,7 @@ publish:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
-    repo: $$DOCKER_USER/otrs
+    repo: $$DOCKER_USER/otrs5
     tag:
       - latest
       - $$OTRS_VERSION-$${COMMIT:0:8}
@@ -78,7 +78,7 @@ deploy:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
-    repo:$$DOCKER_USER/otrs
+    repo:$$DOCKER_USER/otrs5
     when:
       branch: otrs-5_0_x
   docker:
