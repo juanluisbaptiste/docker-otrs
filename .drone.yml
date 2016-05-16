@@ -79,8 +79,6 @@ deploy:
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
     repo:$$DOCKER_USER/otrs
-    tag:
-      - 5.0.x-$$COMMIT
     when:
       branch: otrs-5_0_x
   docker:
