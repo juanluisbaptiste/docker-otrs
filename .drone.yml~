@@ -1,0 +1,27 @@
+notify:
+  email:
+    recipients:
+      - juan.baptiste@gmail.com
+    from: build@drone-g.ctecsas.com
+    host: postfix
+    port: 25
+publish:
+  docker:
+    username: juanluisbaptiste
+    password: m43ztr01
+    email: juan.baptiste@gmail.com
+    repo: juanluisbaptiste/otrs
+    tag: $$BRANCH
+    file: otrs/Dockerfile
+    context: otrs
+    load: docker/image.tar
+    save:
+      destination: docker/image.tar
+      tag: latest
+    environment:
+      - DOCKER_LAUNCH_DEBUG=true
+    #Temporal fix while running on CentOS
+    #storage_driver: vfs
+cache:
+  mount:
+    - docker/image.tar
