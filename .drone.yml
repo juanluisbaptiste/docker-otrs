@@ -27,7 +27,7 @@ publish:
     repo: $$DOCKER_USER/otrs
     tag:
       - latest
-      - $$OTRS_VERSION-$$COMMIT
+      - $$OTRS_VERSION-$${COMMIT:0:8}
     file: otrs/Dockerfile
     context: otrs
     load: docker/image-otrs.tar
