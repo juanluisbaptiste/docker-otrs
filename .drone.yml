@@ -72,8 +72,8 @@ deploy:
     password: $$DOCKER_PASSWORD
     email: $$DOCKER_EMAIL
     repo:$$DOCKER_USER/otrs
-    when:
-      branch:  [master, otrs-5_0_x]
+    # when:
+    #   branch:  [master, otrs-5_0_x]
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
