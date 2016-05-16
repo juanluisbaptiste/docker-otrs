@@ -70,14 +70,14 @@ deploy:
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
-    email: $$DOCKER_EMAIL  
+    email: $$DOCKER_EMAIL
     repo:$$DOCKER_USER/otrs
     when:
       branch: master
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
-    email: $$DOCKER_EMAIL  
+    email: $$DOCKER_EMAIL
     repo:$$DOCKER_USER/otrs
     tag:
       - 5.0.x-$$COMMIT
