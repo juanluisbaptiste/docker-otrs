@@ -1,7 +1,7 @@
 #OTRS ticketing system docker image.
 FROM centos:6.6
 MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
-ENV OTRS_VERSION 5.0.10-01
+ARG OTRS_VERSION=5.0.10-01
 ENV OTRS_ROOT /opt/otrs/
 ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
 
