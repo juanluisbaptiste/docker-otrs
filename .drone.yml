@@ -27,7 +27,7 @@ publish:
     repo: $$DOCKER_USER/otrs
     tag:
       - latest
-      - 4.0.15-$${COMMIT:0:8}
+      - $${OTRS_VERSION}-$${COMMIT:0:8}
     file: otrs/Dockerfile
     context: otrs
     load: docker/image-otrs.tar
@@ -51,7 +51,7 @@ publish:
     repo: $$DOCKER_USER/otrs-mariadb
     tag:
       - latest
-      - 4.0.14-$$COMMIT
+      - $${OTRS_VERSION}-$$COMMIT
     file: mariadb/Dockerfile
     context: mariadb
     load: docker/image-mariadb.tar
