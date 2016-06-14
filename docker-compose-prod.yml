@@ -1,10 +1,10 @@
 otrs:
-  image: juanluisbaptiste/otrs:latest
+  image: juanluisbaptiste/otrs:master-d4940a2d
   ports:
   - "80:80"
 # If running behind a proxy container, expose the ports instead
 # and link the proxy container to this one.
-#  expose: 
+#  expose:
 #  - "80"
   links:
   - mariadb:mariadb
@@ -14,7 +14,7 @@ otrs:
 #   environment:
 #       OTRS_INSTALL: "yes"
 mariadb:
-  image: juanluisbaptiste/otrs-mariadb:latest
+  image: juanluisbaptiste/otrs-mariadb:master-d4940a2d
   expose:
   - "3306"
   volumes:
@@ -22,6 +22,6 @@ mariadb:
   env_file: credentials-otrs-mariadb.env
 postfix:
    image: juanluisbaptiste/postfix:latest
-   expose: 
+   expose:
    - "25"
    env_file: credentials-smtp.env
