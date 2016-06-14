@@ -41,7 +41,8 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
       load_defaults
       #Set default admin user password
       echo -e "Setting password for default admin account root@localhost..."
-      ${OTRS_ROOT}bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+      #${OTRS_ROOT}bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+      su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::User::SetPassword root@localhost $OTRS_ROOT_PASSWORD" -s /bin/bash otrs
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
@@ -55,10 +56,13 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   #Start OTRS
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache /opt/otrs
   ${OTRS_ROOT}bin/Cron.sh start otrs
-  /usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
+  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
+  #/usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
   set_fetch_email_time  
-  ${OTRS_ROOT}bin/otrs.RebuildConfig.pl
-  ${OTRS_ROOT}bin/otrs.DeleteCache.pl
+  #${OTRS_ROOT}bin/otrs.RebuildConfig.pl
+  su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
+  #${OTRS_ROOT}bin/otrs.DeleteCache.pl
+  su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
 else
   #If neither of previous cases is true the installer will be run.
   echo -e "\n\e[92mStarting \e[0m OTRS $OTRS_VERSION \e[92minstaller !!\n\e[0m"
@@ -66,4 +70,12 @@ fi
 
 #Launch supervisord
 echo -e "Starting supervisord..."
-supervisord
+supervisord&
+echo -e "Restarting OTRS daemon..."
+su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+sleep 2
+su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
+
+while true; do
+  sleep 1000
+done

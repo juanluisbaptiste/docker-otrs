@@ -1,21 +1,21 @@
 #!/bin/bash
-# Startup script for this OTRS container. 
+# Startup script for this OTRS container.
 #
-# The script by default loads a fresh OTRS install ready to be customized through 
-# the admin web interface. 
+# The script by default loads a fresh OTRS install ready to be customized through
+# the admin web interface.
 #
-# If the environment variable OTRS_INSTALL is set to yes, then the default web 
+# If the environment variable OTRS_INSTALL is set to yes, then the default web
 # installer can be run from localhost/otrs/installer.pl.
 #
-# If the environment variable OTRS_INSTALL="restore", then the configuration backup 
-# files will be loaded from ${OTRS_ROOT}/backups. This means you need to build 
-# the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
+# If the environment variable OTRS_INSTALL="restore", then the configuration backup
+# files will be loaded from ${OTRS_ROOT}/backups. This means you need to build
+# the image with the backup files (sql and Confg.pm) you want to use, or, mount a
 # host volume to map where you store the backup files to ${OTRS_ROOT}/backups.
 #
-# To change the default database and admin interface user passwords you can define 
+# To change the default database and admin interface user passwords you can define
 # the following env vars too:
 # - OTRS_DB_PASSWORD to set the database password
-# - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
+# - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password.
 #
 
 #Default configuration values
@@ -42,7 +42,7 @@ function create_db(){
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1
   $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
   [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create database user !!\n" && exit 1
-}  
+}
 
 function restore_backup(){
   [ -z $1 ] && echo -e "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
@@ -58,7 +58,7 @@ function restore_backup(){
       $mysqlcmd -e 'drop database otrs'
     else
       echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup, databse already exists !!\n" && exit 1
-    fi  
+    fi
   fi
 
   create_db
@@ -136,27 +136,28 @@ function set_variables(){
     [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
   fi
   [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && echo "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
-  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then 
+  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then
     echo "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
     [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
     [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
     [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && echo "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
     [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && echo "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
-  fi  
+  fi
 }
 
 function load_defaults(){
   set_variables
   copy_default_config
   update_config_password $OTRS_DB_PASSWORD
-  
+
   #Add default config options
   sed -i "/$Self->{'SecureMode'} = 1;/a \
  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
 \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
+\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
+\n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
  ${OTRS_ROOT}Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
@@ -202,7 +203,7 @@ function set_skins() {
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
 \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
  ${OTRS_ROOT}Kernel/Config.pm
- 
+
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
@@ -213,8 +214,8 @@ function set_skins() {
 function set_users_skin(){
   echo -e "Updating default skin for users in backup..."
   $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '$OTRS_AGENT_SKIN' WHERE preferences_key = 'UserSkin'" otrs
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n" 
-}  
+  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n"
+}
 
 function set_agent_logo() {
   set_logo "Agent" $OTRS_AGENT_LOGO_HEIGHT $OTRS_AGENT_LOGO_RIGHT $OTRS_AGENT_LOGO_TOP $OTRS_AGENT_LOGO_WIDTH $OTRS_AGENT_LOGO
@@ -231,7 +232,7 @@ function set_logo () {
   logo_top=$4
   logo_width=$5
   logo_url=$6
-  
+
   sed -i "/$Self->{'SecureMode'} = 1;/a \
  \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
 \n'StyleRight' => '${logo_right}px',\

@@ -26,7 +26,8 @@ publish:
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs
     tag:
-      - 4.0.17-$${BRANCH}-$${COMMIT:0:8}
+      - latest
+      - $${BRANCH}-$${COMMIT:0:8}
     file: otrs/Dockerfile
     context: otrs
     environment:
@@ -42,7 +43,8 @@ publish:
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs-mariadb
     tag:
-      - 4.0.17-$${BRANCH}-$${COMMIT:0:8}
+      - latest
+      - $${BRANCH}-$${COMMIT:0:8}
     file: mariadb/Dockerfile
     context: mariadb
     load: docker/image-mariadb.tar

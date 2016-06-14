@@ -1,27 +1,52 @@
-otrs:
-  image: juanluisbaptiste/otrs:4.0.16-otrs-4_0_x-c1db0b3d
-  ports:
-  - "80:80"
-# If running behind a proxy container, expose the ports instead
-# and link the proxy container to this one.
-#  expose:
-#  - "80"
-  links:
-  - mariadb:mariadb
-  - postfix:postfix
-  env_file: otrs-setup.env
-# If you want to run the installer, uncomment this:
-#   environment:
-#       OTRS_INSTALL: "yes"
-mariadb:
-  image: juanluisbaptiste/otrs-mariadb:4.0.16-otrs-4_0_x-c1db0b3d
-  expose:
-  - "3306"
-  volumes:
-  - /var/lib/mysql
-  env_file: credentials-otrs-mariadb.env
-postfix:
-   image: juanluisbaptiste/postfix:latest
-   expose:
-   - "25"
-   env_file: credentials-smtp.env
+version: '2'
+services:
+  otrs:
+      image: juanluisbaptiste/otrs:latest
+    ports:
+    - "80:80"
+  # If running behind a proxy container, expose the ports instead
+  # and link the proxy container to this one.
+  #  expose:
+  #  - "80"
+    links:
+    - mariadb:mariadb
+    - postfix:postfix
+    env_file: otrs-setup.env
+    volumes_from:
+    - data
+  # If you want to run the installer, uncomment this:
+  #   environment:
+  #       OTRS_INSTALL: "yes"
+  # If you want to restore a backup, uncomment this:
+    environment:
+  #       OTRS_INSTALL: "restore"
+  #       OTRS_BACKUP_DATE: "2015-06-02_06-22"
+  # To change email time fetching set OTRS_POSTMASTER_FETCH_TIME (set it to 0 to disable email fetching):
+        OTRS_POSTMASTER_FETCH_TIME: 0
+  # To set the default skin:
+  #      OTRS_AGENT_SKIN: "ivory"
+  #      OTRS_DROP_DATABASE: "yes"
+  #      OTRS_TICKET_COUNTER: 500
+  #      OTRS_NUMBER_GENERATOR: "AutoIncrement"
+  #      OTRS_LANGUAGE: "es"
+
+  mariadb:
+    image: juanluisbaptiste/otrs-mariadb:latest
+    expose:
+    - "3306"
+    volumes_from:
+    - data
+    environment:
+        MYSQL_ROOT_PASSWORD: changeme
+  postfix:
+     image: juanluisbaptiste/postfix:latest
+     expose:
+     - "25"
+     env_file: credentials-smtp.env
+  data:
+    image: centos/mariadb:latest
+    volumes:
+    - /var/lib/mysql
+    - "./otrs/backup:/var/otrs/backups"
+
+    command: /bin/true

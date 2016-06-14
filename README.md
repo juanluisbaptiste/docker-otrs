@@ -1,6 +1,6 @@
 # docker-otrs
-Unofficial [OTRS 4 Free](http://www.otrs.com/software/) docker image. This repository contains the 
-*Dockerfiles* and all other files needed to build and run the container. 
+Unofficial [OTRS 5 Free](http://www.otrs.com/software/) docker image. This repository contains the
+*Dockerfiles* and all other files needed to build and run the container.
 
 We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/stable/en/html/installation.html).
 
