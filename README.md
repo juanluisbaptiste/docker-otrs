@@ -13,6 +13,8 @@ include the latest OTRS version. Older images will be tagged with the OTRS versi
 
 *Mod_perl* is enabled by default.
 
+OTRS 4 image sources are still available in otrs-4_0_x branch.
+
 ### Build instructions
 
 We use `docker-compose` to build the images. Clone this repo and then:
