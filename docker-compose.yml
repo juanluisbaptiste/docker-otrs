@@ -4,7 +4,7 @@ services:
     build:
       context: otrs
       args:
-        OTRS_VERSION: 5.0.9-01
+        OTRS_VERSION: 5.0.10-01
     ports:
     - "80:80"
   # If running behind a proxy container, expose the ports instead
