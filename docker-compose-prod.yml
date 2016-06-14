@@ -1,5 +1,5 @@
 otrs:
-  image: juanluisbaptiste/otrs:master-d4940a2d
+  image: juanluisbaptiste/otrs:4.0.16-otrs-4_0_x-c1db0b3d
   ports:
   - "80:80"
 # If running behind a proxy container, expose the ports instead
@@ -14,7 +14,7 @@ otrs:
 #   environment:
 #       OTRS_INSTALL: "yes"
 mariadb:
-  image: juanluisbaptiste/otrs-mariadb:master-d4940a2d
+  image: juanluisbaptiste/otrs-mariadb:4.0.16-otrs-4_0_x-c1db0b3d
   expose:
   - "3306"
   volumes:
