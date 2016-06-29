@@ -48,5 +48,6 @@ services:
     volumes:
     - /var/lib/mysql
     - "./otrs/backup:/var/otrs/backups"
-
+    - "/etc/localtime:/etc/localtime:ro"
+    
     command: /bin/true
