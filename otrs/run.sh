@@ -40,8 +40,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
       echo -e "\n\e[92mStarting a clean\e[0m OTRS $OTRS_VERSION \e[92minstallation ready to be configured !!\n\e[0m"
       load_defaults
       #Set default admin user password
-      echo -e "Setting password for default admin account root@localhost..."
-      #${OTRS_ROOT}bin/otrs.SetPassword.pl --agent root@localhost $OTRS_ROOT_PASSWORD
+      echo -e "Setting password for default admin account root@localhost to: $OTRS_ROOT_PASSWORD"
       su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::User::SetPassword root@localhost $OTRS_ROOT_PASSWORD" -s /bin/bash otrs
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
