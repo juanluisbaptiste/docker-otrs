@@ -278,7 +278,7 @@ function check_host_mount_dir(){
   then
     if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ];
     then
-      print_info "Found non-empty host-mounted volume directory for OTRS configuration. "
+      print_warning "Found non-empty host-mounted volume directory for OTRS configuration. "
     else
       print_info "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
       cp -rp ${OTRS_CONFIG_DIR}/* ${OTRS_CONFIG_MOUNT_DIR}
