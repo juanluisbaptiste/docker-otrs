@@ -31,6 +31,8 @@ DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT="25"
 DEFAULT_OTRS_CUSTOMER_LOGO_TOP="2"
 DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
+OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel"
+OTRS_CONFIG_MOUNT_DIR="/config/"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
@@ -147,6 +149,9 @@ function set_variables(){
 
 function load_defaults(){
   set_variables
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  check_host_mount_dir
   copy_default_config
   update_config_password $OTRS_DB_PASSWORD
 
@@ -262,4 +267,37 @@ function set_fetch_email_time(){
       ${OTRS_ROOT}scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
     fi
   fi
+}
+
+function check_host_mount_dir(){
+  #If $OTRS_CONFIG_MOUNT_DIR exists it means a host-mounted volume is present
+  #to store OTRS configuration outside the container. Then we need to copy the
+  #contents of $OTRS_CONFIG_DIR to that directory, remove it and symlink
+  #$OTRS_CONFIG_MOUNT_DIR to $OTRS_CONFIG_DIR
+  echo -e "Checking if host-mounted volumes are present... "
+  if [ -d ${OTRS_CONFIG_MOUNT_DIR} ];
+  then
+    if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ];
+    then
+      echo -e "Found non-empty host-mounted volume directory for OTRS configuration. "
+    else
+      echo -e "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
+      cp -rp ${OTRS_CONFIG_DIR}/* ${OTRS_CONFIG_MOUNT_DIR}
+      if [ $? -eq 0 ];
+      then
+        echo -e "Deleting ${OTRS_CONFIG_DIR}... "
+        rm -rf ${OTRS_CONFIG_DIR}
+      else
+        echo -e "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
+      fi
+    fi
+  fi
+  echo -e "Linking back ${OTRS_CONFIG_MOUNT_DIR} to ${OTRS_CONFIG_DIR}..."
+  ln -s ${OTRS_CONFIG_MOUNT_DIR} ${OTRS_CONFIG_DIR}
+  if [ $? -eq 0 ];
+  then
+    echo -e "Done."
+  else
+    echo -e "ERROR: Can't create symlink to OTRS configuration on host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
+fi
 }
