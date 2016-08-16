@@ -4,8 +4,8 @@ services:
     image: juanluisbaptiste/otrs:latest
     build:
       context: otrs
-      args:
-        OTRS_VERSION: 5.0.10-01
+      # args:
+      #   OTRS_VERSION: 5.0.10-01
     ports:
     - "80:80"
   # If running behind a proxy container, expose the ports instead
