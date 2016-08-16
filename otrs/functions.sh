@@ -282,13 +282,13 @@ function check_host_mount_dir(){
     else
       print_info "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
       cp -rp ${OTRS_CONFIG_DIR}/* ${OTRS_CONFIG_MOUNT_DIR}
-      if [ $? -eq 0 ];
-      then
-        print_info "Deleting ${OTRS_CONFIG_DIR}... "
-        rm -rf ${OTRS_CONFIG_DIR}
-      else
-        print_error "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
-      fi
+    fi
+    if [ $? -eq 0 ];
+    then
+      print_info "Deleting ${OTRS_CONFIG_DIR}... "
+      rm -rf ${OTRS_CONFIG_DIR}
+    else
+      print_error "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
     fi
   fi
   print_info "Linking back \e[92m${OTRS_CONFIG_MOUNT_DIR}\e[0m to \e[92m${OTRS_CONFIG_DIR}\e[0m..."
