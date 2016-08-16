@@ -52,6 +52,9 @@ services:
     image: centos/mariadb:latest
     volumes:
     - /var/lib/mysql
+    - "/etc/localtime:/etc/localtime:ro"
+
+    command: /bin/true
   data-otrs:
     image: juanluisbaptiste/otrs:latest
     volumes:
