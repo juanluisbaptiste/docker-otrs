@@ -17,7 +17,7 @@ services:
     - postfix:postfix
     env_file: otrs-setup.env
     volumes_from:
-    - data
+    - data-otrs
   # If you want to run the installer, uncomment this:
   #   environment:
   #       OTRS_INSTALL: "yes"
@@ -52,6 +52,10 @@ services:
     image: centos/mariadb:latest
     volumes:
     - /var/lib/mysql
+  data-otrs:
+    image: juanluisbaptiste/otrs:latest
+    volumes:
+    - ./config:/config
     - "./otrs/backup:/var/otrs/backups"
     - "/etc/localtime:/etc/localtime:ro"
 
