@@ -1,6 +1,7 @@
 version: '2'
 services:
   otrs:
+    image: juanluisbaptiste/otrs:latest
     build:
       context: otrs
       args:
