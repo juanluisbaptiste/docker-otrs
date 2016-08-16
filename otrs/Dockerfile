@@ -18,9 +18,8 @@ RUN yum install -y epel-release && \
     supervisor tar which
 RUN yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
 
-# Add run script
-COPY run.sh /
-COPY functions.sh /
+# Add run script and function files
+COPY *.sh /
 RUN chmod 755 /*.sh
 #Add configuration file
 COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
