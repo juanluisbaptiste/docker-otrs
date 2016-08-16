@@ -179,6 +179,8 @@ function load_defaults(){
       $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
       [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
     fi
+  else
+    echo -e "otrs database already exists, Ok."
   fi
 }
 
