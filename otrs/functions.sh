@@ -17,6 +17,7 @@
 # - OTRS_DB_PASSWORD to set the database password
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
 #
+. ./util_functions.sh
 
 #Default configuration values
 DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
@@ -39,15 +40,15 @@ OTRS_CONFIG_MOUNT_DIR="/config/"
 mysqlcmd="mysql -uroot -h $MARIADB_PORT_3306_TCP_ADDR -p$MARIADB_ENV_MYSQL_ROOT_PASSWORD "
 
 function create_db(){
-  echo -e "Creating OTRS database..."
+  print_info "Creating OTRS database..."
   $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS otrs;"
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create OTRS database !!\n" && exit 1
+  [ $? -gt 0 ] && print_error "Couldn't create OTRS database !!" && exit 1
   $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't create database user !!\n" && exit 1
-}  
+  [ $? -gt 0 ] && print_error "Couldn't create database user !!" && exit 1
+}
 
 function restore_backup(){
-  [ -z $1 ] && echo -e "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
+  [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   set_variables
   copy_default_config
 
@@ -56,11 +57,11 @@ function restore_backup(){
   $mysqlcmd -e 'use otrs'
   if [ $? -eq 0  ]; then
     if [ "$OTRS_DROP_DATABASE" == "yes" ]; then
-      echo -e "\nOTRS_DROP_DATABASE=\e[92m$OTRS_DROP_DATABASE\e[0m, Dropping existing database\n"
+      print_info "OTRS_DROP_DATABASE=\e[92m$OTRS_DROP_DATABASE\e[0m, Dropping existing database\n"
       $mysqlcmd -e 'drop database otrs'
     else
-      echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup, databse already exists !!\n" && exit 1
-    fi  
+      print_error "Couldn't load OTRS backup, databse already exists !!" && exit 1
+    fi
   fi
 
   create_db
@@ -72,19 +73,19 @@ function restore_backup(){
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Run restore backup command
   ${OTRS_ROOT}scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d ${OTRS_ROOT}
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS backup !!\n" && exit 1
+  [ $? -gt 0 ] && print_error "Couldn't load OTRS backup !!" && exit 1
 
   backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
   OTRS_INSTALLED_VERSION=`echo $OTRS_VERSION|cut -d '-' -f1`
-  echo -e "\e[92mOTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
-  echo -e "\e[92mOTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
+  print_warning "OTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
+  print_warning "OTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
 
   check_version $OTRS_INSTALLED_VERSION $backup_version
   if [ $? -eq 0 ]; then
-    echo -e "Backup version older than current OTRS version, fixing..."
+    print_warning "Backup version older than current OTRS version, fixing..."
     #Update version on ${OTRS_ROOT}/RELEASE so it the website shows the correct version.
     sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" ${OTRS_ROOT}RELEASE
-    echo -e "Done."
+    print_info "Done."
   fi
 
   #Restore configured password overwritten by restore
@@ -115,35 +116,35 @@ function update_config_password(){
 }
 
 function copy_default_config(){
-  echo -e "Copying configuration file..."
+  print_info "Copying configuration file..."
   cp -f ${OTRS_ROOT}docker/defaults/Config.pm.default ${OTRS_ROOT}Kernel/Config.pm
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
+  [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
 }
 
 function set_variables(){
-  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && echo "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
-  [ -z "${OTRS_ADMIN_EMAIL}" ] && echo "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
-  [ -z "${OTRS_ORGANIZATION}" ] && echo "OTRS_ORGANIZATION setting organization to '$DEFAULT_OTRS_ORGANIZATION'" && OTRS_ORGANIZATION=$DEFAULT_OTRS_ORGANIZATION
-  [ -z "${OTRS_SYSTEM_ID}" ] && echo "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
-  [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && echo "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
-  [ -z "${OTRS_ROOT_PASSWORD}" ] && echo "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
+  [ -z "${OTRS_ADMIN_EMAIL}" ] && print_info "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
+  [ -z "${OTRS_ORGANIZATION}" ] && print_info "OTRS_ORGANIZATION setting organization to '$DEFAULT_OTRS_ORGANIZATION'" && OTRS_ORGANIZATION=$DEFAULT_OTRS_ORGANIZATION
+  [ -z "${OTRS_SYSTEM_ID}" ] && print_info "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
+  [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && print_info "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
+  [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
 
   #Set default skin to use for Agent interface
-  [ ! -z "${OTRS_AGENT_SKIN}" ] && echo "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
+  [ ! -z "${OTRS_AGENT_SKIN}" ] && print_info "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
   if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
-    echo "Setting Agent Logo to: '$OTRS_AGENT_LOGO'"
-    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && echo "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
-    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && echo "OTRS_AGENT_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_RIGHT'" && OTRS_AGENT_LOGO_RIGHT=$DEFAULT_OTRS_AGENT_LOGO_RIGHT
-    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && echo "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
-    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
+    print_info "Setting Agent Logo to: '$OTRS_AGENT_LOGO'"
+    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && print_info "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
+    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && print_info "OTRS_AGENT_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_RIGHT'" && OTRS_AGENT_LOGO_RIGHT=$DEFAULT_OTRS_AGENT_LOGO_RIGHT
+    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && print_info "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
+    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && print_info "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
   fi
-  [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && echo "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
+  [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && print_info "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
   if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then
-    echo "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
-    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
-    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
-    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && echo "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
-    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && echo "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
+    print_info "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
+    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
+    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
+    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && print_info "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
+    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && print_info "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
   fi
 }
 
@@ -176,21 +177,21 @@ function load_defaults(){
 
     #Check that a backup isn't being restored
     if [ "$OTRS_INSTALL" == "no" ]; then
-      echo -e "Loading default db schema..."
+      print_info "Loading default db schema..."
       $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-schema.mysql.sql
-      [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
-      echo -e "Loading initial db inserts..."
+      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database schema !!\n" && exit 1
+      print_info "Loading initial db inserts..."
       $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
-      [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
+      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
     fi
   else
-    echo -e "otrs database already exists, Ok."
+    print_warning "otrs database already exists, Ok."
   fi
 }
 
 function set_default_language(){
   if [ ! -z $OTRS_LANGUAGE ]; then
-    echo -e "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
+    print_info "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \
     \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
     ${OTRS_ROOT}Kernel/Config.pm
@@ -199,11 +200,11 @@ function set_default_language(){
 
 function set_ticker_counter() {
   if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
-    echo -e "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
+    print_info "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
     echo "$OTRS_TICKET_COUNTER" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
-    echo -e "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
+    print_info "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
      ${OTRS_ROOT}Kernel/Config.pm
   fi
@@ -223,10 +224,10 @@ function set_skins() {
 }
 
 function set_users_skin(){
-  echo -e "Updating default skin for users in backup..."
+  print_info "Updating default skin for users in backup..."
   $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '$OTRS_AGENT_SKIN' WHERE preferences_key = 'UserSkin'" otrs
-  [ $? -gt 0 ] && echo -e "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n" 
-}  
+  [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n"
+}
 
 function set_agent_logo() {
   set_logo "Agent" $OTRS_AGENT_LOGO_HEIGHT $OTRS_AGENT_LOGO_RIGHT $OTRS_AGENT_LOGO_TOP $OTRS_AGENT_LOGO_WIDTH $OTRS_AGENT_LOGO
@@ -258,7 +259,7 @@ function set_logo () {
 
 function set_fetch_email_time(){
   if [ ! -z $OTRS_POSTMASTER_FETCH_TIME ]; then
-    echo -e "Setting Postmaster fetch emails time to \e[92m$OTRS_POSTMASTER_FETCH_TIME\e[0m minutes"
+    print_info "Setting Postmaster fetch emails time to \e[92m$OTRS_POSTMASTER_FETCH_TIME\e[0m minutes"
 
     if [ $OTRS_POSTMASTER_FETCH_TIME -eq 0 ]; then
 
@@ -276,30 +277,30 @@ function check_host_mount_dir(){
   #to store OTRS configuration outside the container. Then we need to copy the
   #contents of $OTRS_CONFIG_DIR to that directory, remove it and symlink
   #$OTRS_CONFIG_MOUNT_DIR to $OTRS_CONFIG_DIR
-  echo -e "Checking if host-mounted volumes are present... "
+  print_info "Checking if host-mounted volumes are present... "
   if [ -d ${OTRS_CONFIG_MOUNT_DIR} ];
   then
     if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ];
     then
-      echo -e "Found non-empty host-mounted volume directory for OTRS configuration. "
+      print_info "Found non-empty host-mounted volume directory for OTRS configuration. "
     else
-      echo -e "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
+      print_info "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
       cp -rp ${OTRS_CONFIG_DIR}/* ${OTRS_CONFIG_MOUNT_DIR}
       if [ $? -eq 0 ];
       then
-        echo -e "Deleting ${OTRS_CONFIG_DIR}... "
+        print_info "Deleting ${OTRS_CONFIG_DIR}... "
         rm -rf ${OTRS_CONFIG_DIR}
       else
-        echo -e "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
+        print_error "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
       fi
     fi
   fi
-  echo -e "Linking back ${OTRS_CONFIG_MOUNT_DIR} to ${OTRS_CONFIG_DIR}..."
+  print_info "Linking back \e[92m${OTRS_CONFIG_MOUNT_DIR}\e[0m to \e[92m${OTRS_CONFIG_DIR}\e[0m..."
   ln -s ${OTRS_CONFIG_MOUNT_DIR} ${OTRS_CONFIG_DIR}
   if [ $? -eq 0 ];
   then
-    echo -e "Done."
+    print_info "Done."
   else
-    echo -e "ERROR: Can't create symlink to OTRS configuration on host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
+    print_error "Can't create symlink to OTRS configuration on host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
 fi
 }
