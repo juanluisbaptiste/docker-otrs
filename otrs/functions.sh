@@ -122,7 +122,7 @@ function copy_default_config(){
 }
 
 function set_variables(){
-  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_ROOT_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
+  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
   [ -z "${OTRS_ADMIN_EMAIL}" ] && print_info "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
   [ -z "${OTRS_ORGANIZATION}" ] && print_info "OTRS_ORGANIZATION setting organization to '$DEFAULT_OTRS_ORGANIZATION'" && OTRS_ORGANIZATION=$DEFAULT_OTRS_ORGANIZATION
   [ -z "${OTRS_SYSTEM_ID}" ] && print_info "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
