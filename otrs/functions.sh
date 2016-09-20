@@ -136,27 +136,32 @@ function set_variables(){
     [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && echo "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
   fi
   [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && echo "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
-  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then 
+  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then
     echo "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
     [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
     [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && echo "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
     [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && echo "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
     [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && echo "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
-  fi  
+  fi
 }
 
 function load_defaults(){
   set_variables
   copy_default_config
   update_config_password $OTRS_DB_PASSWORD
-  
+
   #Add default config options
   sed -i "/$Self->{'SecureMode'} = 1;/a \
  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
 \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
 \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';"\
+\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
+\n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';\
+\n\$Self->{'PostmasterFollowUpSearchInRaw'} = 1;\
+\n\$Self->{'PostmasterFollowUpSearchInBody'} = 1;\
+\n\$Self->{'PostmasterFollowUpSearchInAttachment'} = 1;\
+\n\$Self->{'PostmasterFollowUpSearchInReferences'} = 1;"\
  ${OTRS_ROOT}Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
