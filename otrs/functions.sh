@@ -296,7 +296,9 @@ function check_host_mount_dir(){
     fi
   fi
   print_info "Linking back \e[92m${OTRS_CONFIG_MOUNT_DIR}\e[0m to \e[92m${OTRS_CONFIG_DIR}\e[0m..."
-  ln -s ${OTRS_CONFIG_MOUNT_DIR} ${OTRS_CONFIG_DIR}
+  #ln -s ${OTRS_CONFIG_MOUNT_DIR} ${OTRS_CONFIG_DIR}
+  mkdir -p ${OTRS_CONFIG_DIR}
+  cp -rp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
   if [ $? -eq 0 ];
   then
     print_info "Done."
