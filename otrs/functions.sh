@@ -164,10 +164,6 @@ function load_defaults(){
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
 \n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
-\n\$Self->{'PostmasterFollowUpSearchInRaw'} = '1';"\
-\n\$Self->{'PostmasterFollowUpSearchInBody'} = '1';"\
-\n\$Self->{'PostmasterFollowUpSearchInAttachment'} = '1';"\
-\n\$Self->{'PostmasterFollowUpSearchInReferences'} = '1';"\
  ${OTRS_ROOT}Kernel/Config.pm
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
