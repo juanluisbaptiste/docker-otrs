@@ -58,7 +58,8 @@ services:
   data-otrs:
     image: juanluisbaptiste/otrs:latest
     volumes:
-    - ./config:/config
+    #- ./config:/config
+    - ./config:/opt/otrs/Kernel
     - "./otrs/backup:/var/otrs/backups"
     - "/etc/localtime:/etc/localtime:ro"
 
