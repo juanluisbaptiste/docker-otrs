@@ -4,6 +4,9 @@ MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
 ENV OTRS_VERSION 4.0.17-01
 ENV OTRS_ROOT /opt/otrs/
 ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
+ENV OTRS_BACKUP_DIR "/var/otrs/backups"
+ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
+ENV OTRS_CONFIG_MOUNT_DIR "/config/"
 
 RUN yum install -y epel-release && \
     yum update -y && \
@@ -46,6 +49,11 @@ RUN sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/Valid
 
 RUN mkdir -p ${OTRS_ROOT}var/{run,tmp}/
 RUN touch ${OTRS_ROOT}var/tmp/firsttime
+#To be able to use a host-mounted volume for OTRS configuration we need to move
+#away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
+#on first container run (see check_host_mount_dir on functions.sh), after the
+#host-volume is mounted.
+RUN mv ${OTRS_CONFIG_DIR} /
 
 EXPOSE 80
 CMD ["/run.sh"]

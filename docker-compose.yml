@@ -28,23 +28,33 @@ otrs:
 #      OTRS_NUMBER_GENERATOR: "AutoIncrement"
 #      OTRS_LANGUAGE: "es"
 
-mariadb:
-  build: mariadb
-  expose:
-  - "3306"
-  volumes_from:
-  - data
-  environment:
-      MYSQL_ROOT_PASSWORD: changeme
-postfix:
-   image: juanluisbaptiste/postfix:latest
-   expose: 
-   - "25"
-   env_file: credentials-smtp.env
-data:
-  image: centos/mariadb:latest
-  volumes:
-  - /var/lib/mysql
-  - "./otrs/backup:/var/otrs/backups"
-  
-  command: /bin/true
+  mariadb:
+    build:
+      context: mariadb
+    expose:
+    - "3306"
+    volumes_from:
+    - data
+    environment:
+        MYSQL_ROOT_PASSWORD: changeme
+  postfix:
+     image: juanluisbaptiste/postfix:latest
+     expose:
+     - "25"
+     env_file: credentials-smtp.env
+  data:
+    image: centos/mariadb:latest
+    volumes:
+    - /var/lib/mysql
+    - "/etc/localtime:/etc/localtime:ro"
+
+    command: /bin/true
+  data-otrs:
+    image: juanluisbaptiste/otrs:latest
+    volumes:
+    #- ./config:/config
+    - ./config:/opt/otrs/Kernel
+    - "./otrs/backup:/var/otrs/backups"
+    - "/etc/localtime:/etc/localtime:ro"
+
+    command: /bin/true

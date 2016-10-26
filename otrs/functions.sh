@@ -33,7 +33,7 @@ DEFAULT_OTRS_CUSTOMER_LOGO_TOP="2"
 DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel"
-OTRS_CONFIG_MOUNT_DIR="/config/"
+OTRS_CONFIG_MOUNT_DIR="/Kernel"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
@@ -273,36 +273,19 @@ function set_fetch_email_time(){
 }
 
 function check_host_mount_dir(){
-  #If $OTRS_CONFIG_MOUNT_DIR exists it means a host-mounted volume is present
-  #to store OTRS configuration outside the container. Then we need to copy the
-  #contents of $OTRS_CONFIG_DIR to that directory, remove it and symlink
-  #$OTRS_CONFIG_MOUNT_DIR to $OTRS_CONFIG_DIR
-  print_info "Checking if host-mounted volumes are present... "
-  if [ -d ${OTRS_CONFIG_MOUNT_DIR} ];
+  #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
+  #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
+  if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ];
   then
-    if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ];
-    then
-      print_warning "Found non-empty host-mounted volume directory for OTRS configuration at ${OTRS_CONFIG_MOUNT_DIR} "
-    else
-      print_info "Found empty host-mounted volume directory, copying OTRS configuration to ${OTRS_CONFIG_MOUNT_DIR}..."
-      cp -rp ${OTRS_CONFIG_DIR}/* ${OTRS_CONFIG_MOUNT_DIR}
-    fi
+    print_info "Found empty \e[92m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
+    mkdir -p ${OTRS_CONFIG_DIR}
+    cp -rp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
     if [ $? -eq 0 ];
-    then
-      print_info "Deleting ${OTRS_CONFIG_DIR}... "
-      rm -rf ${OTRS_CONFIG_DIR}
-    else
-      print_error "ERROR: Can't copy OTRS configuration to host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
+      then
+        print_info "Done."
+        rm -fr ${OTRS_CONFIG_MOUNT_DIR}
+      else
+        print_error "Can't move OTRS configuration directory to ${OTRS_CONFIG_DIR}" && exit 1
     fi
   fi
-  print_info "Linking back \e[92m${OTRS_CONFIG_MOUNT_DIR}\e[0m to \e[92m${OTRS_CONFIG_DIR}\e[0m..."
-  #ln -s ${OTRS_CONFIG_MOUNT_DIR} ${OTRS_CONFIG_DIR}
-  mkdir -p ${OTRS_CONFIG_DIR}
-  cp -rp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
-  if [ $? -eq 0 ];
-  then
-    print_info "Done."
-  else
-    print_error "Can't create symlink to OTRS configuration on host-mounted volume ${OTRS_CONFIG_MOUNT_DIR}" && exit 1
-fi
 }
