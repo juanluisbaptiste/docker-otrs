@@ -2,11 +2,11 @@
 FROM centos:6.6
 MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
 ENV OTRS_VERSION=5.0.12-01
-ENV OTRS_ROOT /opt/otrs/
-ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
+ENV OTRS_ROOT "/opt/otrs/"
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
 ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
 ENV OTRS_CONFIG_MOUNT_DIR "/config/"
+ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 
 RUN yum install -y epel-release && \
     yum update -y && \
