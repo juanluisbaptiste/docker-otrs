@@ -28,12 +28,11 @@ otrs:
 #      OTRS_NUMBER_GENERATOR: "AutoIncrement"
 #      OTRS_LANGUAGE: "es"
 
-  mariadb:
-    build:
-      context: mariadb
-    expose:
-    - "3306"
-    volumes_from:
+mariadb:
+  build: mariadb
+  expose:
+  - "3306"
+  volumes_from:
     - data
   environment:
       MYSQL_ROOT_PASSWORD: changeme
@@ -57,4 +56,4 @@ data-otrs:
   - "./otrs/backup:/var/otrs/backups"
   - "/etc/localtime:/etc/localtime:ro"
 
-    command: /bin/true
+  command: /bin/true
