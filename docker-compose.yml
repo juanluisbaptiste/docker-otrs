@@ -11,7 +11,7 @@ otrs:
   - postfix:postfix
   env_file: otrs-setup.env
   volumes_from:
-  - data  
+  - data-otrs  
 # If you want to run the installer, uncomment this:
 #   environment:
 #       OTRS_INSTALL: "yes"
@@ -35,26 +35,26 @@ otrs:
     - "3306"
     volumes_from:
     - data
-    environment:
-        MYSQL_ROOT_PASSWORD: changeme
-  postfix:
-     image: juanluisbaptiste/postfix:latest
-     expose:
-     - "25"
-     env_file: credentials-smtp.env
-  data:
-    image: centos/mariadb:latest
-    volumes:
-    - /var/lib/mysql
-    - "/etc/localtime:/etc/localtime:ro"
-
-    command: /bin/true
-  data-otrs:
-    image: juanluisbaptiste/otrs:latest
-    volumes:
-    #- ./config:/config
-    - ./config:/opt/otrs/Kernel
-    - "./otrs/backup:/var/otrs/backups"
-    - "/etc/localtime:/etc/localtime:ro"
+  environment:
+      MYSQL_ROOT_PASSWORD: changeme
+postfix:
+   image: juanluisbaptiste/postfix:latest
+   expose:
+   - "25"
+   env_file: ../../credentials-smtp.env
+data:
+  image: centos/mariadb:latest
+  volumes:
+  - "/home/juancho/git/docker/docker-otrs-4x/volumes/mysql:/var/lib/mysql"
+  #- /var/lib/mysql
+  - "/etc/localtime:/etc/localtime:ro"
+  command: /bin/true
+data-otrs:
+  image: juanluisbaptiste/otrs:4.0.17-otrs-4_0_x-b6f93cc3
+  volumes:
+  #- ./config:/config
+  - ./volumes/config:/opt/otrs/Kernel
+  - "./otrs/backup:/var/otrs/backups"
+  - "/etc/localtime:/etc/localtime:ro"
 
     command: /bin/true
