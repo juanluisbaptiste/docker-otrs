@@ -51,7 +51,7 @@ services:
   data:
     image: centos/mariadb:latest
     volumes:
-    - /var/lib/mysql
+    - ./volumes/mysql:/var/lib/mysql
     - "/etc/localtime:/etc/localtime:ro"
 
     command: /bin/true
@@ -59,7 +59,7 @@ services:
     image: juanluisbaptiste/otrs:latest
     volumes:
     #- ./config:/config
-    - ./config:/opt/otrs/Kernel
+    - ./volumes/config:/opt/otrs/Kernel
     - "./otrs/backup:/var/otrs/backups"
     - "/etc/localtime:/etc/localtime:ro"
 
