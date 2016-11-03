@@ -19,7 +19,7 @@ RUN sed -i.bk -r "/^\[mysqld\]$/a init-connect=\'SET NAMES utf8\'" /etc/my.cnf
 RUN sed -i.bk -r '/^\[mysqld\]$/a character-set-server = utf8' /etc/my.cnf
 
 #Use a separate volume for data.
-#VOLUME [ "/var/lib/mysql" ]
+VOLUME [ "/var/lib/mysql" ]
 #EXPOSE 3306
 #Switch to mysql user back
 USER 27
