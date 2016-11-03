@@ -1,5 +1,5 @@
 otrs:
-  image: juanluisbaptiste/otrs:4.0.16-otrs-4_0_x-c1db0b3d
+  image: juanluisbaptiste/otrs:4.0.17-otrs-4_0_x-289505a7
   ports:
   - "80:80"
 # If running behind a proxy container, expose the ports instead
