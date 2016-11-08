@@ -16,7 +16,7 @@ otrs:
 #   environment:
 #       OTRS_INSTALL: "yes"
 mariadb:
-  image: juanluisbaptiste/otrs-mariadb:4.0.16-otrs-4_0_x-c1db0b3d
+  image: juanluisbaptiste/otrs-mariadb:latest
   expose:
   - "3306"
   volumes_from:
