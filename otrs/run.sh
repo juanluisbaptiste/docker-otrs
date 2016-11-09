@@ -23,7 +23,7 @@
 while true; do
   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
   print_info $out
-  echo "$out" | grep "COUNT" 2>&1 > /dev/null
+  echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
   if [ $? -eq 0 ]; then
     print_info "Server is up !"
     break
