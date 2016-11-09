@@ -50,6 +50,9 @@ function create_db(){
 function restore_backup(){
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   set_variables
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  check_host_mount_dir
   copy_default_config
 
   #As this is a restore, drop database first.
