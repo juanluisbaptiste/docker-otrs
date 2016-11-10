@@ -26,6 +26,7 @@ if [ $? -eq 0 ]; then
     echo -e "Backup files move to $OTRS_BACKUP_DIR failed."
     exit 1
   else
+    chmod -R 755 $OTRS_BACKUP_DIR
     echo -e "`get_current_date` Backup successful."
   fi
 else
