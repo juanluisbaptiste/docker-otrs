@@ -65,7 +65,7 @@ the default install:
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 
 
-Those env variables is what you can configure by running the installer for a default install. 
+Those environment variables is what you can configure by running the installer for a default install.
 
 For testing the containers you can bring them up with `docker-compose`:
 
