@@ -67,7 +67,7 @@ the default install:
 
 Those environment variables is what you can configure by running the installer for a default install.
 
-For testing the containers you can bring them up with `docker-compose`:
+After adjusting the [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml), you can test the containers with `docker-compose`:
 
     sudo docker-compose build
     sudo docker-compose up
