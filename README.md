@@ -140,6 +140,29 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
     RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
     COPY skins/Agent/MyCompanySkin.xml $OTRS_ROOT/Kernel/Config/Files/
 
+### Using host-mounted data containers
+
+If you want to store OTRS MySQL and configuration files outside the containers then you need to modify the `docker-compose.yml` file to map those directories to a directory in the host (available on both OTRS 4 & 5 images). First, modify the data containers to map the volume directories to the host:
+
+    data:
+      image: centos/mariadb:latest
+      volumes:
+      - ./volumes/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+      command: /bin/true
+    data-otrs:
+      image: juanluisbaptiste/otrs:latest
+      volumes:
+      - ./volumes/config:/opt/otrs/Kernel
+      - ./backups:/var/otrs/backups
+      - /etc/localtime:/etc/localtime:ro
+      command: /bin/true
+
+#### Note ####
+Make sure that the directory on the docker host for the MySQL data container has the correct permissions to be accessed from within the container. The `volumes/mysql` directory should be owned by the MySQL user (27). Before running `docker-compose up` make sure permissions are ok:
+
+    chown 27 volumes/mysql
+
 ### Backing up the container configuration
 
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
