@@ -79,7 +79,7 @@ The default database password is `changeme`, to change it, edit the `docker-comp
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before 
 running `docker-compose`.
 
-To start the containers in production mode use this [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file that points to images to be pulled and run instead of Dockerfiles being built:
+To start the containers in production mode use this [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file that points to images to be pulled and run instead of `Dockerfiles` being built:
 
     sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
 
