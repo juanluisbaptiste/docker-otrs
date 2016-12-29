@@ -159,9 +159,10 @@ If you want to store OTRS MySQL and configuration files outside the containers t
       command: /bin/true
 
 #### Note ####
-Make sure that the directory on the docker host for the MySQL data container has the correct permissions to be accessed from within the container. The `volumes/mysql` directory should be owned by the MySQL user (27). Before running `docker-compose up` make sure permissions are ok:
+Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers has the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
 
     chown 27 volumes/mysql
+    chown 500:48 volumes/config
 
 ### Backing up the container configuration
 
