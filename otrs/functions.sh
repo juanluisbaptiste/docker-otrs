@@ -34,14 +34,29 @@ DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
+OTRS_DATABASE="otrs"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
 mysqlcmd="mysql -uroot -h mariadb -p$MYSQL_ROOT_PASSWORD "
 
+function wait_for_db(){
+  while true; do
+    out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
+    print_info $out
+    echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
+    if [ $? -eq 0 ]; then
+      print_info "Server is up !"
+      break
+    fi
+    print_warning "DB server still isn't up, sleeping a little bit ..."
+    sleep 2
+  done
+}
+
 function create_db(){
   print_info "Creating OTRS database..."
-  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS otrs;"
+  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS $OTRS_DATABASE;"
   [ $? -gt 0 ] && print_error "Couldn't create OTRS database !!" && exit 1
   $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
   [ $? -gt 0 ] && print_error "Couldn't create database user !!" && exit 1
