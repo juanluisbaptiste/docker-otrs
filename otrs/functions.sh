@@ -37,7 +37,7 @@ OTRS_CONFIG_MOUNT_DIR="/Kernel"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
-mysqlcmd="mysql -uroot -h $MARIADB_PORT_3306_TCP_ADDR -p$MARIADB_ENV_MYSQL_ROOT_PASSWORD "
+mysqlcmd="mysql -uroot -h mariadb -p$MARIADB_ENV_MYSQL_ROOT_PASSWORD "
 
 function create_db(){
   print_info "Creating OTRS database..."
