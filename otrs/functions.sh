@@ -289,6 +289,11 @@ function check_host_mount_dir(){
   fi
 }
 
+ERROR_CODE="ERROR"
+OK_CODE="OK"
+INFO_CODE="INFO"
+WARN_CODE="WARNING"
+
 function write_log (){
   message="$1"
   code="$2"
