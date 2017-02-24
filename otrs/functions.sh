@@ -303,3 +303,11 @@ function check_host_mount_dir(){
     fi
   fi
 }
+
+function write_log (){
+  message="$1"
+  code="$2"
+
+  echo "$[ 1 + $[ RANDOM % 1000 ]]" >> $BACKUP_LOG_FILE
+  echo "Status=$code,Message=$message" >> $BACKUP_LOG_FILE
+}
