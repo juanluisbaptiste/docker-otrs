@@ -17,7 +17,7 @@ notify:
     token: $$DOWNSTREAM_DRONE_TOKEN
     when:
       event: push
-      branch: master,otrs-4_0_x
+      branch: otrs-4_0_x
       success: true
 publish:
   docker:
