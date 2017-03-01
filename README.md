@@ -173,3 +173,7 @@ Make sure that the directories on the docker host for both OTRS configuration an
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
     docker exec otrs /opt/otrs/scripts/otrs_backup.sh
+
+### Enabling debug mode ###
+
+If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output.
