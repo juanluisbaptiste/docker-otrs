@@ -20,6 +20,9 @@
 
 . ./functions.sh
 
+if [ "$OTRS_DEBUG" == "yes" ];then
+  enable_debug_mode
+fi
 #Wait for database to come up
 wait_for_db
 

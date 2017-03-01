@@ -316,3 +316,12 @@ function write_log (){
   echo "$[ 1 + $[ RANDOM % 1000 ]]" >> $BACKUP_LOG_FILE
   echo "Status=$code,Message=$message" >> $BACKUP_LOG_FILE
 }
+
+function enable_debug_mode (){
+  print_info "Preparing debug mode..."
+  #DEBIAN_FRONTEND=noninteractive apt-get install -y nmap lsof telnet
+  #[ $? -gt 0 ] && print_error "ERROR: Could not intall tools." && exit 1
+  print_info "Done."
+
+  set -x
+}
