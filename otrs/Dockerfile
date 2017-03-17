@@ -18,42 +18,40 @@ RUN yum install -y epel-release && \
     "perl(Encode::HanExtra)" "perl(GD)" "perl(GD::Text)" "perl(GD::Graph)" \
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
-    supervisor tar which
-RUN yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
+    supervisor tar which http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
 
-# Add run script and function files
-COPY *.sh /
-RUN chmod 755 /*.sh
 #Add configuration file
 COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
-#Add backup script
-COPY otrs_backup.sh ${OTRS_ROOT}scripts/
-RUN chmod 755 ${OTRS_ROOT}scripts/otrs_backup.sh
-#Add change email fetch time script
-COPY otrs_postmaster_time.sh ${OTRS_ROOT}scripts/
-RUN chmod 755 ${OTRS_ROOT}scripts/otrs_postmaster_time.sh
-#Enable mod_filter
-RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf
-#reconfigure httpd
-RUN sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf
-#Fix pam permissions for crond
-RUN echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf
-RUN sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond
-#Configure supervisord
-RUN sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
-RUN cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf
+# Add run script and function files
+COPY *.sh /
+RUN chmod 755 /*.sh && \
+#Add backup script
+#COPY otrs_backup.sh ${OTRS_ROOT}scripts/
+#RUN chmod 755 ${OTRS_ROOT}scripts/otrs_backup.sh
+#Add change email fetch time script
+#COPY otrs_postmaster_time.sh ${OTRS_ROOT}scripts/
+#RUN chmod 755 ${OTRS_ROOT}scripts/otrs_postmaster_time.sh
+#Enable mod_filter
+    sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf && \
+#reconfigure httpd
+    sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf && \
+#Fix pam permissions for crond
+    echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf && \
+    sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond && \
+#Configure supervisord
+    sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf && \
+    cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf && \
 #Fix PostmasterFollowUpState config var, this line on Ticket.xml disallow the edition
 #of that field through SysConfig
-RUN sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/Ticket.xml
-
-RUN mkdir -p ${OTRS_ROOT}var/{run,tmp}/
-RUN touch ${OTRS_ROOT}var/tmp/firsttime
+    sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/Ticket.xml && \
+    mkdir -p ${OTRS_ROOT}var/{run,tmp}/ && \
+    touch ${OTRS_ROOT}var/tmp/firsttime && \
 #To be able to use a host-mounted volume for OTRS configuration we need to move
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
 #host-volume is mounted.
-RUN mv ${OTRS_CONFIG_DIR} /
+    mv ${OTRS_CONFIG_DIR} /
 
 EXPOSE 80
 CMD ["/run.sh"]

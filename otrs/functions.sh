@@ -266,7 +266,7 @@ function set_fetch_email_time(){
       sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*/#/' /var/spool/cron/otrs
     else
       #sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*//' /var/spool/cron/otrs
-      ${OTRS_ROOT}scripts/otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
+      /otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
     fi
   fi
 }
