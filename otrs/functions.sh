@@ -310,3 +310,14 @@ function enable_debug_mode (){
 
   set -x
 }
+
+function reinstall_modules () {
+  print_info "Reinstalling OTRS modules..."
+  $OTRS_ROOT/bin/otrs.PackageManager.pl -a reinstall-all > /dev/null 2>&1> /dev/null 2>&1
+
+  if [ $? -gt 0 ]; then
+    print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."
+  else
+    print_info "Done."
+  fi
+}

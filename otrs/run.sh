@@ -48,6 +48,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
     print_info "Restoring OTRS backup: $OTRS_BACKUP_DATE for host ${OTRS_HOSTNAME}"
     restore_backup $OTRS_BACKUP_DATE
   fi
+  reinstall_modules
   set_skins
   set_ticker_counter
   set_default_language
