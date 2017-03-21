@@ -66,19 +66,18 @@ the default install:
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
-After adjusting the [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml), you can test the containers with `docker-compose`:
+For production use there's another `docker-compose` file that points to the pre-built images. After adjusting the [`docker-compose-prod.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file with the previously described environment variables (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix)), you can test the service with `docker-compose`:
 
-    sudo docker-compose build
-    sudo docker-compose up
+    sudo docker-compose -f docker-compose-prod.yml up
 
-This will bring up all needed containers, link them and mount volumes according 
-to the `docker-compose.yml` configuration file. 
+This will pull and bring up all needed containers, link them and mount volumes according
+to the `docker-compose-prod.yml` configuration file.
 
 The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the 
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before 
 running `docker-compose`.
 
-To start the containers in production mode use this [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file that points to images to be pulled and run instead of `Dockerfiles` being built:
+To start the containers in production mode the the `-d` parameter to the previous command:
 
     sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
 
