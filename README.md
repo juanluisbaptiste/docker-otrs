@@ -30,9 +30,9 @@ This command will build all the images and pull the missing ones like the [SMTP 
 
 ### How to run it
 
-By default, when the container is run it will load a default vanilla OTRS 
-installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load 
-a backup or run the installer by defining one of these env variables:
+By default, when the container is run it will load a default vanilla OTRS
+installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load
+a backup or run the installer by defining one of these environment variables:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` 
 environment variable. 
@@ -64,7 +64,7 @@ the default install:
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 
 
-Those environment variables is what you can configure by running the installer for a default install.
+Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
 After adjusting the [`docker-compose.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml), you can test the containers with `docker-compose`:
 
@@ -163,11 +163,11 @@ Make sure that the directories on the docker host for both OTRS configuration an
     chown 27 volumes/mysql
     chown 500:48 volumes/config
 
-### Backing up the container configuration
+### Backups
 
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
-    docker exec otrs /opt/otrs/scripts/otrs_backup.sh
+    docker exec otrs_container /opt/otrs/scripts/otrs_backup.sh
 
 ### Enabling debug mode ###
 
