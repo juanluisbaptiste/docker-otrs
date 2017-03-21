@@ -26,12 +26,7 @@ We use `docker-compose` to build the images. Clone this repo and then:
     cd docker-otrs
     sudo docker-compose build
 
-This command will build all the images and pull the missing ones like the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix).
-
-You can also find a prebuilt image from [Docker Hub](https://registry.hub.docker.com/u/juanluisbaptiste/otrs/), 
-which can be pulled with this command:
-
-    sudo docker pull juanluisbaptiste/otrs:latest
+This command will build all the images and pull the missing ones like the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix). This SMTP relay container has its own configuration, you need to specify the environment variables for the SMTP account that will be used to send OTRS email notifications. Please take a look at the [documentation](https://github.com/juanluisbaptiste/docker-postfix).
 
 ### How to run it
 
