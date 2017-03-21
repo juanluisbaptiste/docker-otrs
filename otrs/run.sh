@@ -70,6 +70,7 @@ su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
 sleep 2
 su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
 
+print_info "OTRS Ready !"
 while true; do
   sleep 1000
 done
