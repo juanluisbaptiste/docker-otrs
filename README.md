@@ -86,9 +86,13 @@ addresses:
 
 ### Administration Interface
     http://$OTRS_HOSTNAME/otrs/index.pl
-    
+
 ### Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
+
+### Installing OTRS modules
+
+If you have installed any additional module, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working. 
 
 ### Changing OTRS default skins
 
