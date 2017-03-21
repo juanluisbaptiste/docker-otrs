@@ -143,7 +143,7 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
 The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` to see the directory mappings and adjust them to your needs (available on both OTRS 4 & 5 images).
 
 #### Note ####
-Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers has the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
+Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
 
     chown 27 volumes/mysql
     chown 500:48 volumes/config
