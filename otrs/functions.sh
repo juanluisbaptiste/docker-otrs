@@ -140,6 +140,8 @@ function copy_default_config(){
   then
     cp -f ${OTRS_CONFIG_DIR}Config.pm.default ${OTRS_CONFIG_FILE}
     [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
+    #Replace the database server for the container name
+    sed  -i "s/\($Self->{'Database'} *= *\).*/\1'mariadb';/" ${OTRS_CONFIG_FILE}
   else
     print_info "Configuration file already exists."
   fi
