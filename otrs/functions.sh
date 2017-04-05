@@ -183,14 +183,14 @@ function load_defaults(){
   update_config_password $OTRS_DB_PASSWORD
 
   #Add default config options
-  sed -i "/$Self->{'SecureMode'} = 1;/a \
- \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
-\n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
-\n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
-\n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
-\n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
- ${OTRS_CONFIG_FILE}
+#   sed -i "/$Self->{'SecureMode'} = 1;/a \
+#  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
+# \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
+# \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
+# \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
+# \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
+# \n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
+#  ${OTRS_CONFIG_FILE}
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
