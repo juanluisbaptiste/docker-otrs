@@ -32,7 +32,8 @@ DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT="25"
 DEFAULT_OTRS_CUSTOMER_LOGO_TOP="2"
 DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
-OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel"
+OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
+OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
 OTRS_DATABASE="otrs"
 
@@ -130,14 +131,14 @@ function random_string(){
 
 function update_config_password(){
   #Change database password on configuration file
-  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" ${OTRS_ROOT}Kernel/Config.pm
+  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" ${OTRS_CONFIG_FILE}
 }
 
 function copy_default_config(){
   print_info "Copying configuration file..."
   if [ ! "$(ls -A ${OTRS_CONFIG_DIR}/Config.pm)" ];
   then
-    cp -f ${OTRS_ROOT}docker/defaults/Config.pm.default ${OTRS_ROOT}Kernel/Config.pm
+    cp -f ${OTRS_CONFIG_DIR}Config.pm.default ${OTRS_CONFIG_FILE}
     [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
   else
     print_info "Configuration file already exists."
@@ -187,7 +188,7 @@ function load_defaults(){
 \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
 \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
 \n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
- ${OTRS_ROOT}Kernel/Config.pm
+ ${OTRS_CONFIG_FILE}
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
@@ -213,7 +214,7 @@ function set_default_language(){
     print_info "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \
     \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
-    ${OTRS_ROOT}Kernel/Config.pm
+    ${OTRS_CONFIG_FILE}
  fi
 }
 
@@ -225,7 +226,7 @@ function set_ticker_counter() {
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
     print_info "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
     sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
-     ${OTRS_ROOT}Kernel/Config.pm
+     ${OTRS_CONFIG_FILE}
   fi
 }
 
@@ -233,7 +234,7 @@ function set_skins() {
   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
 \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
- ${OTRS_ROOT}Kernel/Config.pm
+ ${OTRS_CONFIG_FILE}
 
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
@@ -269,7 +270,7 @@ function set_logo () {
 \n'StyleRight' => '${logo_right}px',\
 \n'StyleTop' => '${logo_top}px',\
 \n'StyleWidth' => '${logo_width}px',\
-\n'URL' => '$logo_url'\n};" ${OTRS_ROOT}Kernel/Config.pm
+\n'URL' => '$logo_url'\n};" ${OTRS_CONFIG_FILE}
 }
 
 # function set_customer_logo() {
