@@ -172,7 +172,7 @@ function set_variables(){
 }
 
 function load_defaults(){
-  set_variables
+  #set_variables
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
