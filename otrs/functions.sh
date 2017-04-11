@@ -147,6 +147,8 @@ function copy_default_config(){
   # fi
   print_info "Updating databse server on configuration file..."
   sed  -i "s/\($Self->{'Database'} *= *\).*/\1'mariadb';/" ${OTRS_CONFIG_FILE}
+  print_info "Updating SMTP server on configuration file..."
+  sed  -i "s/\($Self->{'SendmailModule::Host'} *= *\).*/\1'postfix';/" ${OTRS_CONFIG_FILE}
 }
 
 function set_variables(){
