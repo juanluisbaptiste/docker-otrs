@@ -21,24 +21,19 @@ RUN yum install -y epel-release && \
     supervisor tar which && \
     yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
 
-# Add run script and function files
+# Add scripts and function files
 COPY *.sh /
 #Add configuration file
 COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
-#Add backup script
-COPY otrs_backup.sh ${OTRS_ROOT}scripts/
-#Add change email fetch time script
-COPY otrs_postmaster_time.sh ${OTRS_ROOT}scripts/
 #Supervisord configuration
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
-RUN chmod 755 /*.sh && \
-    chmod 755 ${OTRS_ROOT}scripts/otrs_backup.sh && \
-    chmod 755 ${OTRS_ROOT}scripts/otrs_postmaster_time.sh
+#Fix scripts permissions
 #Enable mod_filter & reconfigure httpd
 #Fix pam permissions for crond
 #Fix PostmasterFollowUpState config var, this line on Ticket.xml disallow the edition
 #of that field through SysConfig
-RUN sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf && \
+RUN chmod 755 /*.sh && \
+    sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf && \
     sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf && \
     echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf && \
     sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond && \
