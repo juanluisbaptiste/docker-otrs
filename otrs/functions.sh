@@ -129,26 +129,28 @@ function random_string(){
   echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
 }
 
+function update_config_value(){
+  sed  -i -r "s/($Self->\{$1\} *= *).*/\1\"$2\";/" ${OTRS_CONFIG_FILE}
+}
+
+function add_config_value(){
+
+  sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
+  \$Self->{'$1'} = '$2';" ${OTRS_CONFIG_FILE}
+
+}
+
 function update_config_password(){
   #Change database password on configuration file
-  sed  -i -r "s/($Self->\{DatabasePw\} *= *).*/\1\"$1\";/" ${OTRS_CONFIG_FILE}
+  update_config_value "DatabasePw" $1
 }
 
 function copy_default_config(){
-  #print_info "Copying configuration file..."
-  # if [ ! "$(ls -A ${OTRS_CONFIG_DIR}/Config.pm)" ];
-  # then
-  #   cp -f ${OTRS_CONFIG_DIR}Config.pm.default ${OTRS_CONFIG_FILE}
-  #   [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS config file !!\n" && exit 1
-  #   #Replace the database server for the container name
-  #   sed  -i "s/\($Self->{'Database'} *= *\).*/\1'mariadb';/" ${OTRS_CONFIG_FILE}
-  # else
-  #   print_info "Configuration file already exists."
-  # fi
   print_info "Updating databse server on configuration file..."
-  sed  -i -r "s/($Self->\{DatabaseHost\} *= *).*/\1\"mariadb\";/" ${OTRS_CONFIG_FILE}
+  update_config_value "DatabaseHost" "mariadb"
   print_info "Updating SMTP server on configuration file..."
-  sed  -i -r "s/($Self->\{SendmailModule::Host\} *= *).*/\1\"postfix\";/" ${OTRS_CONFIG_FILE}
+  add_config_value "SendmailModule::Host" "postfix"
+  add_config_value "SendmailModule::Port" "25"
 }
 
 function set_variables(){
@@ -218,9 +220,10 @@ function load_defaults(){
 function set_default_language(){
   if [ ! -z $OTRS_LANGUAGE ]; then
     print_info "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
-    sed -i "/$Self->{'SecureMode'} = 1;/a \
-    \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
-    ${OTRS_CONFIG_FILE}
+    # sed -i "/$Self->{'SecureMode'} = 1;/a \
+    # \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
+    # ${OTRS_CONFIG_FILE}
+    add_config_value "DefaultLanguage" $OTRS_LANGUAGE
  fi
 }
 
@@ -231,17 +234,20 @@ function set_ticker_counter() {
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
     print_info "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
-    sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
-     ${OTRS_CONFIG_FILE}
+    # sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
+    #  ${OTRS_CONFIG_FILE}
+    add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}"
   fi
 }
 
 function set_skins() {
-  [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
-\$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
-\n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
- ${OTRS_CONFIG_FILE}
+#   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
+# \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
+# \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
+#  ${OTRS_CONFIG_FILE}
 
+  [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" $OTRS_AGENT_SKIN
+  [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Customer::SelectedSkin" $OTRS_CUSTOMER_SKIN
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
@@ -271,12 +277,17 @@ function set_logo () {
   logo_width=$5
   logo_url=$6
 
-  sed -i "/$Self->{'SecureMode'} = 1;/a \
- \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
-\n'StyleRight' => '${logo_right}px',\
-\n'StyleTop' => '${logo_top}px',\
-\n'StyleWidth' => '${logo_width}px',\
-\n'URL' => '$logo_url'\n};" ${OTRS_CONFIG_FILE}
+#   sed -i "/$Self->{'SecureMode'} = 1;/a \
+#  \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
+# \n'StyleRight' => '${logo_right}px',\
+# \n'StyleTop' => '${logo_top}px',\
+# \n'StyleWidth' => '${logo_width}px',\
+# \n'URL' => '$logo_url'\n};" ${OTRS_CONFIG_FILE}
+  add_config_value "${interface}Logo" "{\n'StyleHeight' => '${logo_height}px',\
+ \n'StyleRight' => '${logo_right}px',\
+ \n'StyleTop' => '${logo_top}px',\
+ \n'StyleWidth' => '${logo_width}px',\
+ \n'URL' => '$logo_url'\n};"
 }
 
 # function set_customer_logo() {
