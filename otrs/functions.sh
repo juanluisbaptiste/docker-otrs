@@ -252,7 +252,7 @@ function set_skins() {
 function set_users_skin(){
   print_info "Updating default skin for users in backup..."
   $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '$OTRS_AGENT_SKIN' WHERE preferences_key = 'UserSkin'" otrs
-  [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't change default skin for existing users !!\n"
+  [ $? -gt 0 ] && print_error "Couldn't change default skin for existing users !!\n"
 }
 
 function set_agent_logo() {
