@@ -133,10 +133,13 @@ function update_config_value(){
 }
 
 function add_config_value(){
-
-  sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
-  \$Self->{'$1'} = '$2';" ${OTRS_CONFIG_FILE}
-
+  if grep -q "$1" ${OTRS_CONFIG_FILE}
+  then
+    print_info "Config option already present, skipping..."
+  else
+    sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
+    \$Self->{'$1'} = '$2';" ${OTRS_CONFIG_FILE}
+  fi
 }
 
 function set_variables(){
