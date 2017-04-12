@@ -131,7 +131,7 @@ function random_string(){
 
 function update_config_password(){
   #Change database password on configuration file
-  sed  -i "s/\($Self->{'DatabasePw'} *= *\).*/\1'$1';/" ${OTRS_CONFIG_FILE}
+  sed  -i -r "s/($Self->\{DatabasePw\} *= *).*/\1\"$1\";/" ${OTRS_CONFIG_FILE}
 }
 
 function copy_default_config(){
@@ -146,9 +146,9 @@ function copy_default_config(){
   #   print_info "Configuration file already exists."
   # fi
   print_info "Updating databse server on configuration file..."
-  sed  -i "s/\($Self->{'Database'} *= *\).*/\1'mariadb';/" ${OTRS_CONFIG_FILE}
+  sed  -i -r "s/($Self->\{DatabaseHost\} *= *).*/\1\"mariadb\";/" ${OTRS_CONFIG_FILE}
   print_info "Updating SMTP server on configuration file..."
-  sed  -i "s/\($Self->{'SendmailModule::Host'} *= *\).*/\1'postfix';/" ${OTRS_CONFIG_FILE}
+  sed  -i -r "s/($Self->\{SendmailModule::Host\} *= *).*/\1\"postfix\";/" ${OTRS_CONFIG_FILE}
 }
 
 function set_variables(){
