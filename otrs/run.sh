@@ -44,7 +44,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   fi
   reinstall_modules
   set_skins
-  set_ticker_counter
+  set_ticket_counter
   set_default_language
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS

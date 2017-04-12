@@ -69,7 +69,6 @@ function restore_backup(){
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
-  copy_default_config
 
   #As this is a restore, drop database first.
 
@@ -140,19 +139,6 @@ function add_config_value(){
 
 }
 
-function update_config_password(){
-  #Change database password on configuration file
-  update_config_value "DatabasePw" $1
-}
-
-function copy_default_config(){
-  print_info "Updating databse server on configuration file..."
-  update_config_value "DatabaseHost" "mariadb"
-  print_info "Updating SMTP server on configuration file..."
-  add_config_value "SendmailModule::Host" "postfix"
-  add_config_value "SendmailModule::Port" "25"
-}
-
 function set_variables(){
   [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
   [ -z "${OTRS_ADMIN_EMAIL}" ] && print_info "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
@@ -185,8 +171,13 @@ function load_defaults(){
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
-  copy_default_config
-  update_config_password $OTRS_DB_PASSWORD
+  print_info "Updating database password on configuration file..."
+  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+  print_info "Updating databse server on configuration file..."
+  update_config_value "DatabaseHost" "mariadb"
+  print_info "Updating SMTP server on configuration file..."
+  add_config_value "SendmailModule::Host" "postfix"
+  add_config_value "SendmailModule::Port" "25"
 
   #Add default config options
 #   sed -i "/$Self->{'SecureMode'} = 1;/a \
