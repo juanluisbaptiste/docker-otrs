@@ -221,7 +221,7 @@ function set_default_language(){
  fi
 }
 
-function set_ticker_counter() {
+function set_ticket_counter() {
   if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
     print_info "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
     echo "$OTRS_TICKET_COUNTER" > ${OTRS_ROOT}var/log/TicketCounter.log
