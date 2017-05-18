@@ -83,7 +83,8 @@ function restore_backup(){
   fi
 
   create_db
-  update_config_password $OTRS_DB_PASSWORD
+  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+
 
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
@@ -107,7 +108,8 @@ function restore_backup(){
   fi
 
   #Restore configured password overwritten by restore
-  update_config_password $OTRS_DB_PASSWORD
+  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+
   #Copy back skins over restored files
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* ${SKINS_PATH} && rm -fr $tmpdir
 
