@@ -66,9 +66,8 @@ function create_db(){
 function restore_backup(){
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   #set_variables
-  #Check if a host-mounted volume for configuration storage was added to this
-  #container
-  check_host_mount_dir
+  #setup OTRS docker configuration
+  setup_otrs_config
 
   #As this is a restore, drop database first.
 
@@ -171,8 +170,7 @@ function set_variables(){
   fi
 }
 
-function load_defaults(){
-  #set_variables
+function setup_otrs_config(){
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
@@ -183,6 +181,13 @@ function load_defaults(){
   print_info "Updating SMTP server on configuration file..."
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
+}
+
+function load_defaults(){
+  #set_variables
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  setup_otrs_config
 
   #Add default config options
 #   sed -i "/$Self->{'SecureMode'} = 1;/a \
