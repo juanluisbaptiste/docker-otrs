@@ -7,7 +7,7 @@ ENV MYSQL_ROOT_PASSWORD changeme
 USER root
 
 #Change db configuration as required by official install docs and Enable utf8 support
-RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=20M' /etc/my.cnf && \
+RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=64M' /etc/my.cnf && \
     sed -i.bk -r '/^\[mysqld\]$/a query_cache_size=32M' /etc/my.cnf && \
     sed -i.bk -r '/^\[mysqld\]$/a innodb_log_file_size=256M' /etc/my.cnf && \
     sed -i.bk -r '/^\[mysqld\]$/a skip-character-set-client-handshake' /etc/my.cnf && \
