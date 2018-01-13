@@ -1,7 +1,8 @@
 #OTRS ticketing system docker image.
-FROM centos:6.6
+FROM centos:7
 MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
-ENV OTRS_VERSION=5.0.23-01
+#ENV OTRS_VERSION=5.0.23-01
+ENV OTRS_VERSION=6.0.3-02
 ENV OTRS_ROOT "/opt/otrs/"
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
 ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
@@ -19,27 +20,29 @@ RUN yum install -y epel-release && \
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" "perl(DateTime)" \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
     supervisor tar which && \
-    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${OTRS_VERSION}.noarch.rpm
-
+    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm
+RUN /opt/otrs/bin/otrs.CheckModules.pl
 # Add scripts and function files
 COPY *.sh /
 #Add configuration file
-COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
+#COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
 #Supervisord configuration
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
 #Fix scripts permissions
 #Enable mod_filter & reconfigure httpd
 #Fix pam permissions for crond
 #Fix PostmasterFollowUpState config var, this line on Ticket.xml disallow the edition
+#setup supervisor configuration
 #of that field through SysConfig
 RUN chmod 755 /*.sh && \
     sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf && \
+    sed -i "s/index.html/index.pl/" /etc/httpd/conf/httpd.conf && \
     sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf && \
     echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf && \
     sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond && \
     sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf && \
     cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf && \
-    sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/Ticket.xml && \
+    sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/XML/Ticket.xml && \
     mkdir -p ${OTRS_ROOT}var/{run,tmp}/ && \
     touch ${OTRS_ROOT}var/tmp/firsttime
 #To be able to use a host-mounted volume for OTRS configuration we need to move

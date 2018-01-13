@@ -60,6 +60,8 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
 else
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[92m OTRS $OTRS_VERSION \e[0minstaller !!"
+  check_host_mount_dir
+  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
 fi
 
 #Launch supervisord
