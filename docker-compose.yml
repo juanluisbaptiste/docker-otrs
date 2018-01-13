@@ -39,7 +39,7 @@ data:
   - "/etc/localtime:/etc/localtime:ro"
   command: /bin/true
 data-otrs:
-  image: juanluisbaptiste/otrs:latest
+  image: centos:7
   volumes:
   - ./volumes/config:/opt/otrs/Kernel
   - "./otrs/backup:/var/otrs/backups"
