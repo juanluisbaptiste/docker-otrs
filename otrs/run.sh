@@ -53,6 +53,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
+  setup_otrs_config "SecureMode" 1
 else
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[92m OTRS $OTRS_VERSION \e[0minstaller !!"
