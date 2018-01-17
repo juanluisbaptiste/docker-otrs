@@ -51,10 +51,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
   ${OTRS_ROOT}bin/Cron.sh start otrs
   su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
-  #/usr/bin/perl ${OTRS_ROOT}bin/otrs.Scheduler.pl -w 1
-  #${OTRS_ROOT}bin/otrs.RebuildConfig.pl
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
-  #${OTRS_ROOT}bin/otrs.DeleteCache.pl
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
 else
   #If neither of previous cases is true the installer will be run.
