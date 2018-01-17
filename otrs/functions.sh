@@ -295,21 +295,6 @@ function set_logo () {
 #   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" ${OTRS_ROOT}Kernel/Config.pm
 # }
 
-function set_fetch_email_time(){
-  if [ ! -z $OTRS_POSTMASTER_FETCH_TIME ]; then
-    print_info "Setting Postmaster fetch emails time to \e[92m$OTRS_POSTMASTER_FETCH_TIME\e[0m minutes"
-
-    if [ $OTRS_POSTMASTER_FETCH_TIME -eq 0 ]; then
-
-      #Disable email fetching
-      sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*/#/' /var/spool/cron/otrs
-    else
-      #sed -i -e '/otrs.PostMasterMailbox.pl/ s/^#*//' /var/spool/cron/otrs
-      /otrs_postmaster_time.sh $OTRS_POSTMASTER_FETCH_TIME
-    fi
-  fi
-}
-
 function check_host_mount_dir(){
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
