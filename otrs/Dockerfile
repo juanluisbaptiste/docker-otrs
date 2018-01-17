@@ -24,8 +24,6 @@ RUN yum install -y epel-release && \
 RUN /opt/otrs/bin/otrs.CheckModules.pl
 # Add scripts and function files
 COPY *.sh /
-#Add configuration file
-#COPY Config.pm ${OTRS_ROOT}docker/defaults/Config.pm.default
 #Supervisord configuration
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
 #Fix scripts permissions
