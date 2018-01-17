@@ -5,7 +5,7 @@
 
 VERBOSE=0
 OTRS_LATEST="http://ftp.otrs.org/pub/otrs/otrs-latest.tar.gz"
-OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/6/otrs-${rpm_version}.noarch.rpm"
+OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/${otrs_version}/otrs-${rpm_version}.noarch.rpm"
 OTRS_GIT_URL="https://github.com/juanluisbaptiste/docker-otrs.git"
 OTRS_UPDATE_LOG="/data/logs/check_otrs_version.log"
 #Supported OTRS versions to aoid breaking the image if the major version upgrade
