@@ -181,6 +181,7 @@ function setup_otrs_config(){
   print_info "Updating SMTP server on configuration file..."
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
+  add_config_value "SecureMode" "1"
 }
 
 function load_defaults(){
