@@ -25,18 +25,13 @@ RUN /opt/otrs/bin/otrs.CheckModules.pl
 COPY *.sh /
 #Supervisord configuration
 COPY etc/supervisord.d/otrs.ini /etc/supervisord.d/
-#Fix scripts permissions
-#Enable mod_filter & reconfigure httpd
-#Fix pam permissions for crond
-#Fix PostmasterFollowUpState config var, this line on Ticket.xml disallow the edition
-#setup supervisor configuration
-#of that field through SysConfig
-RUN chmod 755 /*.sh && \
-    sed -i '/filter_module/s/#//g' /etc/httpd/conf/httpd.conf && \
-    sed -i "s/index.html/index.pl/" /etc/httpd/conf/httpd.conf && \
-    sed -i "s/error\/noindex.html/otrs\/index.pl/" /etc/httpd/conf.d/welcome.conf && \
-    echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf && \
-    sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond && \
+RUN chmod 755 /*.sh  && \
+    cp ${OTRS_ROOT}/var/httpd/htdocs/index.html /var/www/html && \
+    chmod 644 /var/www/html/index.html && \
+    sed -i 's/\bindex.html\b/& index.pl/' /etc/httpd/conf/httpd.conf && \
+#    sed -i "\/.noindex.html/a DirectoyIndex index.html/" /etc/httpd/conf.d/welcome.conf
+    echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf                && \
+    sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond                       && \
     sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf && \
     cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf && \
     sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/XML/Ticket.xml && \
