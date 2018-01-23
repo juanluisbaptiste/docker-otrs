@@ -34,14 +34,19 @@ RUN chmod 755 /*.sh  && \
     sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond                       && \
     sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf && \
     cat /etc/supervisord.d/otrs.ini >> etc/supervisord.conf && \
-    sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' -i ${OTRS_ROOT}Kernel/Config/Files/XML/Ticket.xml && \
+    sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' \
+        ${OTRS_ROOT}Kernel/Config/Files/XML/Ticket.xml  && \
     mkdir -p ${OTRS_ROOT}var/{run,tmp}/ && \
-    touch ${OTRS_ROOT}var/tmp/firsttime
+    perl -cw ${OTRS_ROOT}bin/cgi-bin/index.pl && \
+    perl -cw ${OTRS_ROOT}bin/cgi-bin/customer.pl && \
+    perl -cw ${OTRS_ROOT}bin/otrs.Console.pl
+
 #To be able to use a host-mounted volume for OTRS configuration we need to move
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
 #host-volume is mounted.
-RUN mv ${OTRS_CONFIG_DIR} /
-
+RUN mv ${OTRS_CONFIG_DIR} / && \
+    touch ${OTRS_ROOT}var/tmp/firsttime
+RUN ls -l ${OTRS_ROOT}var/tmp/
 EXPOSE 80
 CMD ["/run.sh"]
