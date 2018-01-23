@@ -69,6 +69,14 @@ sleep 2
 su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
 
 print_info "OTRS Ready !"
-while true; do
-  sleep 1000
+
+# setup handlers
+# on callback, kill the background process,
+# which is `tail -f /dev/null` and execute the specified handler
+trap 'kill ${!}; term_handler' SIGTERM
+
+# wait forever
+while true
+do
+ tail -f /dev/null & wait ${!}
 done
