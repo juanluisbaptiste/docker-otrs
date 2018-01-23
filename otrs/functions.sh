@@ -20,9 +20,6 @@
 . ./util_functions.sh
 
 #Default configuration values
-DEFAULT_OTRS_ADMIN_EMAIL="admin@example.com"
-DEFAULT_OTRS_ORGANIZATION="Example Company"
-DEFAULT_OTRS_SYSTEM_ID="98"
 DEFAULT_OTRS_AGENT_LOGO_HEIGHT="67"
 DEFAULT_OTRS_AGENT_LOGO_RIGHT="38"
 DEFAULT_OTRS_AGENT_LOGO_TOP="4"
@@ -65,12 +62,10 @@ function create_db(){
 
 function restore_backup(){
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
-  #set_variables
   #setup OTRS docker configuration
   setup_otrs_config
 
   #As this is a restore, drop database first.
-
   $mysqlcmd -e 'use otrs'
   if [ $? -eq 0  ]; then
     if [ "$OTRS_DROP_DATABASE" == "yes" ]; then
@@ -83,7 +78,6 @@ function restore_backup(){
 
   create_db
   update_config_value "DatabasePw" $OTRS_DB_PASSWORD
-
 
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
@@ -144,10 +138,6 @@ function add_config_value(){
 }
 
 function set_variables(){
-  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_HOSTNAME not set, setting hostname to '$OTRS_HOSTNAME'"
-  [ -z "${OTRS_ADMIN_EMAIL}" ] && print_info "OTRS_ADMIN_EMAIL not set, setting admin email to '$DEFAULT_OTRS_ADMIN_EMAIL'" && OTRS_ADMIN_EMAIL=$DEFAULT_OTRS_ADMIN_EMAIL
-  [ -z "${OTRS_ORGANIZATION}" ] && print_info "OTRS_ORGANIZATION setting organization to '$DEFAULT_OTRS_ORGANIZATION'" && OTRS_ORGANIZATION=$DEFAULT_OTRS_ORGANIZATION
-  [ -z "${OTRS_SYSTEM_ID}" ] && print_info "OTRS_SYSTEM_ID not set, setting System ID to '$DEFAULT_OTRS_SYSTEM_ID'"  && OTRS_SYSTEM_ID=$DEFAULT_OTRS_SYSTEM_ID
   [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && print_info "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
   [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
 
@@ -185,20 +175,7 @@ function setup_otrs_config(){
 }
 
 function load_defaults(){
-  #set_variables
-  #Check if a host-mounted volume for configuration storage was added to this
-  #container
   setup_otrs_config
-
-  #Add default config options
-#   sed -i "/$Self->{'SecureMode'} = 1;/a \
-#  \$Self->{'FQDN'} = '$OTRS_HOSTNAME';\
-# \n\$Self->{'AdminEmail'} = '$OTRS_ADMIN_EMAIL';\
-# \n\$Self->{'Organization'} = '$OTRS_ORGANIZATION';\
-# \n\$Self->{'CustomerHeadline'} = '$OTRS_ORGANIZATION';\
-# \n\$Self->{'SystemID'} = '$OTRS_SYSTEM_ID';\
-# \n\$Self->{'PostMaster::PreFilterModule::NewTicketReject::Sender'} = 'noreply@${OTRS_HOSTNAME}';"\
-#  ${OTRS_CONFIG_FILE}
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e 'use otrs'
@@ -225,9 +202,6 @@ function load_defaults(){
 function set_default_language(){
   if [ ! -z $OTRS_LANGUAGE ]; then
     print_info "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
-    # sed -i "/$Self->{'SecureMode'} = 1;/a \
-    # \$Self->{'DefaultLanguage'} = '$OTRS_LANGUAGE';"\
-    # ${OTRS_CONFIG_FILE}
     add_config_value "DefaultLanguage" $OTRS_LANGUAGE
  fi
 }
@@ -239,18 +213,12 @@ function set_ticket_counter() {
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
     print_info "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
-    # sed -i "/$Self->{'SecureMode'} = 1;/a \$Self->{'Ticket::NumberGenerator'} =  'Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}';"\
-    #  ${OTRS_CONFIG_FILE}
+
     add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}"
   fi
 }
 
 function set_skins() {
-#   [ ! -z $OTRS_AGENT_SKIN ] &&  sed -i "/$Self->{'SecureMode'} = 1;/a \
-# \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
-# \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
-#  ${OTRS_CONFIG_FILE}
-
   [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" $OTRS_AGENT_SKIN
   [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Customer::SelectedSkin" $OTRS_CUSTOMER_SKIN
   #Set Agent interface logo
@@ -282,12 +250,6 @@ function set_logo () {
   logo_width=$5
   logo_url=$6
 
-#   sed -i "/$Self->{'SecureMode'} = 1;/a \
-#  \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
-# \n'StyleRight' => '${logo_right}px',\
-# \n'StyleTop' => '${logo_top}px',\
-# \n'StyleWidth' => '${logo_width}px',\
-# \n'URL' => '$logo_url'\n};" ${OTRS_CONFIG_FILE}
   add_config_value "${interface}Logo" "{\n'StyleHeight' => '${logo_height}px',\
  \n'StyleRight' => '${logo_right}px',\
  \n'StyleTop' => '${logo_top}px',\
