@@ -300,8 +300,8 @@ function write_log (){
 
 function enable_debug_mode (){
   print_info "Preparing debug mode..."
-  #DEBIAN_FRONTEND=noninteractive apt-get install -y nmap lsof telnet
-  #[ $? -gt 0 ] && print_error "ERROR: Could not intall tools." && exit 1
+  yum install -y telnet
+  [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
   print_info "Done."
 
   set -x
