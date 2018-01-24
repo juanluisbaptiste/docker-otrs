@@ -128,7 +128,9 @@ function update_config_value(){
 }
 
 function add_config_value(){
-  if grep -q "$1" ${OTRS_CONFIG_FILE}
+  #if grep -q "$1" ${OTRS_CONFIG_FILE}
+  grep -E \{\'\?${1}\'\?\} ${OTRS_CONFIG_FILE}
+  if [ $? -eq 0 ]
   then
     print_info "Config option already present, skipping..."
   else
