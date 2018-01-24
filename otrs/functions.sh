@@ -62,8 +62,11 @@ function create_db(){
 
 function restore_backup(){
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
-  #setup OTRS docker configuration
-  setup_otrs_config
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  check_host_mount_dir
+  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+  update_config_value "DatabaseHost" "mariadb"
 
   #As this is a restore, drop database first.
   $mysqlcmd -e 'use otrs'
@@ -77,8 +80,6 @@ function restore_backup(){
   fi
 
   create_db
-  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
-
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
   [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
@@ -101,7 +102,7 @@ function restore_backup(){
   fi
 
   #Restore configured password overwritten by restore
-  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+  setup_otrs_config
 
   #Copy back skins over restored files
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* ${SKINS_PATH} && rm -fr $tmpdir
@@ -163,9 +164,6 @@ function set_variables(){
 }
 
 function setup_otrs_config(){
-  #Check if a host-mounted volume for configuration storage was added to this
-  #container
-  check_host_mount_dir
   print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" $OTRS_DB_PASSWORD
   print_info "Updating databse server on configuration file..."
@@ -179,6 +177,10 @@ function setup_otrs_config(){
 }
 
 function load_defaults(){
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  check_host_mount_dir
+  #Setup OTRS configuration
   setup_otrs_config
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
