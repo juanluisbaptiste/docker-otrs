@@ -170,6 +170,8 @@ function setup_otrs_config(){
   update_config_value "DatabasePw" $OTRS_DB_PASSWORD
   print_info "Updating databse server on configuration file..."
   update_config_value "DatabaseHost" "mariadb"
+  print_info "Changing SendmailModule to use external SMTP server..."
+  add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   print_info "Updating SMTP server on configuration file..."
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
