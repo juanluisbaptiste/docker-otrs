@@ -36,13 +36,13 @@ OTRS_DATABASE="otrs"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
-mysqlcmd="mysql -uroot -h mariadb -p$MYSQL_ROOT_PASSWORD "
+mysqlcmd="mysql -uroot -h mariadb -p${MYSQL_ROOT_PASSWORD} "
 
-function wait_for_db(){
+function wait_for_db() {
   while true; do
-    out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
+    out="`${mysqlcmd} -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
     print_info $out
-    echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
+    echo "${out}" | grep -E "COUNT|Enter" 2>&1 > /dev/null
     if [ $? -eq 0 ]; then
       print_info "Server is up !"
       break
@@ -52,27 +52,27 @@ function wait_for_db(){
   done
 }
 
-function create_db(){
+function create_db() {
   print_info "Creating OTRS database..."
-  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS $OTRS_DATABASE;"
+  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS ${OTRS_DATABASE};"
   [ $? -gt 0 ] && print_error "Couldn't create OTRS database !!" && exit 1
-  $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
+  $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '${OTRS_DB_PASSWORD}'";
   [ $? -gt 0 ] && print_error "Couldn't create database user !!" && exit 1
 }
 
-function restore_backup(){
+function restore_backup() {
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
-  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+  update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   update_config_value "DatabaseHost" "mariadb"
 
   #As this is a restore, drop database first.
   $mysqlcmd -e 'use otrs'
   if [ $? -eq 0  ]; then
-    if [ "$OTRS_DROP_DATABASE" == "yes" ]; then
-      print_info "OTRS_DROP_DATABASE=\e[92m$OTRS_DROP_DATABASE\e[0m, Dropping existing database\n"
+    if [ "${OTRS_DROP_DATABASE}" == "yes" ]; then
+      print_info "OTRS_DROP_DATABASE=\e[92m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
       $mysqlcmd -e 'drop database otrs'
     else
       print_error "Couldn't load OTRS backup, databse already exists !!" && exit 1
@@ -82,22 +82,22 @@ function restore_backup(){
   create_db
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
-  [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
-  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
+  [ ! -z ${OTRS_AGENT_SKIN} ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
+  [ ! -z ${OTRS_CUSTOMER_SKIN} ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Run restore backup command
-  ${OTRS_ROOT}scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d ${OTRS_ROOT}
+  ${OTRS_ROOT}scripts/restore.pl -b ${OTRS_BACKUP_DIR}/${1} -d ${OTRS_ROOT}
   [ $? -gt 0 ] && print_error "Couldn't load OTRS backup !!" && exit 1
 
-  backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
-  OTRS_INSTALLED_VERSION=`echo $OTRS_VERSION|cut -d '-' -f1`
+  backup_version=`tar -xOf ${OTRS_BACKUP_DIR}/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
+  OTRS_INSTALLED_VERSION=`echo ${OTRS_VERSION}|cut -d '-' -f1`
   print_warning "OTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
-  print_warning "OTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
+  print_warning "OTRS version of this container: \e[1;31m${OTRS_INSTALLED_VERSION}\e[1;0m"
 
-  check_version $OTRS_INSTALLED_VERSION $backup_version
+  check_version ${OTRS_INSTALLED_VERSION} $backup_version
   if [ $? -eq 0 ]; then
     print_warning "Backup version older than current OTRS version, fixing..."
     #Update version on ${OTRS_ROOT}/RELEASE so it the website shows the correct version.
-    sed -i -r "s/(VERSION *= *).*/\1$OTRS_INSTALLED_VERSION/" ${OTRS_ROOT}RELEASE
+    sed -i -r "s/(VERSION *= *).*/\1${OTRS_INSTALLED_VERSION}/" ${OTRS_ROOT}RELEASE
     print_info "Done."
   fi
 
@@ -105,30 +105,29 @@ function restore_backup(){
   setup_otrs_config
 
   #Copy back skins over restored files
-  [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rfp $tmpdir/* ${SKINS_PATH} && rm -fr $tmpdir
+  [ ! -z ${OTRS_CUSTOMER_SKIN} ] && cp -rfp ${tmpdir}/* ${SKINS_PATH} && rm -fr ${tmpdir}
 
   #Update the skin preferences  in the users from the backup
   set_users_skin
 }
 
 # return 0 if program version is equal or greater than check version
-check_version()
-{
-    local version=$1 check=$2
+check_version() {
+    local version=$1 check=${2}
     local winner=$(echo -e "$version\n$check" | sed '/^$/d' | sort -nr | head -1)
     [[ "$winner" = "$version" ]] && return 0
     return 1
 }
 
-function random_string(){
+function random_string() {
   echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
 }
 
-function update_config_value(){
+function update_config_value() {
   sed  -i -r "s/($Self->\{$1\} *= *).*/\1\"$2\";/" ${OTRS_CONFIG_FILE}
 }
 
-function add_config_value(){
+function add_config_value() {
   #if grep -q "$1" ${OTRS_CONFIG_FILE}
   grep -E \{\'\?${1}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
@@ -146,21 +145,21 @@ function set_variables() {
   [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '${DEFAULT_OTRS_PASSWORD}'" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_PASSWORD}
 
   #Set default skin to use for Agent interface
-  [ ! -z "${OTRS_AGENT_SKIN}" ] && print_info "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
+  [ ! -z "${OTRS_AGENT_SKIN}" ] && print_info "Setting Agent Skin to '${OTRS_AGENT_SKIN}'"
   if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
-    print_info "Setting Agent Logo to: '$OTRS_AGENT_LOGO'"
-    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && print_info "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_HEIGHT'" && OTRS_AGENT_LOGO_HEIGHT=$DEFAULT_OTRS_AGENT_LOGO_HEIGHT
-    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && print_info "OTRS_AGENT_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_RIGHT'" && OTRS_AGENT_LOGO_RIGHT=$DEFAULT_OTRS_AGENT_LOGO_RIGHT
-    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && print_info "OTRS_AGENT_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_TOP'" && OTRS_AGENT_LOGO_TOP=$DEFAULT_OTRS_AGENT_LOGO_TOP
-    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && print_info "OTRS_AGENT_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_AGENT_LOGO_WIDTH'" && OTRS_AGENT_LOGO_WIDTH=$DEFAULT_OTRS_AGENT_LOGO_WIDTH
+    print_info "Setting Agent Logo to: '${OTRS_AGENT_LOGO}'"
+    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && print_info "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_HEIGHT}'" && OTRS_AGENT_LOGO_HEIGHT=${DEFAULT_OTRS_AGENT_LOGO_HEIGHT}
+    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && print_info "OTRS_AGENT_LOGO_RIGHT not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_RIGHT}'" && OTRS_AGENT_LOGO_RIGHT=${DEFAULT_OTRS_AGENT_LOGO_RIGHT}
+    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && print_info "OTRS_AGENT_LOGO_TOP not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_TOP}'" && OTRS_AGENT_LOGO_TOP=${DEFAULT_OTRS_AGENT_LOGO_TOP}
+    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && print_info "OTRS_AGENT_LOGO_WIDTH not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_WIDTH}'" && OTRS_AGENT_LOGO_WIDTH=${DEFAULT_OTRS_AGENT_LOGO_WIDTH}
   fi
   [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && print_info "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
   if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then
     print_info "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
-    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT'" && OTRS_CUSTOMER_LOGO_HEIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT
-    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT'" && OTRS_CUSTOMER_LOGO_RIGHT=$DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT
-    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && print_info "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_TOP'" && OTRS_CUSTOMER_LOGO_TOP=$DEFAULT_OTRS_CUSTOMER_LOGO_TOP
-    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && print_info "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH'" && OTRS_CUSTOMER_LOGO_WIDTH=$DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH
+    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT}'" && OTRS_CUSTOMER_LOGO_HEIGHT=${DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT}
+    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT}'" && OTRS_CUSTOMER_LOGO_RIGHT=${DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT}
+    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && print_info "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_TOP}'" && OTRS_CUSTOMER_LOGO_TOP=${DEFAULT_OTRS_CUSTOMER_LOGO_TOP}
+    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && print_info "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH}'" && OTRS_CUSTOMER_LOGO_WIDTH=${DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH}
   fi
 }
 
@@ -168,7 +167,7 @@ function setup_otrs_config() {
   print_info "Setting FQDN to ${OTRS_HOSTNAME}..."
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   print_info "Updating database password on configuration file..."
-  update_config_value "DatabasePw" $OTRS_DB_PASSWORD
+  update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   print_info "Updating databse server on configuration file..."
   update_config_value "DatabaseHost" "mariadb"
   print_info "Changing SendmailModule to use external SMTP server..."
@@ -179,7 +178,7 @@ function setup_otrs_config() {
   add_config_value "SecureMode" "1"
 }
 
-function load_defaults(){
+function load_defaults() {
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
@@ -208,47 +207,47 @@ function load_defaults(){
   fi
 }
 
-function set_default_language(){
-  if [ ! -z $OTRS_LANGUAGE ]; then
-    print_info "Setting default language to: \e[92m'$OTRS_LANGUAGE'\e[0m"
-    add_config_value "DefaultLanguage" $OTRS_LANGUAGE
+function set_default_language() {
+  if [ ! -z ${OTRS_LANGUAGE} ]; then
+    print_info "Setting default language to: \e[92m'${OTRS_LANGUAGE}'\e[0m"
+    add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
  fi
 }
 
 function set_ticket_counter() {
   if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
-    print_info "Setting the start of the ticket counter to: \e[92m'$OTRS_TICKET_COUNTER'\e[0m"
-    echo "$OTRS_TICKET_COUNTER" > ${OTRS_ROOT}var/log/TicketCounter.log
+    print_info "Setting the start of the ticket counter to: \e[92m'${OTRS_TICKET_COUNTER}'\e[0m"
+    echo "${OTRS_TICKET_COUNTER}" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
-    print_info "Setting ticket number generator to: \e[92m'$OTRS_NUMBER_GENERATOR'\e[0m"
+    print_info "Setting ticket number generator to: \e[92m'${OTRS_NUMBER_GENERATOR}'\e[0m"
 
-    add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}"
+    add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${{OTRS_NUMBER_GENERATOR}}"
   fi
 }
 
 function set_skins() {
-  [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" $OTRS_AGENT_SKIN
-  [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Customer::SelectedSkin" $OTRS_CUSTOMER_SKIN
+  [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+  [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
   #Set Agent interface logo
-  [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
+  [ ! -z ${OTRS_AGENT_LOGO} ] && set_agent_logo
 
   #Set Customer interface logo
-  [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
+  [ ! -z ${OTRS_CUSTOMER_LOGO} ] && set_customer_logo
 }
 
-function set_users_skin(){
+function set_users_skin() {
   print_info "Updating default skin for users in backup..."
-  $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '$OTRS_AGENT_SKIN' WHERE preferences_key = 'UserSkin'" otrs
+  $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '${OTRS_AGENT_SKIN}' WHERE preferences_key = 'UserSkin'" otrs
   [ $? -gt 0 ] && print_error "Couldn't change default skin for existing users !!\n"
 }
 
 function set_agent_logo() {
-  set_logo "Agent" $OTRS_AGENT_LOGO_HEIGHT $OTRS_AGENT_LOGO_RIGHT $OTRS_AGENT_LOGO_TOP $OTRS_AGENT_LOGO_WIDTH $OTRS_AGENT_LOGO
+  set_logo "Agent" ${OTRS_AGENT_LOGO_HEIGHT} ${OTRS_AGENT_LOGO_RIGHT} ${OTRS_AGENT_LOGO_TOP} ${OTRS_AGENT_LOGO_WIDTH} ${OTRS_AGENT_LOGO}
 }
 
 function set_customer_logo() {
-  set_logo "Customer" $OTRS_CUSTOMER_LOGO_HEIGHT $OTRS_CUSTOMER_LOGO_RIGHT $OTRS_CUSTOMER_LOGO_TOP $OTRS_CUSTOMER_LOGO_WIDTH $OTRS_CUSTOMER_LOGO
+  set_logo "Customer" ${OTRS_CUSTOMER_LOGO_HEIGHT} ${OTRS_CUSTOMER_LOGO_RIGHT} ${OTRS_CUSTOMER_LOGO_TOP} ${OTRS_CUSTOMER_LOGO_WIDTH} ${OTRS_CUSTOMER_LOGO}
 }
 
 function set_logo () {
@@ -270,7 +269,7 @@ function set_logo () {
 #   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" ${OTRS_ROOT}Kernel/Config.pm
 # }
 
-function check_host_mount_dir(){
+function check_host_mount_dir() {
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
   if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ];
@@ -295,15 +294,15 @@ OK_CODE="OK"
 INFO_CODE="INFO"
 WARN_CODE="WARNING"
 
-function write_log (){
+function write_log () {
   message="$1"
   code="$2"
 
-  echo "$[ 1 + $[ RANDOM % 1000 ]]" >> $BACKUP_LOG_FILE
-  echo "Status=$code,Message=$message" >> $BACKUP_LOG_FILE
+  echo "$[ 1 + $[ RANDOM % 1000 ]]" >> ${BACKUP_LOG_FILE}
+  echo "Status=$code,Message=$message" >> ${BACKUP_LOG_FILE}
 }
 
-function enable_debug_mode (){
+function enable_debug_mode () {
   print_info "Preparing debug mode..."
   yum install -y telnet
   [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
@@ -314,7 +313,7 @@ function enable_debug_mode (){
 
 function reinstall_modules () {
   print_info "Reinstalling OTRS modules..."
-  su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1> /dev/null 2>&1" -s /bin/bash otrs
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1> /dev/null 2>&1" -s /bin/bash otrs
 
   if [ $? -gt 0 ]; then
     print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."

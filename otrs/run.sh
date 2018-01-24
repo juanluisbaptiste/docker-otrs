@@ -27,20 +27,20 @@ fi
 wait_for_db
 
 #If OTRS_INSTALL isn't defined load a default install
-if [ "$OTRS_INSTALL" != "yes" ]; then
-  if [ "$OTRS_INSTALL" == "no" ]; then
+if [ "${OTRS_INSTALL}" != "yes" ]; then
+  if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
       print_info "Starting a clean\e[92m OTRS ${OTRS_VERSION} \e[0minstallation ready to be configured !!"
       load_defaults
       #Set default admin user password
-      print_info "Setting password for default admin account \e[92mroot@localhost\e[0m to: $OTRS_ROOT_PASSWORD"
-      su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::User::SetPassword root@localhost $OTRS_ROOT_PASSWORD" -s /bin/bash otrs
+      print_info "Setting password for default admin account \e[92mroot@localhost\e[0m to: ${OTRS_ROOT_PASSWORD}"
+      su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::User::SetPassword root@localhost ${OTRS_ROOT_PASSWORD}" -s /bin/bash otrs
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
-  elif [ "$OTRS_INSTALL" == "restore" ];then
-    print_info "Restoring OTRS backup: $OTRS_BACKUP_DATE for host ${OTRS_HOSTNAME}"
-    restore_backup $OTRS_BACKUP_DATE
+  elif [ "${OTRS_INSTALL}" == "restore" ];then
+    print_info "Restoring OTRS backup: ${OTRS_BACKUP_DATE} for host ${OTRS_HOSTNAME}"
+    restore_backup ${OTRS_BACKUP_DATE}
   fi
   reinstall_modules
   set_skins
