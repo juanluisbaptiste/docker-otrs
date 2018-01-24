@@ -140,9 +140,10 @@ function add_config_value(){
   fi
 }
 
-function set_variables(){
-  [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && print_info "OTRS_DB_PASSWORD not set, setting password to '$OTRS_DB_PASSWORD'"
-  [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '$DEFAULT_OTRS_PASSWORD'" && OTRS_ROOT_PASSWORD=$DEFAULT_OTRS_PASSWORD
+function set_variables() {
+  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_HOSTNAME not set, setting hostname to '${OTRS_HOSTNAME}'"
+  [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && print_info "OTRS_DB_PASSWORD not set, setting password to '${OTRS_DB_PASSWORD}'"
+  [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '${DEFAULT_OTRS_PASSWORD}'" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_PASSWORD}
 
   #Set default skin to use for Agent interface
   [ ! -z "${OTRS_AGENT_SKIN}" ] && print_info "Setting Agent Skin to '$OTRS_AGENT_SKIN'"
@@ -163,7 +164,9 @@ function set_variables(){
   fi
 }
 
-function setup_otrs_config(){
+function setup_otrs_config() {
+  print_info "Setting FQDN to ${OTRS_HOSTNAME}..."
+  add_config_value "FQDN" ${OTRS_HOSTNAME}
   print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" $OTRS_DB_PASSWORD
   print_info "Updating databse server on configuration file..."

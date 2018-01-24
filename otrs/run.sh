@@ -39,7 +39,7 @@ if [ "$OTRS_INSTALL" != "yes" ]; then
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
   elif [ "$OTRS_INSTALL" == "restore" ];then
-    print_info "Restoring OTRS backup: $OTRS_BACKUP_DATE"
+    print_info "Restoring OTRS backup: $OTRS_BACKUP_DATE for host ${OTRS_HOSTNAME}"
     restore_backup $OTRS_BACKUP_DATE
   fi
   reinstall_modules
