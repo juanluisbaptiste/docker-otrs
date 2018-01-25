@@ -13,7 +13,8 @@ services:
     links:
       - mariadb:mariadb
       - postfix:postfix
-    #Put all environment variables in otrs-setup.env file
+  # You should use env_file: instead of environment: for your environment
+  # variables. Look at the README.md file for a list of available variables.
     env_file: otrs-setup.env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
@@ -32,4 +33,6 @@ services:
     image: juanluisbaptiste/postfix:latest
     expose:
       - '25'
+    # See juanluisbaptiste/postfix github page for the contents
+    # and an explanation of credentials-smtp.
     env_file: credentials-smtp.env

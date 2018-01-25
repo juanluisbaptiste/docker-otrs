@@ -31,6 +31,6 @@ services:
      image: juanluisbaptiste/postfix:latest
      expose:
      - "25"
-     # See juanluisbaptiste/postfix page for the contents
+     # See juanluisbaptiste/postfix github page for the contents
      # and an explanation of credentials-smtp.
      env_file: credentials-smtp.env
