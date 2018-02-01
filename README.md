@@ -3,7 +3,7 @@
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
-_**Note:**_ I'm still finishing up the OTRS 6 image, it is available for testing as ** juanluisbaptiste/otrs:6beta **
+_**Note:**_ I'm still finishing up the OTRS 6 image, it is available for testing as **juanluisbaptiste/otrs:6beta**
 ****
 Unofficial [OTRS 5 Free](http://www.otrs.com/software/) docker image. This repository contains the
 *Dockerfiles* and all other files needed to build and run the container.
