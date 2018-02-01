@@ -8,12 +8,12 @@ Unofficial [OTRS 6 Free](http://www.otrs.com/software/) docker image. This repos
 
 We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/stable/en/html/installation.html).
 
-The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it 
-much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you 
+The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it
+much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you
 can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix container.
 
-These images are based on the [official CentOS images](https://registry.hub.docker.com/_/centos/) and 
-include the latest OTRS version. Older images will be tagged with the OTRS version they run. 
+These images are based on the [official CentOS images](https://registry.hub.docker.com/_/centos/) and
+include the latest OTRS version. Older images will be tagged with the OTRS version they run.
 
 _Note:_
 * OTRS 5 image sources are still available in [otrs-5_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-5_0_x).
@@ -72,8 +72,8 @@ For production use there's another `docker-compose` file that points to the pre-
 This will pull and bring up all needed containers, link them and mount volumes according
 to the `docker-compose-prod.yml` configuration file.
 
-The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the 
-`MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before 
+The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
+`MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
 running `docker-compose`.
 
 To start the containers in production mode the the `-d` parameter to the previous command:
@@ -91,7 +91,7 @@ addresses:
 
 ### Installing OTRS modules
 
-If you have installed any additional module, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working. 
+If you have installed any additional module, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working.
 
 ### Changing OTRS default skins
 
