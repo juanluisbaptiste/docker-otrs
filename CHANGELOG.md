@@ -18,7 +18,7 @@
 
 ## 5.0.26 - 2017-10-13
 ### Added
-- Merge pull request #20: Attempt graceful shutdown of all processes
+- Merge PR #20: Attempt graceful shutdown of all processes
 
 ### Changed
 - Updated to latest OTRS version 5.0.26.
