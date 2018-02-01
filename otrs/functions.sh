@@ -34,9 +34,9 @@ OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
-[ -z "${OTRS_DB_NAME}" ] && OTRS_DB_NAME ="otrs"
-[ -z "${OTRS_DB_USER}" ] && OTRS_DB_USER ="otrs"
-[ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST ="mariadb"
+[ -z "${OTRS_DB_NAME}" ] && OTRS_DB_NAME="otrs"
+[ -z "${OTRS_DB_USER}" ] && OTRS_DB_USER="otrs"
+[ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST="mariadb"
 
 mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -p${MYSQL_ROOT_PASSWORD} "
 
@@ -174,7 +174,7 @@ function setup_otrs_config() {
   print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   print_info "Updating databse server on configuration file..."
-  update_config_value "DatabaseHost" ${OTRS_DB_NAME}
+  update_config_value "DatabaseHost" ${OTRS_DB_HOST}
   print_info "Changing SendmailModule to use external SMTP server..."
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   print_info "Updating SMTP server on configuration file..."
