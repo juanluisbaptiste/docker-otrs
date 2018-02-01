@@ -32,11 +32,13 @@ OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
 OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
-OTRS_DATABASE="otrs"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
+[ -z "${OTRS_DB_NAME}" ] && OTRS_DB_NAME ="otrs"
+[ -z "${OTRS_DB_USER}" ] && OTRS_DB_USER ="otrs"
+[ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST ="mariadb"
 
-mysqlcmd="mysql -uroot -h mariadb -p${MYSQL_ROOT_PASSWORD} "
+mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -p${MYSQL_ROOT_PASSWORD} "
 
 function wait_for_db() {
   while true; do
@@ -54,9 +56,9 @@ function wait_for_db() {
 
 function create_db() {
   print_info "Creating OTRS database..."
-  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS ${OTRS_DATABASE};"
+  $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS ${OTRS_DB_NAME};"
   [ $? -gt 0 ] && print_error "Couldn't create OTRS database !!" && exit 1
-  $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '${OTRS_DB_PASSWORD}'";
+  $mysqlcmd -e " GRANT ALL ON ${OTRS_DB_NAME}.* to '${OTRS_DB_USER}'@'%' identified by '${OTRS_DB_PASSWORD}'";
   [ $? -gt 0 ] && print_error "Couldn't create database user !!" && exit 1
 }
 
@@ -65,15 +67,16 @@ function restore_backup() {
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
+  update_config_value "DatabaseUser" ${OTRS_DB_USER}
   update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
-  update_config_value "DatabaseHost" "mariadb"
+  update_config_value "DatabaseHost" ${OTRS_DB_HOST}
 
   #As this is a restore, drop database first.
-  $mysqlcmd -e 'use otrs'
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
     if [ "${OTRS_DROP_DATABASE}" == "yes" ]; then
       print_info "OTRS_DROP_DATABASE=\e[92m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
-      $mysqlcmd -e 'drop database otrs'
+      $mysqlcmd -e "drop database ${OTRS_DB_NAME}"
     else
       print_error "Couldn't load OTRS backup, databse already exists !!" && exit 1
     fi
@@ -166,10 +169,12 @@ function set_variables() {
 function setup_otrs_config() {
   print_info "Setting FQDN to ${OTRS_HOSTNAME}..."
   add_config_value "FQDN" ${OTRS_HOSTNAME}
+  print_info "Updating database user on configuration file..."
+  update_config_value "DatabaseUser" ${OTRS_DB_USER}
   print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   print_info "Updating databse server on configuration file..."
-  update_config_value "DatabaseHost" "mariadb"
+  update_config_value "DatabaseHost" ${OTRS_DB_NAME}
   print_info "Changing SendmailModule to use external SMTP server..."
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   print_info "Updating SMTP server on configuration file..."
@@ -186,20 +191,20 @@ function load_defaults() {
   setup_otrs_config
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
-  $mysqlcmd -e 'use otrs'
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -gt 0 ]; then
     create_db
 
     #Check that a backup isn't being restored
     if [ "$OTRS_INSTALL" == "no" ]; then
       print_info "Loading default db schemas..."
-      $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-schema.mysql.sql
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-schema.mysql.sql
       [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load otrs-schema.mysql.sql schema !!\n" && exit 1
       print_info "Loading initial db inserts..."
-      $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
       [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
       print_info "Loading initial schema constraints..."
-      $mysqlcmd otrs < ${OTRS_ROOT}scripts/database/otrs-schema-post.mysql.sql
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-schema-post.mysql.sql
       [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load otrs-schema-post.mysql.sql schema !!\n" && exit 1
     fi
   else

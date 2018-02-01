@@ -53,6 +53,9 @@ There are also some other environment variables that can be set to customize
 the default install:
 
 * `OTRS_HOSTNAME` Sets the container's hostname (auto-generated if not defined).
+* `OTRS_DB_NAME` Name of database to use. Default is `otrs`.
+* `OTRS_DB_HOST` Host running the database. Default is `mariadb`.
+* `OTRS_DB_USER` Database user. Default is `otrs`.
 * `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
