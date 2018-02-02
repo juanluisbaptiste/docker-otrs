@@ -45,7 +45,6 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   reinstall_modules
   set_skins
   set_ticket_counter
-  set_default_language
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}

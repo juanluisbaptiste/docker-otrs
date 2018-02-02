@@ -180,6 +180,7 @@ function setup_otrs_config() {
   print_info "Updating databse server on configuration file..."
   update_config_value "DatabaseHost" ${OTRS_DB_HOST}
   print_info "Changing SendmailModule to use external SMTP server..."
+  add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   print_info "Updating SMTP server on configuration file..."
   add_config_value "SendmailModule::Host" "postfix"
@@ -214,13 +215,6 @@ function load_defaults() {
   else
     print_warning "otrs database already exists, Ok."
   fi
-}
-
-function set_default_language() {
-  if [ ! -z ${OTRS_LANGUAGE} ]; then
-    print_info "Setting default language to: \e[92m'${OTRS_LANGUAGE}'\e[0m"
-    add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
- fi
 }
 
 function set_ticket_counter() {
