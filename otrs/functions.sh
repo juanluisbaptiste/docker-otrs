@@ -124,18 +124,24 @@ function random_string() {
 }
 
 function update_config_value() {
-  sed  -i -r "s/($Self->\{$1\} *= *).*/\1\"$2\";/" ${OTRS_CONFIG_FILE}
+  local key=${1}
+  local value=${2}
+  print_info "Updating configuration option \e[92m${key}\e[0m with value: \e[92m${value}\e[0m"
+  sed  -i -r "s/($Self->\{$key\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
 }
 
 function add_config_value() {
+  local key=${1}
+  local value=${2}
+  print_info "Adding configuration option \e[92m${key}\e[0m with value: \e[92m${value}\e[0m"
   #if grep -q "$1" ${OTRS_CONFIG_FILE}
-  grep -E \{\'\?${1}\'\?\} ${OTRS_CONFIG_FILE}
+  grep -E \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
   then
     print_info "Config option already present, skipping..."
   else
     sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
-    \$Self->{'$1'} = '$2';" ${OTRS_CONFIG_FILE}
+    \$Self->{'${key}'} = '${value}';" ${OTRS_CONFIG_FILE}
   fi
 }
 
