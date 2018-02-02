@@ -171,18 +171,12 @@ function set_variables() {
 }
 
 function setup_otrs_config() {
-  print_info "Setting FQDN to ${OTRS_HOSTNAME}..."
-  add_config_value "FQDN" ${OTRS_HOSTNAME}
-  print_info "Updating database user on configuration file..."
   update_config_value "DatabaseUser" ${OTRS_DB_USER}
-  print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
-  print_info "Updating databse server on configuration file..."
   update_config_value "DatabaseHost" ${OTRS_DB_HOST}
-  print_info "Changing SendmailModule to use external SMTP server..."
   add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
+  add_config_value "FQDN" ${OTRS_HOSTNAME}
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
-  print_info "Updating SMTP server on configuration file..."
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
   add_config_value "SecureMode" "1"
@@ -223,8 +217,6 @@ function set_ticket_counter() {
     echo "${OTRS_TICKET_COUNTER}" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
-    print_info "Setting ticket number generator to: \e[92m'${OTRS_NUMBER_GENERATOR}'\e[0m"
-
     add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${{OTRS_NUMBER_GENERATOR}}"
   fi
 }
