@@ -34,6 +34,7 @@ OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
 OTRS_DB_PORT=3306
 WAIT_TIMEOUT=2
+OTRS_ASCII_COLOR_BLUE="38;5;31"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 [ -z "${OTRS_DB_NAME}" ] && OTRS_DB_NAME="otrs"
@@ -72,7 +73,7 @@ function restore_backup() {
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
     if [ "${OTRS_DROP_DATABASE}" == "yes" ]; then
-      print_info "OTRS_DROP_DATABASE=\e[92m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
+      print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DROP_DATABASE=\6[0m]\e[31m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
       $mysqlcmd -e "drop database ${OTRS_DB_NAME}"
     else
       print_error "Couldn't load OTRS backup, databse already exists !!" && exit 1
@@ -126,14 +127,14 @@ function random_string() {
 function update_config_value() {
   local key=${1}
   local value=${2}
-  print_info "Updating configuration option \e[92m${key}\e[0m with value: \e[92m${value}\e[0m"
+  print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
   sed  -i -r "s/($Self->\{$key\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
 }
 
 function add_config_value() {
   local key=${1}
   local value=${2}
-  print_info "Adding configuration option \e[92m${key}\e[0m with value: \e[92m${value}\e[0m"
+  print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
   #if grep -q "$1" ${OTRS_CONFIG_FILE}
   grep -E \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
@@ -224,7 +225,7 @@ function set_default_language() {
 
 function set_ticket_counter() {
   if [ ! -z "${OTRS_TICKET_COUNTER}" ]; then
-    print_info "Setting the start of the ticket counter to: \e[92m'${OTRS_TICKET_COUNTER}'\e[0m"
+    print_info "Setting the start of the ticket counter to: \e[${OTRS_ASCII_COLOR_BLUE}m'${OTRS_TICKET_COUNTER}'\e[0m"
     echo "${OTRS_TICKET_COUNTER}" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
@@ -282,7 +283,7 @@ function check_host_mount_dir() {
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
   if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ];
   then
-    print_info "Found empty \e[92m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
+    print_info "Found empty \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
     mkdir -p ${OTRS_CONFIG_DIR}
     cp -rp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
     if [ $? -eq 0 ];

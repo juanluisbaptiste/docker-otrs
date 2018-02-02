@@ -31,10 +31,10 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
-      print_info "Starting a clean\e[92m OTRS ${OTRS_VERSION} \e[0minstallation ready to be configured !!"
+      print_info "Starting a clean\e[${OTRS_ASCII_COLOR_BLUE}m OTRS\e[0m \e[31m${OTRS_VERSION}\e[0m \e[0minstallation ready to be configured !!\n"
       load_defaults
       #Set default admin user password
-      print_info "Setting password for default admin account \e[92mroot@localhost\e[0m to: ${OTRS_ROOT_PASSWORD}"
+      print_info "Setting password for default admin account \e[${OTRS_ASCII_COLOR_BLUE}mroot@localhost\e[0m to: \e[31m${OTRS_ROOT_PASSWORD}\e[0m"
       su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::User::SetPassword root@localhost ${OTRS_ROOT_PASSWORD}" -s /bin/bash otrs
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
@@ -55,7 +55,7 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
 else
   #If neither of previous cases is true the installer will be run.
-  print_info "Starting \e[92m OTRS $OTRS_VERSION \e[0minstaller !!"
+  print_info "Starting \e[${OTRS_ASCII_COLOR_BLUE}m OTRS $OTRS_VERSION \e[0minstaller !!"
   check_host_mount_dir
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
 fi
