@@ -31,6 +31,7 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
+      print_otrs_ascii_logo
       print_info "Starting a clean\e[${OTRS_ASCII_COLOR_BLUE}m OTRS\e[0m \e[31m${OTRS_VERSION}\e[0m \e[0minstallation ready to be configured !!\n"
       load_defaults
       #Set default admin user password

@@ -18,6 +18,7 @@
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password.
 #
 . ./util_functions.sh
+. ./otrs_ascii_logo.sh
 
 #Default configuration values
 DEFAULT_OTRS_AGENT_LOGO_HEIGHT="67"
