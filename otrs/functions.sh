@@ -165,12 +165,17 @@ function set_variables() {
   fi
 }
 
+# Sets default configuration options on $OTRS_ROOT/Kernel/Config.pm. Options set
+# here can't be modified via sysConfig later.
 function setup_otrs_config() {
+  #Set database configuration
   add_config_value "DatabaseUser" ${OTRS_DB_USER}
   add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
+  #Set general configuration values
   add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
+  #Set email SMTP configuration
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
