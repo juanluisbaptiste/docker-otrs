@@ -41,8 +41,11 @@ RUN chmod 755 /*.sh  && \
     mkdir -p ${OTRS_ROOT}var/{run,tmp}/ && \
     perl -cw ${OTRS_ROOT}bin/cgi-bin/index.pl && \
     perl -cw ${OTRS_ROOT}bin/cgi-bin/customer.pl && \
-    perl -cw ${OTRS_ROOT}bin/otrs.Console.pl
-
+    perl -cw ${OTRS_ROOT}bin/otrs.Console.pl && \
+    sed -i -e '/\$ModLoad imjournal/ s/^#*/#/' /etc/rsyslog.conf && \
+    sed -i -e '/\$IMJournalStateFile imjournal.state/ s/^#*/#/' /etc/rsyslog.conf && \
+    sed -i 's/\(^\$OmitLocalLogging \).*/\1off/' /etc/rsyslog.conf && \
+    rm /etc/rsyslog.d/listen.conf
 #To be able to use a host-mounted volume for OTRS configuration we need to move
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
