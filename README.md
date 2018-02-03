@@ -1,9 +1,10 @@
+![OTRS Free](img/logo_otrs6free.png)
 
 # OTRS 6 Ticketing System
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
-Unofficial [OTRS 6 Free](http://www.otrs.com/software/) docker image. This repository contains the
+**_Unofficial_**  [OTRS 6 Free](http://www.otrs.com/software/) docker image. This repository contains the
 *Dockerfiles* and all other files needed to build and run the container.
 
 We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/stable/en/html/installation.html).
@@ -70,7 +71,11 @@ For production use there's another `docker-compose` file that points to the pre-
     sudo docker-compose -f docker-compose-prod.yml up
 
 This will pull and bring up all needed containers, link them and mount volumes according
-to the `docker-compose-prod.yml` configuration file.
+to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
+
+<p align="center">
+![OTRS 6 bootup](img/otrs6_boot_medium.png)
+</p>
 
 The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
