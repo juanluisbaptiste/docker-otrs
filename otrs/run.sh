@@ -25,14 +25,13 @@ if [ "$OTRS_DEBUG" == "yes" ];then
 fi
 #Wait for database to come up
 wait_for_db
-
+print_otrs_ascii_logo
 #If OTRS_INSTALL isn't defined load a default install
 if [ "${OTRS_INSTALL}" != "yes" ]; then
   if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
-      print_otrs_ascii_logo
-      print_info "Starting a clean\e[${OTRS_ASCII_COLOR_BLUE}m OTRS\e[0m \e[31m${OTRS_VERSION}\e[0m \e[0minstallation ready to be configured !!\n"
+      print_info "Starting a clean\e[${OTRS_ASCII_COLOR_BLUE}m OTRS\e[0m \e[31m${OTRS_VERSION}\e[0m \e[${OTRS_ASCII_COLOR_BLUE}mFree\e[0m \e[0minstallation ready to be configured !!\n"
       load_defaults
       #Set default admin user password
       print_info "Setting password for default admin account \e[${OTRS_ASCII_COLOR_BLUE}mroot@localhost\e[0m to: \e[31m${OTRS_ROOT_PASSWORD}\e[0m"
