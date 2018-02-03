@@ -74,7 +74,7 @@ This will pull and bring up all needed containers, link them and mount volumes a
 to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
 
 <p align="center">
-![OTRS 6 bootup](img/otrs6_boot_medium.png)
+<img src=img/otrs6_boot_medium.png>
 </p>
 
 The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
