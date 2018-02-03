@@ -66,9 +66,9 @@ function restore_backup() {
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
-  update_config_value "DatabaseUser" ${OTRS_DB_USER}
-  update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
-  update_config_value "DatabaseHost" ${OTRS_DB_HOST}
+  add_config_value "DatabaseUser" ${OTRS_DB_USER}
+  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
+  add_config_value "DatabaseHost" ${OTRS_DB_HOST}
 
   #As this is a restore, drop database first.
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
@@ -125,23 +125,17 @@ function random_string() {
   echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
 }
 
-function update_config_value() {
-  local key=${1}
-  local value=${2}
-  print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
-  sed  -i -r "s/($Self->\{$key\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
-}
-
 function add_config_value() {
   local key=${1}
   local value=${2}
-  print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
   #if grep -q "$1" ${OTRS_CONFIG_FILE}
-  grep -E \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
+  grep -qE \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
   then
-    print_info "Config option already present, skipping..."
+    print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
+    sed  -i -r "s/($Self->\{$key\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
   else
+    print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
     sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
     \$Self->{'${key}'} = '${value}';" ${OTRS_CONFIG_FILE}
   fi
@@ -172,15 +166,18 @@ function set_variables() {
 }
 
 function setup_otrs_config() {
-  update_config_value "DatabaseUser" ${OTRS_DB_USER}
-  update_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
-  update_config_value "DatabaseHost" ${OTRS_DB_HOST}
+  add_config_value "DatabaseUser" ${OTRS_DB_USER}
+  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
+  add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
   add_config_value "SecureMode" "1"
+  #Force OTRS daemon to write to log files so they are available at the admin panel
+  add_config_value "Daemon::Log::STDOUT" 1
+  add_config_value "Daemon::Log::STDERR" 1
 }
 
 function load_defaults() {
