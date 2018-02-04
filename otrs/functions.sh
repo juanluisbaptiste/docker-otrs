@@ -299,7 +299,7 @@ function write_log () {
 
 function enable_debug_mode () {
   print_info "Preparing debug mode..."
-  yum install -y telnet
+  yum install -y telnet dig
   [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
   print_info "Done."
 

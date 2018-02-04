@@ -6,6 +6,7 @@
 - Merge PR #24: Environment variables OTRS_DB_NAME, OTRS_DB_USER and _OTRS_DB_HOST, to allow using an external database server.
 - Install rsyslogd daemon.
 - New OTRS logo in ASCII displayed at container startup.
+- When OTRS_DEBUG environment variable is set, some tools like telnet and dig are installed to aid in troubleshooting.
 
 ### Changed
 - Updated base docker image to CentOS 7.
