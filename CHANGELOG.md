@@ -2,6 +2,7 @@
 
 ## 6.0.4 beta - 2018-02-04
 ### Added
+- Install missing rsyslogd daemon.
 - New CHANGELOG file with modifications backup to the first OTRS 5.x image.
 - Merge PR #24: Added environment variables to allow using an external database server:
   - OTRS_DB_NAME
