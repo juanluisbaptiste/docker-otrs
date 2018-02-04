@@ -39,7 +39,7 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     fi
   # If OTRS_INSTALL == restore, load the backup files in ${OTRS_ROOT}/backups
   elif [ "${OTRS_INSTALL}" == "restore" ];then
-    print_info "Restoring OTRS backup: ${OTRS_BACKUP_DATE} for host ${OTRS_HOSTNAME}"
+    print_info "Restoring OTRS backup: \e[${OTRS_ASCII_COLOR_BLUE}${OTRS_BACKUP_DATE}\e[0m for host \e[${OTRS_ASCII_COLOR_BLUE}${OTRS_HOSTNAME}\e[0m"
     restore_backup ${OTRS_BACKUP_DATE}
   fi
   reinstall_modules
@@ -67,7 +67,7 @@ su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
 sleep 2
 su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
 
-print_info "OTRS Ready !"
+print_info "\e[${OTRS_ASCII_COLOR_BLUE}OTRS\e[0m Ready !"
 
 # setup handlers
 # on callback, kill the background process,
