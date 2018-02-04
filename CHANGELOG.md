@@ -8,6 +8,7 @@
   - OTRS_DB_USER
   - OTRS_DB_HOST
   - OTRS_DB_PORT
+- New OTRS logo in ASCII displayed at container startup. It can be disable with SHOW_OTRS_LOGO=no.
 - When OTRS_DEBUG environment variable is set, some tools like telnet and dig are installed to aid in troubleshooting.
 
 ### Changed

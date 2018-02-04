@@ -42,6 +42,7 @@ OTRS_ASCII_COLOR_BLUE="38;5;31"
 [ -z "${OTRS_DB_USER}" ] && OTRS_DB_USER="otrs"
 [ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST="mariadb"
 [ -z "${OTRS_DB_PORT}" ] && OTRS_DB_PORT=3306
+[ -z "${SHOW_OTRS_LOGO}" ] && SHOW_OTRS_LOGO="yes"
 
 mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
