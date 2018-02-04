@@ -92,8 +92,8 @@ function restore_backup() {
 
   backup_version=`tar -xOf ${OTRS_BACKUP_DIR}/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
   OTRS_INSTALLED_VERSION=`echo ${OTRS_VERSION}|cut -d '-' -f1`
-  print_warning "OTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
-  print_warning "OTRS version of this container: \e[1;31m${OTRS_INSTALLED_VERSION}\e[1;0m"
+  print_info "OTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
+  print_info "OTRS version of this container: \e[1;31m${OTRS_INSTALLED_VERSION}\e[1;0m"
 
   check_version ${OTRS_INSTALLED_VERSION} $backup_version
   if [ $? -eq 1 ]; then
