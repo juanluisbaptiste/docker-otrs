@@ -1,15 +1,18 @@
 # docker-otrs Change Log
 
-## 6.0.5 beta - 2018-02-01
+## 6.0.4 beta - 2018-02-04
 ### Added
 - New CHANGELOG file with modifications backup to the first OTRS 5.x image.
 - Merge PR #24: Environment variables OTRS_DB_NAME, OTRS_DB_USER and _OTRS_DB_HOST, to allow using an external database server.
 - Install rsyslogd daemon.
+- New OTRS logo in ASCII displayed at container startup.
 
 ### Changed
 - Updated base docker image to CentOS 7.
-- Updated to latest OTRS version 6.0.5.
+- Updated to latest OTRS version 6.0.4.
 - Upgraded _docker-compose.yml_ files to version _3_.
+- Changed test to detect when the database is up and ready to use mysql ping instead of querying a table.
+- Decreased image size by 15%.
 
 ### Removed
 - Removed default _Config.pm_ file, now configuration options are set directly on the included _Config.pm_ file in _/opt/otrs/Kernel_.
