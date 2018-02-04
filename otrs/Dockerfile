@@ -9,7 +9,6 @@ ENV OTRS_CONFIG_MOUNT_DIR "/config/"
 ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 
 RUN yum install -y yum-plugin-fastestmirror && \
-    yum clean all && \
     yum install -y epel-release && \
     yum update -y && \
     yum -y install cronie httpd httpd-devel mysql mod_perl \
@@ -21,8 +20,9 @@ RUN yum install -y yum-plugin-fastestmirror && \
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" "perl(DateTime)" \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
     rsyslog supervisor tar which && \
-    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm
-RUN /opt/otrs/bin/otrs.CheckModules.pl
+    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
+    /opt/otrs/bin/otrs.CheckModules.pl && \
+    yum clean all
 # Add scripts and function files
 COPY *.sh /
 #Supervisord configuration
