@@ -41,8 +41,9 @@ OTRS_ASCII_COLOR_BLUE="38;5;31"
 [ -z "${OTRS_DB_NAME}" ] && OTRS_DB_NAME="otrs"
 [ -z "${OTRS_DB_USER}" ] && OTRS_DB_USER="otrs"
 [ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST="mariadb"
+[ -z "${OTRS_DB_PORT}" ] && OTRS_DB_PORT=3306
 
-mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -p${MYSQL_ROOT_PASSWORD} "
+mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
 function wait_for_db() {
   while [ ! "$(mysqladmin ping -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -u root \
@@ -69,6 +70,7 @@ function restore_backup() {
   add_config_value "DatabaseUser" ${OTRS_DB_USER}
   add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
+  add_config_value "DatabasePort" ${OTRS_DB_PORT}
 
   #As this is a restore, drop database first.
   $mysqlcmd -e "use ${OTRS_DB_NAME}"

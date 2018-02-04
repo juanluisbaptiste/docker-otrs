@@ -55,7 +55,8 @@ the default install:
 
 * `OTRS_HOSTNAME` Sets the container's hostname (auto-generated if not defined).
 * `OTRS_DB_NAME` Name of database to use. Default is `otrs`.
-* `OTRS_DB_HOST` Host running the database. Default is `mariadb`.
+* `OTRS_DB_HOST` Hostname or IP address of the database server. Default is `mariadb`.
+* `OTRS_DB_PORT` Port of the database server. Default is `3306`.
 * `OTRS_DB_USER` Database user. Default is `otrs`.
 * `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.

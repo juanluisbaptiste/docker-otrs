@@ -3,9 +3,11 @@
 ## 6.0.4 beta - 2018-02-04
 ### Added
 - New CHANGELOG file with modifications backup to the first OTRS 5.x image.
-- Merge PR #24: Environment variables OTRS_DB_NAME, OTRS_DB_USER and _OTRS_DB_HOST, to allow using an external database server.
-- Install rsyslogd daemon.
-- New OTRS logo in ASCII displayed at container startup.
+- Merge PR #24: Added environment variables to allow using an external database server:
+  - OTRS_DB_NAME
+  - OTRS_DB_USER
+  - OTRS_DB_HOST
+  - OTRS_DB_PORT
 - When OTRS_DEBUG environment variable is set, some tools like telnet and dig are installed to aid in troubleshooting.
 
 ### Changed
