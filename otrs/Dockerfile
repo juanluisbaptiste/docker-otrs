@@ -31,7 +31,6 @@ RUN chmod 755 /*.sh  && \
     cp ${OTRS_ROOT}/var/httpd/htdocs/index.html /var/www/html && \
     chmod 644 /var/www/html/index.html && \
     sed -i 's/\bindex.html\b/& index.pl/' /etc/httpd/conf/httpd.conf && \
-#    sed -i "\/.noindex.html/a DirectoyIndex index.html/" /etc/httpd/conf.d/welcome.conf
     echo "+ : otrs : cron crond" |cat >> /etc/security/access.conf                && \
     sed -i -e '/pam_loginuid.so/ s/^#*/#/' /etc/pam.d/crond                       && \
     sed -i -e "s/^nodaemon=false/nodaemon=true/" /etc/supervisord.conf && \
@@ -52,6 +51,5 @@ RUN chmod 755 /*.sh  && \
 #host-volume is mounted.
 RUN mv ${OTRS_CONFIG_DIR} / && \
     touch ${OTRS_ROOT}var/tmp/firsttime
-RUN ls -l ${OTRS_ROOT}var/tmp/
 EXPOSE 80
 CMD ["/run.sh"]
