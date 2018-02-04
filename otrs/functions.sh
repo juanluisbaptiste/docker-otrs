@@ -180,9 +180,6 @@ function setup_otrs_config() {
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
   add_config_value "SecureMode" "1"
-  #Force OTRS daemon to write to log files so they are available at the admin panel
-  add_config_value "Daemon::Log::STDOUT" 1
-  add_config_value "Daemon::Log::STDERR" 1
 }
 
 function load_defaults() {
