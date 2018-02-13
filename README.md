@@ -1,4 +1,4 @@
-![OTRS Free](img/logo_otrs6free.png)
+![OTRS Free](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/logo_otrs6free.png)
 
 # OTRS 6 Ticketing System
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
@@ -67,9 +67,7 @@ For production use there's another `docker-compose` file that points to the pre-
 This will pull and bring up all needed containers, link them and mount volumes according
 to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
 
-<p align="center">
-<img src=img/otrs6_boot_medium.png>
-</p>
+![Container boot](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/otrs6_boot_medium.png)
 
 The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
