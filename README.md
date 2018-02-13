@@ -4,14 +4,11 @@
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
-**_Unofficial_**  [OTRS 6 Free](http://www.otrs.com/software/) docker image. This repository contains the
-*Dockerfiles* and all other files needed to build and run the container.
+**_Unofficial_**  [OTRS 6 Free](http://www.otrs.com/software/) docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
 
 We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/stable/en/html/installation.html).
 
-The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it
-much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you
-can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix container.
+The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix container.
 
 These images are based on the [official CentOS images](https://registry.hub.docker.com/_/centos/) and
 include the latest OTRS version. Older images will be tagged with the OTRS version they run.
@@ -31,9 +28,7 @@ This command will build all the images and pull the missing ones like the [SMTP 
 
 ### How to run it
 
-By default, when the container is run it will load a default vanilla OTRS
-installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load
-a backup or run the installer by defining one of these environment variables:
+By default, when the container is run it will load a default vanilla OTRS installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load a backup or run the installer by defining one of these environment variables:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
 environment variable.
@@ -41,8 +36,7 @@ environment variable.
 script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` (This is the notation that the backup script that comes with OTRS uses). Backups must be inside the */var/otrs/backups* directory (you should host mount it).
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
 
-You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting
-a host volume which contains the backup files.
+You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting a host volume which contains the backup files.
 
 * `OTRS_INSTALL=yes` Will run the installer which you can access at:
 
@@ -50,8 +44,7 @@ a host volume which contains the backup files.
 
 If you are running the container remotely, replace *localhost* with the server's hostname.
 
-There are also some other environment variables that can be set to customize
-the default install:
+There are also some other environment variables that can be set to customize the default install:
 
 * `OTRS_HOSTNAME` Sets the container's hostname (auto-generated if not defined).
 * `OTRS_DB_NAME` Name of database to use. Default is `otrs`.
@@ -149,7 +142,7 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
 
 ### Using host-mounted data containers
 
-The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` to see the directory mappings and adjust them to your needs (available on both OTRS 4 & 5 images).
+The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` to see the directory mappings and adjust them to your needs.
 
 #### Note ####
 Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
