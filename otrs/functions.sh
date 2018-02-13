@@ -179,6 +179,7 @@ function setup_otrs_config(){
   print_info "Updating databse server on configuration file..."
   update_config_value "DatabaseHost" "mariadb"
   print_info "Updating SMTP server on configuration file..."
+  add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
 }
@@ -361,4 +362,12 @@ function reinstall_modules () {
   else
     print_info "Done."
   fi
+}
+
+# SIGTERM-handler
+function term_handler () {
+ service supervisord stop
+ pkill -SIGTERM anacron
+ su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+ exit 143; # 128 + 15 -- SIGTERM
 }

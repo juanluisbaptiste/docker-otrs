@@ -28,7 +28,7 @@ publish:
     tag:
       - latest
       - $${BRANCH}-$${COMMIT:0:8}
-      - 5.0.25-$${COMMIT:0:8}
+      - 5.0.26-$${COMMIT:0:8}
     file: otrs/Dockerfile
     context: otrs
     environment:
