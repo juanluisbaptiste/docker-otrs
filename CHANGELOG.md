@@ -1,5 +1,9 @@
 # docker-otrs Change Log
 
+## 6.0.5 beta - 2018-02-13
+### Changed
+- Updated to latest OTRS version 6.0.5.
+
 ## 6.0.4 beta - 2018-02-04
 ### Added
 - Install missing rsyslogd daemon.
