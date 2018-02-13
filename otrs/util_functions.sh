@@ -13,7 +13,7 @@ control_c()
 
 print_info()
 {
-  echo -e "\e[42m[INFO]\e[0m $1"
+  echo -e "\e[46m[INFO]\e[0m $1"
 }
 
 print_error()

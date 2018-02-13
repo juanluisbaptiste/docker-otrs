@@ -1,4 +1,5 @@
-version: '2'
+version: '3'
+
 services:
   otrs:
     image: juanluisbaptiste/otrs:latest
@@ -11,68 +12,25 @@ services:
     links:
     - mariadb:mariadb
     - postfix:postfix
-    volumes_from:
-    - data-otrs
-    environment:
-  # You should use env_file: instead of environment: for your secrets.
-  # it is recommended to move all the environment variables defined
-  # bellow and move them to a file named otrs-setup.env, and include it
-  # using:
-  #
-    # env_file: otrs-setup.env
-  #
-  # I leave them here more as an example of how to get these containers
-  # running, but it's not the recommended way of running the service in
-  # production.
-  #
-  # If you want to run the installer, uncomment this:
-  #   environment:
-  #       OTRS_INSTALL: "yes"
-  # If you want to restore a backup, uncomment this:
-  #       OTRS_INSTALL: "restore"
-  #       OTRS_BACKUP_DATE: "2015-06-02_06-22"
-  # To change email time fetching set OTRS_POSTMASTER_FETCH_TIME
-  # (set it to 0 to disable email fetching):
-        OTRS_POSTMASTER_FETCH_TIME: 0
-        OTRS_HOSTNAME: support.yourcompany.com
-        OTRS_ADMIN_EMAIL: admin@yourcompany.com
-        #OTRS_ORGANIZATION: "Your Company Inc"
-        OTRS_ROOT_PASSWORD: changeme
-        MYSQL_ROOT_PASSWORD: changeme
-        OTRS_DB_PASSWORD: changeme
-  # To set the default skin:
-  #      OTRS_AGENT_SKIN: "ivory"
-  #      OTRS_DROP_DATABASE: "yes"
-  #      OTRS_TICKET_COUNTER: 500
-  #      OTRS_NUMBER_GENERATOR: "AutoIncrement"
-  #      OTRS_LANGUAGE: "es"
-
+  # You should use env_file: instead of environment: for your environment
+  # variables. Look at the README.md file for a list of available variables.
+    env_file: otrs-setup.env
+    volumes:
+      - './volumes/config:/opt/otrs/Kernel'
+      - './otrs/backup:/var/otrs/backups'
+      - '/etc/localtime:/etc/localtime:ro'
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
     expose:
     - "3306"
-    volumes_from:
-    - data
-    # env_file: otrs-setup.env
-    environment:
-        MYSQL_ROOT_PASSWORD: changeme
+    env_file: otrs-setup.env
+    volumes:
+      - './volumes/mysql:/var/lib/mysql'
+      - '/etc/localtime:/etc/localtime:ro'
   postfix:
      image: juanluisbaptiste/postfix:latest
      expose:
      - "25"
-     # See juanluisbaptiste/postfix page for the contents
+     # See juanluisbaptiste/postfix github page for the contents
      # and an explanation of credentials-smtp.
      env_file: credentials-smtp.env
-  data:
-    image: centos/mariadb:latest
-    volumes:
-    - ./volumes/mysql:/var/lib/mysql
-    - "/etc/localtime:/etc/localtime:ro"
-    command: /bin/true
-  data-otrs:
-    image: juanluisbaptiste/otrs:latest
-    volumes:
-    - ./volumes/config:/opt/otrs/Kernel
-    - "./otrs/backup:/var/otrs/backups"
-    - "/etc/localtime:/etc/localtime:ro"
-    command: /bin/true

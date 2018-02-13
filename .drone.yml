@@ -28,16 +28,12 @@ publish:
     tag:
       - latest
       - $${BRANCH}-$${COMMIT:0:8}
-      - 5.0.26-$${COMMIT:0:8}
+      - 6.0.4-$${COMMIT:0:8}
     file: otrs/Dockerfile
     context: otrs
     environment:
       - DOCKER_LAUNCH_DEBUG=true
-  #Temporal fix while running on CentOS
-  #storage_driver: vfs
-#  dockerhub:
-#      token: 34deefd6-0539-4650-adf5-8d9944846c2e
-#      repo: juanluisbaptiste/otrs
+
   docker:
     username: $$DOCKER_USER
     password: $$DOCKER_PASSWORD
@@ -51,21 +47,3 @@ publish:
     load: docker/image-mariadb.tar
     environment:
       - DOCKER_LAUNCH_DEBUG=true
-#  dockerhub:
-#      token: 94fd83d7-b8d1-4353-8cfc-c248623b8799
-#      repo: juanluisbaptiste/otrs-mariadb
-# deploy:
-#   docker:
-#     username: $$DOCKER_USER
-#     password: $$DOCKER_PASSWORD
-#     email: $$DOCKER_EMAIL
-#     repo:$$DOCKER_USER/otrs
-#     when:
-#       branch:  [master, otrs-4_0_x]
-#   docker:
-#     username: $$DOCKER_USER
-#     password: $$DOCKER_PASSWORD
-#     email: $$DOCKER_EMAIL
-#     repo:$$DOCKER_USER/otrs-mariadb
-#     when:
-#       branch: [master, otrs-4_0_x]
