@@ -156,4 +156,4 @@ Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will 
 
 ### Enabling debug mode ###
 
-If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output.
+If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output. It will also install some tools to aid with troubleshooting like _telnet_ and _dig_.
