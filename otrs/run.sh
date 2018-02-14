@@ -20,6 +20,10 @@
 
 . ./functions.sh
 
+if [ "$OTRS_DEBUG" == "yes" ];then
+  enable_debug_mode
+fi
+
 while true; do
   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
   print_info $out

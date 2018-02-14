@@ -312,7 +312,7 @@ function enable_debug_mode (){
   #DEBIAN_FRONTEND=noninteractive apt-get install -y nmap lsof telnet
   #[ $? -gt 0 ] && print_error "ERROR: Could not intall tools." && exit 1
   print_info "Done."
-
+  env
   set -x
 }
 
