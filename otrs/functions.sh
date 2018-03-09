@@ -287,11 +287,13 @@ function check_host_mount_dir(){
     if [ $? -eq 0 ];
       then
         print_info "Done."
-        rm -fr ${OTRS_CONFIG_MOUNT_DIR}
       else
         print_error "Can't move OTRS configuration directory to ${OTRS_CONFIG_DIR}" && exit 1
     fi
+  else
+    print_info "Found existing configuration directory, Ok."
   fi
+  rm -fr ${OTRS_CONFIG_MOUNT_DIR}
 }
 
 ERROR_CODE="ERROR"
