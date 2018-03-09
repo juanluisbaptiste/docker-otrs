@@ -26,7 +26,7 @@ publish:
     email: $$DOCKER_EMAIL
     repo: $$DOCKER_USER/otrs
     tag:
-      - 4.0.25-$${BRANCH}-$${COMMIT:0:8}
+      - 4.0.28-$${BRANCH}-$${COMMIT:0:8}
       - latest-4x
     file: otrs/Dockerfile
     context: otrs
