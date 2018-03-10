@@ -24,18 +24,19 @@ if [ "$OTRS_DEBUG" == "yes" ];then
   enable_debug_mode
 fi
 
-while true; do
-  out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
-  print_info $out
-  echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
-  if [ $? -eq 0 ]; then
-    print_info "Server is up !"
-    break
-  fi
-  print_warning "DB server still isn't up, sleeping a little bit ..."
-  sleep 2
-done
+# while true; do
+#   out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
+#   print_info $out
+#   echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
+#   if [ $? -eq 0 ]; then
+#     print_info "Server is up !"
+#     break
+#   fi
+#   print_warning "DB server still isn't up, sleeping a little bit ..."
+#   sleep 2
+# done
 
+wait_for_db
 #If OTRS_INSTALL isn't defined load a default install
 if [ "$OTRS_INSTALL" != "yes" ]; then
   if [ "$OTRS_INSTALL" == "no" ]; then

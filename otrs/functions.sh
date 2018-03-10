@@ -34,10 +34,21 @@ DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
+OTRS_DB_HOST="mariadb"
+OTRS_DB_PORT=3306
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
-mysqlcmd="mysql -uroot -h mariadb -p${MYSQL_ROOT_PASSWORD} "
+mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -p${MYSQL_ROOT_PASSWORD} "
+
+function wait_for_db() {
+  while [ ! "$(mysqladmin ping -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -u root \
+              --password="${MYSQL_ROOT_PASSWORD}" --silent --connect_timeout=3)" ]; do
+    print_info "Database server is not available. Waiting ${WAIT_TIMEOUT} seconds..."
+    sleep ${WAIT_TIMEOUT}
+  done
+  print_info "Database server is up !"
+}
 
 function create_db(){
   print_info "Creating OTRS database..."
