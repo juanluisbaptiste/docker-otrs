@@ -11,7 +11,7 @@ OTRS_UPDATE_LOG="/data/logs/check_otrs_version.log"
 #Supported OTRS versions to avoid breaking the image if the major version upgrade
 #breaks the image
 declare -A OTRS_SUPPORTED_VERSIONS=(
- [4]=1  [5]=1
+ [4]=1  [5]=1 [6]=1
 )
 ERROR_CODE="ERROR"
 
@@ -63,7 +63,7 @@ releasefile=$(tar zxvf ${filename} ${dirname}/RELEASE)
 otrs_version=$(cat ${releasefile}|grep VERSION|cut -d'=' -f2|tr -d ' ')
 #Check if OTRS version is supported by this script
 major_version=$(echo ${otrs_version}|cut -d'.' -f1)
-[[ ! -n "${OTRS_SUPPORTED_VERSIONS[$major_version]}" ]] && verbose "ERROR!! Current OTRS version is not supported." && exit 1
+[[ ! -n "${OTRS_SUPPORTED_VERSIONS[${major_version}]}" ]] && verbose "ERROR!! Current OTRS version is not supported: ${otrs_version}" && exit 1
 #Get version in Dockerfile
 docker_otrs_version=$(wget -q -O - https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/otrs/Dockerfile|grep OTRS_VERSION|grep ENV|cut -d'=' -f2|cut -d'-' -f1)
 
