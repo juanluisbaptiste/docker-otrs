@@ -3,9 +3,8 @@
 # the Dockerfile with the new version, test that the image builds and
 # commit/push the new version so the automatic docker image build starts.
 
-VERBOSE=0
+VERBOSE=1
 OTRS_LATEST="http://ftp.otrs.org/pub/otrs/otrs-latest.tar.gz"
-OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/${otrs_version}/otrs-${rpm_version}.noarch.rpm"
 OTRS_GIT_URL="https://github.com/juanluisbaptiste/docker-otrs.git"
 OTRS_UPDATE_LOG="/data/logs/check_otrs_version.log"
 #Supported OTRS versions to avoid breaking the image if the major version upgrade
@@ -78,6 +77,7 @@ if [ $? -eq 0 ]; then
   for i in "01" "02" "03"; do
     rpm_version="${otrs_version}-${i}"
     verbose "Querying RPM packages version"
+    OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/${otrs_version}/otrs-${rpm_version}.noarch.rpm"
     wget -q ${OTRS_LATEST_RPM}
     if [ $? -eq 0 ];then
       verbose "RPM package version: ${rpm_version}"
