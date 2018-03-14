@@ -100,7 +100,7 @@ if [ $? -eq 0 ]; then
   cd docker-otrs/
   verbose "Update Dockerfile..."
   #TODO: Replace with a dockerfile build parameter
-  sed -i -r "s/(ENV OTRS_VERSION *= *).*/\1${otrs_version}/" otrs/Dockerfile
+  sed -i -r "s/(ENV OTRS_VERSION *= *).*/\1${rpm_version}/" otrs/Dockerfile
   #Build image to test it builds ok with the new version
 
   verbose "Build image..."
