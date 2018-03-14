@@ -77,8 +77,8 @@ if [ $? -eq 0 ]; then
   for i in "01" "02" "03"; do
     rpm_version="${otrs_version}-${i}"
     verbose "Querying RPM packages version"
-    OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/${otrs_version}/otrs-${rpm_version}.noarch.rpm"
-    wget -q ${OTRS_LATEST_RPM}
+    OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${rpm_version}.noarch.rpm"
+    wget  ${OTRS_LATEST_RPM}
     if [ $? -eq 0 ];then
       verbose "RPM package version: ${rpm_version}"
       otrs_version="${rpm_version}"
@@ -91,6 +91,7 @@ if [ $? -eq 0 ]; then
   git clone ${OTRS_GIT_URL}
   cd docker-otrs/
   verbose "Update Dockerfile..."
+  #TODO: Replace with a dockerfile build parameter
   sed -i -r "s/(ENV OTRS_VERSION *= *).*/\1${otrs_version}/" otrs/Dockerfile
   #Build image to test it builds ok with the new version
   verbose "Build image..."
