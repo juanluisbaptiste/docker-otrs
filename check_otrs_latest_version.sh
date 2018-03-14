@@ -107,6 +107,9 @@ if [ $? -eq 0 ]; then
   docker build --rm otrs/
   #If the image builds ok, commit and push
   if [ $? -eq 0 ];then
+
+    verbose "Updating version in drone.io build file"
+    sed -i s/${docker_otrs_version}/${otrs_version}/g .drone.yml
     verbose "Commit changes..."
     out="$(git commit -a -m "Automatic OTRS version update: ${docker_otrs_version} -> ${otrs_version}")"
     if [ $? -gt 0 ];then
