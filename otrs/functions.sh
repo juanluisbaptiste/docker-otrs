@@ -305,7 +305,7 @@ function enable_debug_mode () {
   yum install -y telnet dig
   [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
   print_info "Done."
-
+  env
   set -x
 }
 
