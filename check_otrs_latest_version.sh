@@ -51,33 +51,37 @@ function verbose(){
 tempdir="$(mktemp -d --suffix -docker-otrs)"
 cd ${tempdir}
 
+verbose "********** Checking latest OTRS version **********"
+verbose "* Downloading OTRS source tarball..."
 #Download latest version and get the version from the RELEASE file inside the
 #tarball.
-verbose "********** Checking latest OTRS version **********"
-verbose "Downloading OTRS source tarball..."
 wget -q ${OTRS_LATEST}
 filename=$(basename ${OTRS_LATEST})
 dirname=$(tar tf ${filename} | head -1 | cut -f1 -d"/")
 releasefile=$(tar zxvf ${filename} ${dirname}/RELEASE)
 otrs_version=$(cat ${releasefile}|grep VERSION|cut -d'=' -f2|tr -d ' ')
+
 #Check if OTRS version is supported by this script
 major_version=$(echo ${otrs_version}|cut -d'.' -f1)
 [[ ! -n "${OTRS_SUPPORTED_VERSIONS[${major_version}]}" ]] && verbose "ERROR!! Current OTRS version is not supported: ${otrs_version}" && exit 1
+
 #Get version in Dockerfile
 docker_otrs_version=$(wget -q -O - https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/otrs/Dockerfile|grep OTRS_VERSION|grep ENV|cut -d'=' -f2|cut -d'-' -f1)
 
 #Compare versions and there's a newer one, update the Dockerfile, commit
 #and push
-verbose "Checking versions..."
+verbose "* Checking versions..."
 check_version ${otrs_version} ${docker_otrs_version}
 if [ $? -eq 0 ]; then
-  verbose "New OTRS version available!"
-  verbose "Updating to OTRS docker image to version ${otrs_version}"
-  #Get rpm file version
+  verbose "* New OTRS version available!"
+  verbose "* Updating to OTRS docker image to version ${otrs_version}"
+
+  #Get rpm file version to replace on Dockerfile
   for i in "01" "02" "03"; do
     rpm_version="${otrs_version}-${i}"
-    verbose "Querying RPM packages version"
+    verbose "* Querying RPM packages version"
     OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${rpm_version}.noarch.rpm"
+
     wget  ${OTRS_LATEST_RPM}
     if [ $? -eq 0 ];then
       verbose "RPM package version: ${rpm_version}"
@@ -90,11 +94,13 @@ if [ $? -eq 0 ]; then
   #Clone git repo to update OTRS version
   git clone ${OTRS_GIT_URL}
   [ $? -gt 0 ] && verbose "ERROR: Could not clone git repository." && exit 1
+
   cd docker-otrs/
   verbose "Update Dockerfile..."
   #TODO: Replace with a dockerfile build parameter
   sed -i -r "s/(ENV OTRS_VERSION *= *).*/\1${otrs_version}/" otrs/Dockerfile
   #Build image to test it builds ok with the new version
+
   verbose "Build image..."
   docker build --rm otrs/
   #If the image builds ok, commit and push
