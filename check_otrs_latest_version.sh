@@ -2,6 +2,7 @@
 # Script to periodically check for new OTRS versions and automatically update
 # the Dockerfile with the new version, test that the image builds and
 # commit/push the new version so the automatic docker image build starts.
+. ./otrs/util_functions.sh
 
 VERBOSE=1
 OTRS_LATEST="http://ftp.otrs.org/pub/otrs/otrs-latest.tar.gz"
@@ -29,6 +30,7 @@ function control_c() {
 
 function cleanup(){
   #Remove temp directory
+  print_info "Removing temp directory..."
   rm -fr ${tempdir}
   return $?
 }
@@ -36,12 +38,12 @@ function cleanup(){
 function verbose(){
   message="$1"
   code="$2"
-  date=$(date "+[%x %r] ")
-  out="${date}${message}"
+  date="$(date '+[%x %r]' )"
+  out="${date} ${message}"
   if [ "${code}" != "" ] && [ ${code} == ${ERROR_CODE} ]; then
-    >&2 echo -e ${out}
+    >&2 print_error "${out}"
   elif [ ${VERBOSE} -eq 1 ];then
-    echo -e ${out}
+    print_info "${out}"
   fi
   echo -e ${out} >> ${OTRS_UPDATE_LOG}
 
@@ -52,7 +54,7 @@ tempdir="$(mktemp -d --suffix -docker-otrs)"
 cd ${tempdir}
 
 verbose "********** Checking latest OTRS version **********"
-verbose "* Downloading OTRS source tarball..."
+verbose "Downloading OTRS source tarball..."
 #Download latest version and get the version from the RELEASE file inside the
 #tarball.
 wget -q ${OTRS_LATEST}
@@ -70,22 +72,22 @@ docker_otrs_version=$(wget -q -O - https://raw.githubusercontent.com/juanluisbap
 
 #Compare versions and there's a newer one, update the Dockerfile, commit
 #and push
-verbose "* Checking versions..."
-check_version ${otrs_version} ${docker_otrs_version}
+verbose "Checking versions..."
+#check_version ${otrs_version} ${docker_otrs_version}
 if [ $? -eq 0 ]; then
-  verbose "* New OTRS version available!"
-  verbose "* Updating to OTRS docker image to version ${otrs_version}"
+  verbose "New OTRS version available!"
+  verbose "Updating to OTRS docker image to version ${otrs_version}"
 
   #Get rpm file version to replace on Dockerfile
   for i in "01" "02" "03"; do
     rpm_version="${otrs_version}-${i}"
-    verbose "* Querying RPM packages version"
+    verbose "Querying RPM packages version"
     OTRS_LATEST_RPM="http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${rpm_version}.noarch.rpm"
 
-    wget  ${OTRS_LATEST_RPM}
+    wget -q ${OTRS_LATEST_RPM}
     if [ $? -eq 0 ];then
       verbose "RPM package version: ${rpm_version}"
-      otrs_version="${rpm_version}"
+      #otrs_version="${rpm_version}"
       break
     fi
     verbose "ERROR: Could not find rpm version !" ${ERROR_CODE} && exit 1
