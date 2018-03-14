@@ -89,6 +89,7 @@ if [ $? -eq 0 ]; then
 
   #Clone git repo to update OTRS version
   git clone ${OTRS_GIT_URL}
+  [ $? -gt 0 ] && verbose "ERROR: Could not clone git repository." && exit 1
   cd docker-otrs/
   verbose "Update Dockerfile..."
   #TODO: Replace with a dockerfile build parameter
