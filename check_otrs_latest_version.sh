@@ -23,7 +23,7 @@ function check_version() {
 
 #Run if user hits control-c
 function control_c() {
-  echo -e "\n***Cleaning up ***\n"
+  print_info "\n***Cleaning up ***\n"
   cleanup
   exit $?
 }
