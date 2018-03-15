@@ -1,6 +1,13 @@
 # docker-otrs Change Log
 
-## 6.0.5 beta - 2018-02-13
+## 6.0.6 - 2018-03-14
+### Changed
+- Updated to latest OTRS version 6.0.6.
+- Improved otrs_backup.sh to handle SIGINT signals (ctrl c) and compress the backup directory into a single .gz file.
+- Improved version automatic update script.
+- When OTRS_DEBUG is set, also print env command.
+
+## 6.0.5 - 2018-02-13
 ### Changed
 - Updated to latest OTRS version 6.0.5.
 
