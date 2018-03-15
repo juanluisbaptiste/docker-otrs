@@ -1,14 +1,22 @@
 #!/bin/bash
-#Backup script. It will make a full backup on a temp directory and then 
+#Backup script. It will make a full backup on a temp directory and then
 #move it to the container's mounted backup directory.
 #
 
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/var/otrs/backups"
 DEFAULT_BACKUP_TYPE="fullbackup"
+trap cleanup INT
 
 function get_current_date(){
    date "+%d-%m-%Y_%H_%M"
+}
+
+# SIGTERM-handler
+function cleanup () {
+  echo -e "Cleaning up..."
+  rm -fr $TEMP_BACKUP_DIR
+  exit 143; # 128 + 15 -- SIGTERM
 }
 
 DATE=$(get_current_date)
@@ -43,4 +51,4 @@ else
   exit 1
 fi
 
-rm -fr $TEMP_BACKUP_DIR
+cleanup
