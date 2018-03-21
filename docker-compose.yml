@@ -21,6 +21,7 @@ otrs:
 #       OTRS_BACKUP_DATE: "2015-06-02_06-22"
 # To change email time fetching set OTRS_POSTMASTER_FETCH_TIME (set it to 0 to disable email fetching):
       OTRS_POSTMASTER_FETCH_TIME: 0
+      OTRS_DEBUG: "yes"
 # To set the default skin:
 #      OTRS_AGENT_SKIN: "ivory"
 #      OTRS_DROP_DATABASE: "yes"
