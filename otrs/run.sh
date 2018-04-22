@@ -67,7 +67,7 @@ su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
 sleep 2
 su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
 
-print_info "\e[${OTRS_ASCII_COLOR_BLUE}OTRS\e[0m Ready !"
+print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS\e[0m Ready !"
 
 # setup handlers
 # on callback, kill the background process,
