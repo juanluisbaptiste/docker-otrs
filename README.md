@@ -60,7 +60,15 @@ There are also some other environment variables that can be set to customize the
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
-For production use there's another `docker-compose` file that points to the pre-built images. After adjusting the [`docker-compose-prod.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file with the previously described environment variables (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix)), you can test the service with `docker-compose`:
+The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` to see the directory mappings and adjust them to your needs.
+
+#### Note ####
+Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
+
+    chown 27 volumes/mysql
+    chown 500:48 volumes/config
+
+For production use there's another `docker-compose` file that points to the pre-built images (be sure that the _host volume directory permissions are correct_ as described before). Then, after adjusting the [`docker-compose-prod.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file with the previously described environment variables (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix)), you can test the service with `docker-compose`:
 
     sudo docker-compose -f docker-compose-prod.yml up
 
@@ -137,16 +145,6 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
     COPY skins/ $SKINS_PATH/
     RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
     COPY skins/Agent/MyCompanySkin.xml $OTRS_ROOT/Kernel/Config/Files/
-
-### Using host-mounted data containers
-
-The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` to see the directory mappings and adjust them to your needs.
-
-#### Note ####
-Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
-
-    chown 27 volumes/mysql
-    chown 500:48 volumes/config
 
 ### Backups
 
