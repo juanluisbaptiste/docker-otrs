@@ -17,7 +17,7 @@ _Note:_
 * OTRS 5 image sources are still available in [otrs-5_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-5_0_x).
 * OTRS 4 image sources are still available in [otrs-4_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-4_0_x).
 
-### Build instructions
+## Build Instructions
 
 We use `docker-compose` to build the images. Clone this repo and then:
 
@@ -62,7 +62,7 @@ Those environment variables is what you can configure by running the installer f
 
 The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
 
-#### Note ####
+### Note ####
 Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
 
     chown 27 volumes/mysql
@@ -88,17 +88,17 @@ To start the containers in production mode the the `-d` parameter to the previou
 After the containers finish starting up you can access the OTRS system at the following
 addresses:
 
-### Administration Interface
+## Administration Interface
     http://$OTRS_HOSTNAME/otrs/index.pl
 
-### Customer Interface
+## Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
 
-### Installing OTRS modules
+## Installing Modules
 
 If you have installed any additional module, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working.
 
-### Changing OTRS default skins
+## Changing Default Skins
 
 The default skins and logos for the agent and customer interfaces can be controlled with the following
 environment variables:
@@ -146,12 +146,13 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
     RUN mkdir -p $OTRS_ROOT/Kernel/Config/Files/
     COPY skins/Agent/MyCompanySkin.xml $OTRS_ROOT/Kernel/Config/Files/
 
-### Backups
+## Backups & Restore Procedures
 
+### Backup
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
     docker exec otrs_container /opt/otrs/scripts/otrs_backup.sh
 
-### Enabling debug mode ###
+## Enabling debug mode
 
 If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output. It will also install some tools to aid with troubleshooting like _telnet_ and _dig_.
