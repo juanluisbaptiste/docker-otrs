@@ -30,10 +30,7 @@ This command will build all the images and pull the missing ones like the [SMTP 
 
 By default, when the container is run it will load a default vanilla OTRS installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load a backup or run the installer by defining one of these environment variables:
 
-* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
-environment variable.
-* `OTRS_BACKUP_DATE` is the backup name to restore, in the same *date_time* format that the OTRS backup
-script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` (This is the notation that the backup script that comes with OTRS uses). Backups must be inside the */var/otrs/backups* directory (you should host mount it).
+* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` environment variable. See bellow for more details on backup and restore procedures.
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
 
 You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting a host volume which contains the backup files.
@@ -152,6 +149,17 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
 Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
     docker exec otrs_container /opt/otrs/scripts/otrs_backup.sh
+
+### Restore
+
+To restore an OTRS backup file (not necesarily created with this container) the following environment variables must be added:
+
+* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
+environment variable.
+* `OTRS_BACKUP_DATE` is the backup name to restore, in the same *date_time* format that the OTRS backup
+script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` (This is the notation that the backup script that comes with OTRS uses).
+
+Backups must be inside the */var/otrs/backups* directory (you should host mount it).
 
 ## Enabling debug mode
 
