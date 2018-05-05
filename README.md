@@ -26,7 +26,7 @@ We use `docker-compose` to build the images. Clone this repo and then:
 
 This command will build all the images and pull the missing ones like the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix). This SMTP relay container has its own configuration, you need to specify the environment variables for the SMTP account that will be used to send OTRS email notifications. Please take a look at the [documentation](https://github.com/juanluisbaptiste/docker-postfix).
 
-### How to run it
+## How To Run It
 
 By default, when the container is run it will load a default vanilla OTRS installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load a backup or run the installer by defining one of these environment variables:
 
