@@ -270,11 +270,11 @@ function set_logo () {
 function check_host_mount_dir() {
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
-  if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ];
+  if ([ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ]) || [ "${OTRS_UPGRADE}" == "yes" ];
   then
     print_info "Found empty \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
     mkdir -p ${OTRS_CONFIG_DIR}
-    cp -rp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
+    cp -rfp ${OTRS_CONFIG_MOUNT_DIR}/* ${OTRS_CONFIG_DIR}
     if [ $? -eq 0 ];
       then
         print_info "Done."
@@ -284,7 +284,6 @@ function check_host_mount_dir() {
   else
     print_info "Found existing configuration directory, Ok."
   fi
-  rm -fr ${OTRS_CONFIG_MOUNT_DIR}
 }
 
 ERROR_CODE="ERROR"
@@ -326,4 +325,39 @@ function term_handler () {
  pkill -SIGTERM anacron
  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
  exit 143; # 128 + 15 -- SIGTERM
+}
+
+function upgrade () {
+  print_warning "OTRS \e[${OTRS_ASCII_COLOR_BLUE}mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
+  sleep 10
+
+  print_info "Staring OTRS major version upgrade: ${OTRS_PREV_VERSION} -> ${OTRS_VERSION}..."
+
+  # Update configuration files
+  check_host_mount_dir
+  #Setup OTRS configuration
+  setup_otrs_config
+
+  # Backup
+  print_info "Backing up container prior to upgrade..."
+  /otrs_backup.sh
+  if [ ! $? -eq 143  ]; then
+    print_error "Cannot create backup" && exit 1
+  fi
+  # Upgrade database
+  print_info "Doing database migration..."
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
+  if [ $? -eq 0  ]; then
+    su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs
+    if [ $? -gt 0  ]; then
+      print_error "Cannot migrate database" && exit 1
+    fi
+  fi
+
+  # Update installed packages
+  print_info "Updating installed packages..."
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::UpgradeAll" -s /bin/bash otrs
+  if [ $? -gt 0  ]; then
+    print_error "Cannot upgrade packages" && exit 1
+  fi
 }

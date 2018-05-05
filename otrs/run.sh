@@ -28,6 +28,10 @@ wait_for_db
 print_otrs_ascii_logo
 #If OTRS_INSTALL isn't defined load a default install
 if [ "${OTRS_INSTALL}" != "yes" ]; then
+  # Upgrade MAJOR VERSION, for minor version just pull latest image and restart
+  if [ "${OTRS_UPGRADE}" == "yes" ];then
+    upgrade
+  fi
   if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
@@ -58,6 +62,9 @@ else
   check_host_mount_dir
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
 fi
+
+# Delete default configuration
+rm -fr ${OTRS_CONFIG_MOUNT_DIR}
 
 #Launch supervisord
 print_info "Starting supervisord..."
