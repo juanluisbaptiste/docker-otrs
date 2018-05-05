@@ -161,6 +161,30 @@ script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` (This is the nota
 
 Backups must be inside the */var/otrs/backups* directory (you should host mount it).
 
+## Upgrading
+
+There are two types of upgrades When upgrading OTRS: _minor_ and _major_ version upgrades. This section describes how to upgrade on each case.
+
+### Minor Version
+
+For example from 6.0.1 to 6.0.5, just pull the new image and restart your services:
+
+    sudo docker-compose -f docker-compose-prod.yml pull
+    sudo docker-compose -f docker-compose-prod.yml stop
+    sudo docker-compose -f docker-compose-prod.yml rm -f -v
+    sudo docker-compose -f docker-compose-prod.yml up    
+
+### Major Version
+
+For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, set the `OTRS_UPGRADE=yes` environment variable in the docker-compose file, pull the newest release image and start up the conainers:
+
+    sudo docker-compose -f docker-compose-prod.yml pull
+    sudo docker-compose -f docker-compose-prod.yml stop
+    sudo docker-compose -f docker-compose-prod.yml rm -f -v
+    sudo docker-compose -f docker-compose-prod.yml up
+
+The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade. The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image). Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afterwards.
+
 ## Enabling debug mode
 
 If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output. It will also install some tools to aid with troubleshooting like _telnet_ and _dig_.
