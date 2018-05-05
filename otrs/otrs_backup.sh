@@ -3,6 +3,8 @@
 #move it to the container's mounted backup directory.
 #
 
+. ./functions.sh
+
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/var/otrs/backups"
 DEFAULT_BACKUP_TYPE="fullbackup"
@@ -28,6 +30,8 @@ BACKUP_TYPE=$1
 echo -e "[${DATE}] Starting OTRS backup for host ${OTRS_HOSTNAME}..."
 [ ! -e $TEMP_BACKUP_DIR ] && mkdir -p $TEMP_BACKUP_DIR
 
+stop_all_services
+
 /opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE
 
 if [ $? -eq 0 ]; then
@@ -51,4 +55,5 @@ else
   exit 1
 fi
 
+start_all_services
 cleanup
