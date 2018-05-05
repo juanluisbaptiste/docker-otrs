@@ -345,7 +345,7 @@ function upgrade () {
   print_warning "OTRS \e[${OTRS_ASCII_COLOR_BLUE}mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
   sleep 10
 
-  print_info "Staring OTRS major version upgrade: ${OTRS_PREV_VERSION} -> ${OTRS_VERSION}..."
+  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..."
 
   # Update configuration files
   check_host_mount_dir
