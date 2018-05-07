@@ -1,7 +1,7 @@
 version: '2'
 services:
   otrs:
-    image: juanluisbaptiste/otrs:latest
+    image: juanluisbaptiste/otrs:latest-5x
     ports:
     - "80:80"
   # If running behind a proxy container, expose the ports instead
@@ -70,7 +70,7 @@ services:
     - "/etc/localtime:/etc/localtime:ro"
     command: /bin/true
   data-otrs:
-    image: juanluisbaptiste/otrs:latest
+    image: juanluisbaptiste/otrs:latest-5x
     volumes:
     - ./volumes/config:/opt/otrs/Kernel
     - "./otrs/backup:/var/otrs/backups"
