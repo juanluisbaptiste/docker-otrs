@@ -371,6 +371,22 @@ function term_handler () {
  exit 143; # 128 + 15 -- SIGTERM
 }
 
+function stop_all_services () {
+  print_info "Stopping all OTRS services..."
+  supervisorctl stop crond &
+  supervisorctl stop rsyslog &
+  supervisorctl stop httpd &
+  su -c "${OTRS_ROOT}/bin/Cron.sh stop" -s /bin/bash otrs
+  su -c "${OTRS_ROOT}/bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+}
+
+function start_all_services () {
+  print_info "Starting all OTRS services..."
+  supervisorctl start all
+  su -c "${OTRS_ROOT}/bin/otrs.Daemon.pl start" -s /bin/bash otrs
+  su -c "${OTRS_ROOT}/bin/Cron.sh start" -s /bin/bash otrs
+}
+
 function upgrade () {
   print_warning "OTRS \e[44mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
   sleep 10
