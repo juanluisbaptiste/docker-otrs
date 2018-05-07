@@ -1,5 +1,25 @@
 # docker-otrs Change Log
 
+## 6.0.7 - 2018-05-07
+### Added
+- New feature: do major version upgrades by setting env var OTRS_UPGRADE=yes.
+
+### Changed
+- Updated to latest OTRS version 6.0.7.
+- otrs_backup.sh: stop services before doing the backup and starting them again afterwards to avoid random backup failures.
+
+## 5.0.27 - 2018-05-07
+### Added
+- New feature: backported major version upgrades by setting env var OTRS_UPGRADE=yes.
+
+### Changed
+- Backported latest otrs_backup.sh script.
+
+## 4.0.29 - 2018-05-06
+### Changed
+- Updated branch otrs_4_x to latest OTRS version 4.0.29.
+
+
 ## 6.0.6 - 2018-03-14
 ### Changed
 - Updated to latest OTRS version 6.0.6.
