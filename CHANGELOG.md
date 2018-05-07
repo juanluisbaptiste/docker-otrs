@@ -40,14 +40,14 @@
 - Merge PR #20: Attempt graceful shutdown of all processes
 
 ### Changed
-- Updated to latest OTRS version 5.0.26.
+- Updated branch otrs_5_x to latest OTRS version 5.0.26.
 
 ## 5.0.23 - 2017-09-22
 ### Added
 - New script to automate image rebuild when a new OTRS version is out.
 
 ### Changed
-- Updated to latest OTRS version 6.0.3.
+- Updated branch otrs_5_x to latest OTRS version 6.0.3.
 
 ## 5.0.21 - 2017-07-26
 ### Changed
@@ -56,7 +56,7 @@
 
 ## 5.0.20 - 2017-06-12
 ### Changed
-- Updated to latest OTRS version 5.0.20.
+- Updated branch otrs_5_x to latest OTRS version 5.0.20.
 - Fix sed expressions to replace the database host and password and the smtp server.
 
 ## 5.0.18 - 2017-04-10
@@ -66,7 +66,7 @@
 - New environment variable OTRS_CONFIG_FILE.
 
 ### Changed
-- Updated to latest OTRS version 5.0.18.
+- Updated branch otrs_5_x to latest OTRS version 5.0.18.
 - Fix Issue #15: Call setup_otrs also on restore.
 
 ### Removed
@@ -77,7 +77,7 @@
 
 ## 5.0.16 - 2017-02-08
 ### Changed
-- Updated to latest OTRS version 5.0.16.
+- Updated branch otrs_5_x to latest OTRS version 5.0.16.
 
 ## 5.0.15 - 2017-02-08
 ### Changed
@@ -87,7 +87,7 @@
 
 ## 5.0.14 - 2016-11-10
 ### Changed
-- Updated to latest OTRS version 5.0.14.
+- Updated branch otrs_5_x to latest OTRS version 5.0.14.
 - Check for host-mounted data volumes on restore too.
 - Update docker-compose files to use host volumes by default.
 
@@ -96,18 +96,18 @@
 - Add support for host-mounted volumes: if host-mounted dir exitst and is empty then contents from $OTRS_ROOT/Kernel will be copied to it and symlinked back to /Kernel.
 
 ### Changed
-- Updated to latest OTRS version 5.0.13.
+- Updated branch otrs_5_x to latest OTRS version 5.0.13.
 - By default set PostmasterFollowUpSearchIn* to true.
 
 ## 5.0.12 - 2016-08-11
 ### Changed
-- Updated to latest OTRS version 5.0.12.
+- Updated branch otrs_5_x to latest OTRS version 5.0.12.
 
 ## 5.0.11 - 2016-06-29
 ### Changed
-- Updated to latest OTRS version 5.0.11.
+- Updated branch otrs_5_x to latest OTRS version 5.0.11.
 - Mount /etc/localtime on containers to sync to docker host time.
 
 ## 5.0.10 - 2016-06-14
 ### Changed
-- Updated to latest OTRS version 5.0.10.
+- Updated branch otrs_5_x to latest OTRS version 5.0.10.
