@@ -171,9 +171,6 @@ function set_variables(){
 }
 
 function setup_otrs_config(){
-  #Check if a host-mounted volume for configuration storage was added to this
-  #container
-  check_host_mount_dir
   print_info "Updating database password on configuration file..."
   update_config_value "DatabasePw" $OTRS_DB_PASSWORD
   print_info "Updating databse server on configuration file..."
@@ -185,6 +182,9 @@ function setup_otrs_config(){
 }
 
 function load_defaults(){
+  #Check if a host-mounted volume for configuration storage was added to this
+  #container
+  check_host_mount_dir
   #set_variables
   #Check if a host-mounted volume for configuration storage was added to this
   #container
@@ -314,7 +314,7 @@ function set_fetch_email_time(){
 function check_host_mount_dir(){
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
-  if [ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ];
+  if ([ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ]) || [ "${OTRS_UPGRADE}" == "yes" ];
   then
     print_info "Found empty \e[92m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
     mkdir -p ${OTRS_CONFIG_DIR}
@@ -328,7 +328,6 @@ function check_host_mount_dir(){
   else
     print_info "Found existing configuration directory, Ok."
   fi
-  rm -fr ${OTRS_CONFIG_MOUNT_DIR}
 }
 
 ERROR_CODE="ERROR"
@@ -370,4 +369,60 @@ function term_handler () {
  pkill -SIGTERM anacron
  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
  exit 143; # 128 + 15 -- SIGTERM
+}
+
+function upgrade () {
+  print_warning "OTRS \e[44mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
+  sleep 10
+
+  print_info "Staring OTRS major version upgrade to version \e[44m${OTRS_VERSION}\e[0m..."
+
+  # Update configuration files
+  check_host_mount_dir
+  #Setup OTRS configuration
+  setup_otrs_config
+
+  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
+  if [ $? -gt 0  ]; then
+    print_error "Cannot set permissions" && exit 1
+  fi
+
+  # Backup
+  print_info "Backing up container prior to upgrade..."
+  /otrs_backup.sh
+  if [ ! $? -eq 143  ]; then
+    print_error "Cannot create backup" && exit 1
+  fi
+  # Upgrade database
+  print_info "Doing database migration..."
+  $mysqlcmd -e "use ${OTRS_DATABASE}"
+  if [ $? -eq 0  ]; then
+    cat ${OTRS_ROOT}/scripts/DBUpdate-to-5.mysql.sql | ${mysqlcmd} ${OTRS_DATABASE}
+    if [ $? -gt 0  ]; then
+      print_error "Cannot upgrade database" && exit 1
+    fi
+    su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Database::Check" -s /bin/bash otrs
+    if [ $? -gt 0  ]; then
+      print_error "Database upgrade check failed" && exit 1
+    fi
+    su -c "/opt/otrs//scripts/DBUpdate-to-5.pl" -s /bin/bash otrs
+    if [ $? -gt 0  ]; then
+      print_error "Cannot migrate database" && exit 1
+    fi
+  fi
+
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
+  if [ $? -gt 0  ]; then
+    print_error "Cannot rebuild cache" && exit 1
+  fi
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
+  if [ $? -gt 0  ]; then
+    print_error "Cannot delete cache" && exit 1
+  fi
+  # Update cronjobs
+  cd ${OTRS_ROOT}/var/cron/
+  for foo in *.dist; do cp $foo `basename $foo .dist`; done
+  cd -
+
+  print_info "Upgrade finished !!"
 }

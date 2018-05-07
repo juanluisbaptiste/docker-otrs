@@ -27,8 +27,12 @@ fi
 wait_for_db
 
 #If OTRS_INSTALL isn't defined load a default install
-if [ "$OTRS_INSTALL" != "yes" ]; then
-  if [ "$OTRS_INSTALL" == "no" ]; then
+if [ "${OTRS_INSTALL}" != "yes" ]; then
+  # Upgrade MAJOR VERSION, for minor version just pull latest image and restart
+  if [ "${OTRS_UPGRADE}" == "yes" ];then
+    upgrade
+  fi
+  if [ "${OTRS_INSTALL}" == "no" ]; then
     if [ -e "${OTRS_ROOT}var/tmp/firsttime" ]; then
       #Load default install
       print_info "Starting a clean\e[92m OTRS ${OTRS_VERSION} \e[0minstallation ready to be configured !!"
@@ -61,6 +65,9 @@ else
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[92m OTRS $OTRS_VERSION \e[0minstaller !!"
 fi
+
+# Delete default configuration
+rm -fr ${OTRS_CONFIG_MOUNT_DIR}
 
 #Launch supervisord
 print_info "Starting supervisord..."
