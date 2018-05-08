@@ -8,6 +8,7 @@ VERBOSE=1
 OTRS_LATEST="http://ftp.otrs.org/pub/otrs/otrs-latest.tar.gz"
 OTRS_UPDATE_LOG="/data/logs/check_otrs_version.log"
 OTRS_GIT_URL="git@github.com:juanluisbaptiste/docker-otrs.git"
+GIT_PUSH=0
 #Supported OTRS versions to avoid breaking the image if the major version upgrade
 #breaks the image
 declare -A OTRS_SUPPORTED_VERSIONS=(
@@ -115,10 +116,12 @@ if [ $? -eq 0 ]; then
     if [ $? -gt 0 ];then
       verbose "ERROR: Could not commit changes !: ${out}" ${ERROR_CODE} && exit 1
     fi
-    verbose "Push changes..."
-    out="$(git push)"
-    if [ $? -gt 0 ];then
-      verbose "ERROR: Could not push changes !: ${out}" ${ERROR_CODE} && exit 1
+    if [ ${GIT_PUSH} -eq 1 ]; then
+      verbose "Push changes..."
+      out="$(git push)"
+      if [ $? -gt 0 ];then
+        verbose "ERROR: Could not push changes !: ${out}" ${ERROR_CODE} && exit 1
+      fi
     fi
     verbose "SUCESS !! docker image updated to latest version."
   fi
