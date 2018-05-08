@@ -6,13 +6,13 @@
 
 VERBOSE=1
 OTRS_LATEST="http://ftp.otrs.org/pub/otrs/otrs-latest.tar.gz"
-OTRS_UPDATE_LOG="/data/logs/check_otrs_version.log"
 OTRS_GIT_URL="git@github.com:juanluisbaptiste/docker-otrs.git"
+OTRS_UPDATE_LOG="./check_otrs_version.log"
 GIT_PUSH=0
 #Supported OTRS versions to avoid breaking the image if the major version upgrade
 #breaks the image
 declare -A OTRS_SUPPORTED_VERSIONS=(
- [4]=1  [5]=1 [6]=1
+ [4]=0  [5]=0 [6]=1
 )
 ERROR_CODE="ERROR"
 
