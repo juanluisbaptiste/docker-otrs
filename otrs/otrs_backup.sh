@@ -39,7 +39,7 @@ if [ $? -eq 0 ]; then
   #cd ${TEMP_BACKUP_DIR}
   # As the otrs backup command throws three separate backups in a directory, we
   # compress those files into a single one
-  tar zcvf ${BACKUP_FILE_NAME} ${TEMP_BACKUP_DIR}/*
+  tar jcvf ${BACKUP_FILE_NAME} ${TEMP_BACKUP_DIR}/*
   [ $? -gt 0 ] && echo -e "ERROR: Could not compress final backup tarball." && exit 1
 
   mv ${BACKUP_FILE_NAME} $OTRS_BACKUP_DIR
