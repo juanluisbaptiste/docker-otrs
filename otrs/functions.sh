@@ -89,8 +89,14 @@ function restore_backup(){
   tmpdir=`mktemp -d`
   [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
-  #Run restore backup command
-  ${OTRS_ROOT}scripts/restore.pl -b $OTRS_BACKUP_DIR/$1 -d ${OTRS_ROOT}
+  #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
+  #backup file.
+  if [ -d ${OTRS_BACKUP_DIR} ]; then
+    restore_file="${OTRS_BACKUP_DIR}/${1}"
+  else
+    restore_file="${OTRS_BACKUP_DIR}"
+  fi
+  ${OTRS_ROOT}scripts/restore.pl -b ${restore_file} -d ${OTRS_ROOT}
   [ $? -gt 0 ] && print_error "Couldn't load OTRS backup !!" && exit 1
 
   backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
