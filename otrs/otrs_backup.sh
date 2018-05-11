@@ -22,7 +22,7 @@ function cleanup () {
 }
 
 DATE=$(get_current_date)
-BACKUP_FILE_NAME="otrs-${DATE}-full.tar.bz2"
+BACKUP_FILE_NAME="otrs-${DATE}-full.tar.gz"
 
 BACKUP_TYPE=$1
 [ -z $BACKUP_TYPE ] && BACKUP_TYPE=$DEFAULT_BACKUP_TYPE
@@ -36,20 +36,14 @@ stop_all_services
 
 if [ $? -eq 0 ]; then
   [ ! -e $OTRS_BACKUP_DIR ] && mkdir -p $OTRS_BACKUP_DIR
-  #cd ${TEMP_BACKUP_DIR}
+  cd ${TEMP_BACKUP_DIR}
   # As the otrs backup command throws three separate backups in a directory, we
   # compress those files into a single one
-  tar jcvf ${BACKUP_FILE_NAME} ${TEMP_BACKUP_DIR}/*
+  tar zcvf ${OTRS_BACKUP_DIR}/${BACKUP_FILE_NAME} *
   [ $? -gt 0 ] && echo -e "ERROR: Could not compress final backup tarball." && exit 1
-
-  mv ${BACKUP_FILE_NAME} $OTRS_BACKUP_DIR
-  if [ $? -gt 0 ]; then
-    echo -e "Backup files move to $OTRS_BACKUP_DIR failed."
-    exit 1
-  else
-    chmod -R 755 $OTRS_BACKUP_DIR
-    echo -e "${DATE} Backup successful."
-  fi
+  cd ..
+  chmod -R 755 $OTRS_BACKUP_DIR
+  echo -e "${DATE} Backup successful."
 else
   echo -e "ERROR: Backup process failed."
   exit 1
