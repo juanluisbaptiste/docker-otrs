@@ -32,8 +32,8 @@ postfix:
 data:
   image: centos/mariadb:latest
   volumes:
-  - "/home/juancho/git/docker/docker-otrs-4x/volumes/mysql:/var/lib/mysql"
-  #- /var/lib/mysql
+  - ./volumes/mysql:/var/lib/mysql
+    #- /var/lib/mysql
   - "/etc/localtime:/etc/localtime:ro"
   command: /bin/true
 data-otrs:
@@ -41,6 +41,7 @@ data-otrs:
   volumes:
   #- ./config:/config
   - ./volumes/config:/opt/otrs/Kernel
-  - "./otrs/backup:/var/otrs/backups"
+#  - /opt/otrs/Kernel
+  - "./volumes/backup:/var/otrs/backups"
   - "/etc/localtime:/etc/localtime:ro"
   command: /bin/true
