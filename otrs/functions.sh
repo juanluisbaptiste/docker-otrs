@@ -88,15 +88,23 @@ function restore_backup(){
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
   #backup file.
-  if [ -d ${OTRS_BACKUP_DIR} ]; then
-    restore_file="${OTRS_BACKUP_DIR}/${1}"
+  if [ -d ${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE} ]; then
+    restore_dir="${OTRS_BACKUP_DATE}/"
   else
-    restore_file="${OTRS_BACKUP_DIR}"
+    temp_dir=$(mktemp -d )
+    cd ${temp_dir}
+    tar zxvf ${OTRS_BACKUP_DIR}/${OTRS_BA}/${OTRS_BACKUP_DATE}
+    [ $? -gt 0 ] && print_error "Couldn't uncompress main backup file !!" && exit 1
+    cd ..
+    restore_dir="$(ls -t ${temp_dir}|head -n1)"
   fi
-  ${OTRS_ROOT}scripts/restore.pl -b ${restore_file} -d ${OTRS_ROOT}
+
+  restore_dir=${temp_dir}/${restore_dir}
+  ${OTRS_ROOT}scripts/restore.pl -b ${restore_dir} -d ${OTRS_ROOT}
   [ $? -gt 0 ] && print_error "Couldn't load OTRS backup !!" && exit 1
 
-  backup_version=`tar -xOf $OTRS_BACKUP_DIR/$1/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
+  backup_version=`tar -xOf ${restore_dir}/Application.tar.gz ./RELEASE|grep -o 'VERSION = [^,]*' | cut -d '=' -f2 |tr -d '[[:space:]]'`
+  [ $? -gt 0 ] && print_error "Couldn't get installed OTRS version !!" && exit 1
   OTRS_INSTALLED_VERSION=`echo $OTRS_VERSION|cut -d '-' -f1`
   print_warning "OTRS version of backup being restored: \e[1;31m$backup_version\e[1;0m"
   print_warning "OTRS version of this container: \e[1;31m$OTRS_INSTALLED_VERSION\e[1;0m"
