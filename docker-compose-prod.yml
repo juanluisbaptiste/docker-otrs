@@ -1,6 +1,5 @@
 otrs:
-  #image: juanluisbaptiste/otrs:4.0.17-otrs-4_0_x-289505a7
-  image: registry.ctecsas.com/ctecsas/otrs:latest
+  image: juanluisbaptiste/otrs:latest-4x
   ports:
   - "80:80"
 # If running behind a proxy container, expose the ports instead
@@ -37,9 +36,8 @@ data:
   - "/etc/localtime:/etc/localtime:ro"
   command: /bin/true
 data-otrs:
-  image: juanluisbaptiste/otrs:4.0.17-otrs-4_0_x-289505a7
+  image: juanluisbaptiste/otrs:latest-4x
   volumes:
-  #- ./config:/config
   - ./volumes/config:/opt/otrs/Kernel
 #  - /opt/otrs/Kernel
   - "./volumes/backup:/var/otrs/backups"
