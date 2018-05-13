@@ -93,7 +93,7 @@ function restore_backup(){
   else
     temp_dir=$(mktemp -d )
     cd ${temp_dir}
-    tar zxvf ${OTRS_BACKUP_DIR}/${OTRS_BA}/${OTRS_BACKUP_DATE}
+    tar zxvf ${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE}
     [ $? -gt 0 ] && print_error "Couldn't uncompress main backup file !!" && exit 1
     cd ..
     restore_dir="$(ls -t ${temp_dir}|head -n1)"
