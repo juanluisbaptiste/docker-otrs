@@ -87,10 +87,6 @@ function restore_backup() {
   create_db
   #Make a copy of installed skins so they aren't overwritten by the backup.
   tmpdir=`mktemp -d`
-  [ ! -z ${OTRS_AGENT_SKIN} ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
-  [ ! -z ${OTRS_CUSTOMER_SKIN} ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
-  #Run restore backup command
-  ${OTRS_ROOT}scripts/restore.pl -b ${OTRS_BACKUP_DIR}/${1} -d ${OTRS_ROOT}
   [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
