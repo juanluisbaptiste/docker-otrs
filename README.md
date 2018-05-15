@@ -185,6 +185,9 @@ For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, set the `
 
 The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade. The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
 
+#### Note: ####
+If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
+
 #### Custom Skins
 If you have custom skins then you will have to manually update them if needed.
 
