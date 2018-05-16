@@ -18,7 +18,7 @@ services:
     env_file: otrs-setup.env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
-      - './otrs/backup:/var/otrs/backups'
+      - './volumes/backup:/var/otrs/backups'
       - '/etc/localtime:/etc/localtime:ro'
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
