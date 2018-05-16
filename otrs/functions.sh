@@ -441,6 +441,26 @@ function upgrade () {
     fi
   fi
 
+  # Update installed packages
+  print_info "Updating installed packages..."
+
+  out=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
+  if [ "${out}" == "" ]; then
+    print_info "No installed modules found."
+  else
+    for i in ${out}; do
+      print_info "Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..."
+      su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Uninstall ${i}" -s /bin/bash otrs
+      if [ $? -gt 0  ]; then
+        print_warning "Cannot uninstall package ${i}"
+      fi
+      su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Install ${i}" -s /bin/bash otrs
+      if [ $? -gt 0  ]; then
+        print_warning "Cannot install package ${i}"
+      fi
+    done
+  fi
+  #Rebuild configuration and delete cache
   su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
   if [ $? -gt 0  ]; then
     print_error "Cannot rebuild cache" && exit 1
@@ -454,5 +474,5 @@ function upgrade () {
   for foo in *.dist; do cp $foo `basename $foo .dist`; done
   cd -
 
-  print_info "Upgrade finished !!"
+  print_info "Major version upgrade finished !!"
 }
