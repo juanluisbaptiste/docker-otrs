@@ -176,20 +176,37 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
 
 ### Major Version
 
-For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, set the `OTRS_UPGRADE=yes` environment variable in the docker-compose file, pull the newest release image and start up the conainers:
+For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, follow these steps:
 
+1. Set the `OTRS_UPGRADE=yes` environment variable in the docker-compose file
+2. Replace the current image version tag with the new one on the _image:_ configuration option. For example, change:
+```
+    image: juanluisbaptiste/otrs:latest-5x
+```
+  with:
+  ```
+    image: juanluisbaptiste/otrs:latest
+  ```
+3. Pull the release image you are upgrading to:
+```
     sudo docker-compose -f docker-compose-prod.yml pull
+```
+4. Restart the containers:
+```
     sudo docker-compose -f docker-compose-prod.yml stop
     sudo docker-compose -f docker-compose-prod.yml rm -f -v
     sudo docker-compose -f docker-compose-prod.yml up
+```
+The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade.
 
-The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade. The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
+The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
 
-#### Note: ####
-If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
+#### Troubleshooting ####
+ - If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
+- If you get an 500 error after login it could mean that a module could not be automatically upgraded. Check the container output and look for the messages about modules upgrade.
 
-#### Custom Skins
-If you have custom skins then you will have to manually update them if needed.
+#### Custom Skins & Configuration Files
+If you have custom skins or additional XML configuration files you will have to manually update them if needed.
 
 Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afterwards.
 
