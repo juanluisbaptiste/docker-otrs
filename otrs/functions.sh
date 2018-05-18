@@ -368,7 +368,7 @@ function enable_debug_mode (){
 
 function reinstall_modules () {
   print_info "Reinstalling OTRS modules..."
-  su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1> /dev/null 2>&1" -s /bin/bash otrs
+  su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1" -s /bin/bash otrs
 
   if [ $? -gt 0 ]; then
     print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."
