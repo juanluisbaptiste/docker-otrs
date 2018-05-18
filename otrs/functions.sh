@@ -418,13 +418,13 @@ function upgrade () {
   fi
 
   # Backup
-  print_info "Backing up container prior to upgrade..."
+  print_info "[*] Backing up container prior to upgrade..."
   /otrs_backup.sh
   if [ ! $? -eq 143  ]; then
     print_error "Cannot create backup" && exit 1
   fi
   # Upgrade database
-  print_info "Doing database migration..."
+  print_info "[*] Doing database migration..."
   $mysqlcmd -e "use ${OTRS_DATABASE}"
   if [ $? -eq 0  ]; then
     cat ${OTRS_ROOT}/scripts/DBUpdate-to-5.mysql.sql | ${mysqlcmd} ${OTRS_DATABASE}
@@ -441,8 +441,8 @@ function upgrade () {
     fi
   fi
 
-  # Update installed packages
-  print_info "Updating installed packages..."
+  #Update installed packages
+  print_info "[*] Updating installed packages..."
 
   out=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
   if [ "${out}" == "" ]; then
@@ -461,18 +461,21 @@ function upgrade () {
     done
   fi
   #Rebuild configuration and delete cache
+  print_info "[*] Rebuilding configuration..."
   su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
   if [ $? -gt 0  ]; then
     print_error "Cannot rebuild cache" && exit 1
   fi
+  print_info "[*] Deleting cache..."
   su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
   if [ $? -gt 0  ]; then
     print_error "Cannot delete cache" && exit 1
   fi
   # Update cronjobs
+  print_info "[*] Updating cronjobs..."
   cd ${OTRS_ROOT}/var/cron/
   for foo in *.dist; do cp $foo `basename $foo .dist`; done
   cd -
 
-  print_info "Major version upgrade finished !!"
+  print_info "[*] Major version upgrade finished !!"
 }
