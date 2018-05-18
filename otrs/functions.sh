@@ -465,11 +465,11 @@ function upgrade () {
     fi
 
     for i in ${installed_modules}; do
-      print_info "[+] Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..."
+      print_info "[+] Upgrading module \e[44m${i}\e[0m..."
       print_info "- Getting latest available version..."
       latest_version=$(cat ${tmp_dir}/modules.txt | awk '{print $2}'|cut -d '/' -f 5 | grep ${i}|grep "\-5" | cut -d '-' -f2 | sort -V | grep -v -F -f ${tmp_dir}/blacklist.txt | tail -n1)
       if [ "${latest_version}" != "" ]; then
-        print_info "- Upgrading to version \e[${OTRS_ASCII_COLOR_BLUE}m${latest_version}\e[0m..."
+        print_info "- Upgrading to version \e[44m${latest_version}\e[0m..."
         su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Upgrade ${OTRS_PKG_REPO}:${i}-${latest_version}" -s /bin/bash otrs
         if [ $? -gt 0  ]; then
           print_warning "Cannot upgrade package ${latest_version}"
