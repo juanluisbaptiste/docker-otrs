@@ -174,7 +174,7 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
     sudo docker-compose -f docker-compose-prod.yml rm -f -v
     sudo docker-compose -f docker-compose-prod.yml up    
 
-### Major Version
+### Major Version - EXPERIMENTAL !!!
 
 For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, follow these steps:
 
