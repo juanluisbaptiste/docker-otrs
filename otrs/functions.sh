@@ -359,6 +359,12 @@ function upgrade () {
   print_warning "OTRS \e[${OTRS_ASCII_COLOR_BLUE}mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
   sleep 10
 
+  local version_blacklist="5.0.91\n5.0.92"
+  local OTRS_PKG_REPO="https://ftp.otrs.org/pub/otrs/packages/"
+  tmp_dir="/tmp/upgrade/"
+  mkdir -p ${tmp_dir}
+  echo -e ${version_blacklist} > ${tmp_dir}/blacklist.txt
+
   print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..."
 
   # Update configuration files
@@ -385,22 +391,36 @@ function upgrade () {
   #Update installed packages
   print_info "[*] Updating installed packages..."
 
-  out=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
-  if [ "${out}" == "" ]; then
+  installed_modules=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
+  if [ "${installed_modules}" == "" ]; then
     print_info "No installed modules found."
   else
-    for i in ${out}; do
-      print_info "Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..."
-      su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Uninstall ${i}" -s /bin/bash otrs
-      if [ $? -gt 0  ]; then
-        print_warning "Cannot uninstall package ${i}"
-      fi
-      su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Install ${i}" -s /bin/bash otrs
-      if [ $? -gt 0  ]; then
-        print_warning "Cannot install package ${i}"
+    yum install -y lftp
+    if [ $? -gt 0  ]; then
+      print_error "Cannot install lftp package" && exit 1
+    fi
+
+    `lftp -c du -a https://ftp.otrs.org/pub/otrs/packages/ > ${tmp_dir}/modules.txt`
+    if [ $? -gt 0  ]; then
+      print_error "Cannot download modules list from repository: ${OTRS_PKG_REPO}" && exit 1
+    fi
+
+    for i in ${installed_modules}; do
+      print_info "[+] Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..."
+      print_info "- Getting latest available version..."
+      latest_version=$(cat ${tmp_dir}/modules.txt | awk '{print $2}'|cut -d '/' -f 5 | grep ${i}|grep "\-5" | cut -d '-' -f2 | sort -V | grep -v -F -f ${tmp_dir}/blacklist.txt | tail -n1)
+      if [ "${latest_version}" != "" ]; then
+        print_info "- Upgrading to version \e[${OTRS_ASCII_COLOR_BLUE}m${latest_version}\e[0m..."
+        su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Upgrade ${OTRS_PKG_REPO}:${i}-${latest_version}" -s /bin/bash otrs
+        if [ $? -gt 0  ]; then
+          print_warning "Cannot upgrade package ${latest_version}"
+        fi
       fi
     done
+    yum remove -y lftp
+    # rm -f ${tmp_dir}
   fi
+
   #Rebuild configuration and delete cache
   print_info "[*] Rebuilding configuration..."
   su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
