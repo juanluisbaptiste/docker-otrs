@@ -399,8 +399,8 @@ function upgrade () {
     if [ $? -gt 0  ]; then
       print_error "Cannot install lftp package" && exit 1
     fi
-
-    `lftp -c du -a https://ftp.otrs.org/pub/otrs/packages/ > ${tmp_dir}/modules.txt`
+    # Download from the official packate repo the available versions
+    lftp -c du -a https://ftp.otrs.org/pub/otrs/packages/ > ${tmp_dir}/modules.txt
     if [ $? -gt 0  ]; then
       print_error "Cannot download modules list from repository: ${OTRS_PKG_REPO}" && exit 1
     fi
