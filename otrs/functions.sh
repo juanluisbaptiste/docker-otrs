@@ -368,7 +368,7 @@ function upgrade () {
   mkdir -p ${tmp_dir}
   echo -e ${version_blacklist} > ${tmp_dir}/blacklist.txt
 
-  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..." | tee ${upgrade_log}
+  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..." | tee -a ${upgrade_log}
 
   # Update configuration files
   check_host_mount_dir
@@ -376,19 +376,19 @@ function upgrade () {
   setup_otrs_config
 
   # Backup
-  print_info "[*] Backing up container prior to upgrade..." | tee ${upgrade_log}
+  print_info "[*] Backing up container prior to upgrade..." | tee -a ${upgrade_log}
   /otrs_backup.sh &> ${upgrade_log}
   if [ ! $? -eq 143  ]; then
-    print_error "Cannot create backup" | tee ${upgrade_log} && exit 1
+    print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
   fi
 
   # Upgrade database
-  print_info "[*] Doing database migration..." | tee ${upgrade_log}
+  print_info "[*] Doing database migration..." | tee -a ${upgrade_log}
   $mysqlcmd -e "use ${OTRS_DATABASE}"
   if [ $? -eq 0  ]; then
-    su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs
+    su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
     if [ $? -gt 0  ]; then
-      print_error "Cannot migrate database" | tee ${upgrade_log} && exit 1
+      print_error "Cannot migrate database" | tee -a ${upgrade_log} && exit 1
     fi
   fi
 
@@ -396,9 +396,9 @@ function upgrade () {
   print_info "[*] Updating installed packages..." | tee -a ${upgrade_log}
   su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::UpgradeAll" -s /bin/bash otrs &> ${upgrade_log}
   if [ $? -gt 0  ]; then
-    print_error "Cannot delete cache"  | tee ${upgrade_log} && exit 1
+    print_warning "Cannot upgrade package: ${i}-${latest_version}"  | tee -a ${upgrade_log}
   fi
 
   rm -fr ${tmp_dir}
-  print_info "[*] Major version upgrade finished !!"  | tee ${upgrade_log}
+  print_info "[*] Major version upgrade finished !!"  | tee -a ${upgrade_log}
 }
