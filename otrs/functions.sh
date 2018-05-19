@@ -393,45 +393,8 @@ function upgrade () {
   fi
 
   #Update installed packages
-  print_info "[*] Updating installed packages..." | tee ${upgrade_log}
-
-  installed_modules=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
-  if [ "${installed_modules}" == "" ]; then
-    print_info "No installed modules found."| tee ${upgrade_log}
-  else
-    yum install -y lftp &> ${upgrade_log}
-    if [ $? -gt 0  ]; then
-      print_error "Cannot install lftp package"  | tee ${upgrade_log} && exit 1
-    fi
-    # Download from the official packate repo the available versions
-    lftp -c du -a https://ftp.otrs.org/pub/otrs/packages/ > ${tmp_dir}/modules.txt
-    if [ $? -gt 0  ]; then
-      print_error "Cannot download modules list from repository: ${OTRS_PKG_REPO}"  | tee ${upgrade_log} && exit 1
-    fi
-
-    for i in ${installed_modules}; do
-      print_info "[+] Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..." | tee ${upgrade_log}
-      print_info "- Getting latest available version..." | tee ${upgrade_log}
-      latest_version=$(cat ${tmp_dir}/modules.txt | awk '{print $2}'|cut -d '/' -f 5 | grep ${i}|grep "\-5" | cut -d '-' -f2 | sort -V | grep -v -F -f ${tmp_dir}/blacklist.txt | tail -n1)
-      if [ "${latest_version}" != "" ]; then
-        print_info "- Upgrading to version \e[${OTRS_ASCII_COLOR_BLUE}m${latest_version}\e[0m..."  | tee ${upgrade_log}
-        su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Upgrade ${OTRS_PKG_REPO}:${i}-${latest_version}" -s /bin/bash otrs &> ${upgrade_log}
-        if [ $? -gt 0  ]; then
-          print_warning "Cannot upgrade package: ${i}-${latest_version}"  | tee ${upgrade_log}
-        fi
-      fi
-    done
-    yum remove -y lftp &> ${upgrade_log}
-  fi
-
-  #Rebuild configuration and delete cache
-  print_info "[*] Rebuilding configuration..."  | tee ${upgrade_log}
-  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs &> ${upgrade_log}
-  if [ $? -gt 0  ]; then
-    print_error "Cannot rebuild cache"  | tee ${upgrade_log} && exit 1
-  fi
-  print_info "[*] Deleting cache..."
-  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs &> ${upgrade_log}
+  print_info "[*] Updating installed packages..." | tee -a ${upgrade_log}
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::UpgradeAll" -s /bin/bash otrs &> ${upgrade_log}
   if [ $? -gt 0  ]; then
     print_error "Cannot delete cache"  | tee ${upgrade_log} && exit 1
   fi
