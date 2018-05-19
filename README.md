@@ -176,7 +176,9 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
 
 ### Major Version - EXPERIMENTAL !!!
 
-For example from OTRS 5.0x to 6.0.x. To do this major version upgrade, follow these steps:
+This upgrade option will do a major version upgrade of OTRS. For example from OTRS 5.0x to 6.0.x. The upgrade process will also upgrade installed packages from the official repository only.
+
+To do a major version upgrade, follow these steps:
 
 1. Set the `OTRS_UPGRADE=yes` environment variable in the docker-compose file
 2. Replace the current image version tag with the new one on the _image:_ configuration option. For example, change:
@@ -201,12 +203,15 @@ The upgrade procedure will pause the boot process for 10 seconds to give the use
 
 The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
 
-#### Troubleshooting ####
- - If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
-- If you get an 500 error after login it could mean that a module could not be automatically upgraded. Check the container output and look for the messages about modules upgrade.
+#### Modules (Add-ons)
+The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have aditional 3rd party modules you will need to manually update them in _Package Manager_.
 
 #### Custom Skins & Configuration Files
 If you have custom skins or additional XML configuration files you will have to manually update them if needed.
+
+#### Troubleshooting ####
+ - If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
+- If you get an 500 error after login it could mean that a module could not be automatically upgraded. Check the container output and look for the messages about modules upgrade.
 
 Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afterwards.
 
