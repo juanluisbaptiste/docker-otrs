@@ -359,21 +359,23 @@ function write_log (){
 
 function enable_debug_mode (){
   print_info "Preparing debug mode..."
-  #DEBIAN_FRONTEND=noninteractive apt-get install -y nmap lsof telnet
-  #[ $? -gt 0 ] && print_error "ERROR: Could not intall tools." && exit 1
+  yum install -y nmap lsof telnet
+  [ $? -gt 0 ] && print_error "ERROR: Could not intall tools." && exit 1
   print_info "Done."
 
   set -x
 }
 
 function reinstall_modules () {
-  print_info "Reinstalling OTRS modules..."
-  su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1" -s /bin/bash otrs
+  if [ "${OTRS_UPGRADE}" != "yes" ]; then
+    print_info "Reinstalling OTRS modules..."
+    su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1" -s /bin/bash otrs
 
-  if [ $? -gt 0 ]; then
-    print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."
-  else
-    print_info "Done."
+    if [ $? -gt 0 ]; then
+      print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."
+    else
+      print_info "Done."
+    fi
   fi
 }
 
