@@ -363,11 +363,12 @@ function upgrade () {
 
   local version_blacklist="5.0.91\n5.0.92"
   local OTRS_PKG_REPO="https://ftp.otrs.org/pub/otrs/packages/"
+  local upgrade_log="/tmp/upgrade.log"
   tmp_dir="/tmp/upgrade/"
   mkdir -p ${tmp_dir}
   echo -e ${version_blacklist} > ${tmp_dir}/blacklist.txt
 
-  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..."
+  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..." | tee ${upgrade_log}
 
   # Update configuration files
   check_host_mount_dir
@@ -375,70 +376,66 @@ function upgrade () {
   setup_otrs_config
 
   # Backup
-  print_info "[*] Backing up container prior to upgrade..."
-  /otrs_backup.sh
+  print_info "[*] Backing up container prior to upgrade..." | tee ${upgrade_log}
+  /otrs_backup.sh &> ${upgrade_log}
   if [ ! $? -eq 143  ]; then
-    print_error "Cannot create backup" && exit 1
+    print_error "Cannot create backup" | tee ${upgrade_log} && exit 1
   fi
+
   # Upgrade database
-  print_info "[*] Doing database migration..."
+  print_info "[*] Doing database migration..." | tee ${upgrade_log}
   $mysqlcmd -e "use ${OTRS_DATABASE}"
   if [ $? -eq 0  ]; then
     su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs
     if [ $? -gt 0  ]; then
-      print_error "Cannot migrate database" && exit 1
+      print_error "Cannot migrate database" | tee ${upgrade_log} && exit 1
     fi
   fi
 
   #Update installed packages
-  print_info "[*] Updating installed packages..."
+  print_info "[*] Updating installed packages..." | tee ${upgrade_log}
 
   installed_modules=$(${mysqlcmd} -N -s otrs -e "SELECT name, version FROM package_repository WHERE install_status LIKE 'installed';" |  awk '{print $1}')
   if [ "${installed_modules}" == "" ]; then
-    print_info "No installed modules found."
+    print_info "No installed modules found."| tee ${upgrade_log}
   else
-    yum install -y lftp
+    yum install -y lftp &> ${upgrade_log}
     if [ $? -gt 0  ]; then
-      print_error "Cannot install lftp package" && exit 1
+      print_error "Cannot install lftp package"  | tee ${upgrade_log} && exit 1
     fi
     # Download from the official packate repo the available versions
     lftp -c du -a https://ftp.otrs.org/pub/otrs/packages/ > ${tmp_dir}/modules.txt
     if [ $? -gt 0  ]; then
-      print_error "Cannot download modules list from repository: ${OTRS_PKG_REPO}" && exit 1
+      print_error "Cannot download modules list from repository: ${OTRS_PKG_REPO}"  | tee ${upgrade_log} && exit 1
     fi
 
     for i in ${installed_modules}; do
-      print_info "[+] Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..."
-      print_info "- Getting latest available version..."
+      print_info "[+] Upgrading module \e[${OTRS_ASCII_COLOR_BLUE}m${i}\e[0m..." | tee ${upgrade_log}
+      print_info "- Getting latest available version..." | tee ${upgrade_log}
       latest_version=$(cat ${tmp_dir}/modules.txt | awk '{print $2}'|cut -d '/' -f 5 | grep ${i}|grep "\-5" | cut -d '-' -f2 | sort -V | grep -v -F -f ${tmp_dir}/blacklist.txt | tail -n1)
       if [ "${latest_version}" != "" ]; then
-        print_info "- Upgrading to version \e[${OTRS_ASCII_COLOR_BLUE}m${latest_version}\e[0m..."
-        su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Upgrade ${OTRS_PKG_REPO}:${i}-${latest_version}" -s /bin/bash otrs
+        print_info "- Upgrading to version \e[${OTRS_ASCII_COLOR_BLUE}m${latest_version}\e[0m..."  | tee ${upgrade_log}
+        su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::Upgrade ${OTRS_PKG_REPO}:${i}-${latest_version}" -s /bin/bash otrs &> ${upgrade_log}
         if [ $? -gt 0  ]; then
-          print_warning "Cannot upgrade package ${latest_version}"
+          print_warning "Cannot upgrade package: ${i}-${latest_version}"  | tee ${upgrade_log}
         fi
       fi
     done
-    yum remove -y lftp
-    # rm -f ${tmp_dir}
+    yum remove -y lftp &> ${upgrade_log}
   fi
 
   #Rebuild configuration and delete cache
-  print_info "[*] Rebuilding configuration..."
-  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
+  print_info "[*] Rebuilding configuration..."  | tee ${upgrade_log}
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs &> ${upgrade_log}
   if [ $? -gt 0  ]; then
-    print_error "Cannot rebuild cache" && exit 1
+    print_error "Cannot rebuild cache"  | tee ${upgrade_log} && exit 1
   fi
   print_info "[*] Deleting cache..."
-  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs &> ${upgrade_log}
   if [ $? -gt 0  ]; then
-    print_error "Cannot delete cache" && exit 1
+    print_error "Cannot delete cache"  | tee ${upgrade_log} && exit 1
   fi
-  # Update cronjobs
-  print_info "[*] Updating cronjobs..."
-  cd ${OTRS_ROOT}/var/cron/
-  for foo in *.dist; do cp $foo `basename $foo .dist`; done
-  cd -
 
-  print_info "[*] Major version upgrade finished !!"
+  rm -fr ${tmp_dir}
+  print_info "[*] Major version upgrade finished !!"  | tee ${upgrade_log}
 }
