@@ -199,6 +199,7 @@ function load_defaults(){
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
+  check_custom_skins_dir
   #set_variables
   #Check if a host-mounted volume for configuration storage was added to this
   #container
@@ -341,6 +342,25 @@ function check_host_mount_dir(){
     fi
   else
     print_info "Found existing configuration directory, Ok."
+  fi
+}
+
+function check_custom_skins_dir() {
+  #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
+  #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
+  if [ "$(ls -A ${OTRS_SKINS_MOUNT_DIR})" ] && [ ! "$(ls -A ${SKINS_PATH})" ];
+  then
+    print_info "Copying default skins..."
+    mkdir -p ${SKINS_PATH}
+    cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
+    if [ $? -eq 0 ];
+      then
+        print_info "Done."
+      else
+        print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
+    fi
+  else
+    print_info "Default skins already exists, Ok."
   fi
 }
 

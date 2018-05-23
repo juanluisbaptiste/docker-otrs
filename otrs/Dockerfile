@@ -6,6 +6,7 @@ ENV OTRS_ROOT "/opt/otrs/"
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
 ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
 ENV OTRS_CONFIG_MOUNT_DIR "/Kernel/"
+ENV OTRS_SKINS_MOUNT_DIR "/skins/"
 ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 
 RUN yum install -y epel-release && \
@@ -46,7 +47,8 @@ RUN chmod 755 /*.sh && \
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
 #host-volume is mounted.
-RUN mv ${OTRS_CONFIG_DIR} /
+RUN mv ${OTRS_CONFIG_DIR} / && \
+    mv ${SKINS_PATH} /
 
 EXPOSE 80
 CMD ["/run.sh"]
