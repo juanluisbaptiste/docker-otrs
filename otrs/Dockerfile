@@ -6,7 +6,9 @@ ENV OTRS_ROOT /opt/otrs/
 ENV SKINS_PATH $OTRS_ROOT/var/httpd/htdocs/skins/
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
 ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
-ENV OTRS_CONFIG_MOUNT_DIR "/config/"
+ENV OTRS_CONFIG_MOUNT_DIR "/Kernel/"
+ENV OTRS_SKINS_MOUNT_DIR "/skins/"
+ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 
 RUN yum install -y epel-release && \
     yum update -y && \
@@ -51,7 +53,12 @@ RUN chmod 755 /*.sh && \
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
 #host-volume is mounted.
+<<<<<<< HEAD
     mv ${OTRS_CONFIG_DIR} /
+=======
+RUN mv ${OTRS_CONFIG_DIR} / && \
+    mv ${SKINS_PATH} /
+>>>>>>> c43091f... Also copy skins to mounted skins dir so they arent lost on upgrade.
 
 EXPOSE 80
 CMD ["/run.sh"]

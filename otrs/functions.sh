@@ -1,21 +1,21 @@
 #!/bin/bash
-# Startup script for this OTRS container. 
+# Startup script for this OTRS container.
 #
-# The script by default loads a fresh OTRS install ready to be customized through 
-# the admin web interface. 
+# The script by default loads a fresh OTRS install ready to be customized through
+# the admin web interface.
 #
-# If the environment variable OTRS_INSTALL is set to yes, then the default web 
+# If the environment variable OTRS_INSTALL is set to yes, then the default web
 # installer can be run from localhost/otrs/installer.pl.
 #
-# If the environment variable OTRS_INSTALL="restore", then the configuration backup 
-# files will be loaded from ${OTRS_ROOT}/backups. This means you need to build 
-# the image with the backup files (sql and Confg.pm) you want to use, or, mount a 
+# If the environment variable OTRS_INSTALL="restore", then the configuration backup
+# files will be loaded from ${OTRS_ROOT}/backups. This means you need to build
+# the image with the backup files (sql and Confg.pm) you want to use, or, mount a
 # host volume to map where you store the backup files to ${OTRS_ROOT}/backups.
 #
-# To change the default database and admin interface user passwords you can define 
+# To change the default database and admin interface user passwords you can define
 # the following env vars too:
 # - OTRS_DB_PASSWORD to set the database password
-# - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password. 
+# - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password.
 #
 . ./util_functions.sh
 
@@ -187,6 +187,7 @@ function load_defaults(){
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
+  check_custom_skins_dir
   copy_default_config
   update_config_password $OTRS_DB_PASSWORD
 
@@ -245,7 +246,7 @@ function set_skins() {
 \$Self->{'Loader::Agent::DefaultSelectedSkin'} =  '$OTRS_AGENT_SKIN';\
 \n\$Self->{'Loader::Customer::SelectedSkin'} =  '$OTRS_CUSTOMER_SKIN';"\
  ${OTRS_ROOT}Kernel/Config.pm
- 
+
   #Set Agent interface logo
   [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
 
@@ -274,7 +275,7 @@ function set_logo () {
   logo_top=$4
   logo_width=$5
   logo_url=$6
-  
+
   sed -i "/$Self->{'SecureMode'} = 1;/a \
  \$Self->{'${interface}Logo'} =  {\n'StyleHeight' => '${logo_height}px',\
 \n'StyleRight' => '${logo_right}px',\
@@ -320,6 +321,25 @@ function check_host_mount_dir(){
     print_info "Found existing configuration directory, Ok."
   fi
   rm -fr ${OTRS_CONFIG_MOUNT_DIR}
+}
+
+function check_custom_skins_dir() {
+  #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
+  #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
+  if [ "$(ls -A ${OTRS_SKINS_MOUNT_DIR})" ] && [ ! "$(ls -A ${SKINS_PATH})" ];
+  then
+    print_info "Copying default skins..."
+    mkdir -p ${SKINS_PATH}
+    cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
+    if [ $? -eq 0 ];
+      then
+        print_info "Done."
+      else
+        print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
+    fi
+  else
+    print_info "Default skins already exists, Ok."
+  fi
 }
 
 ERROR_CODE="ERROR"
