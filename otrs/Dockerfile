@@ -47,7 +47,7 @@ RUN chmod 755 /*.sh && \
 #away the contents of ${OTRS_CONFIG_DIR} to another place and move them back
 #on first container run (see check_host_mount_dir on functions.sh), after the
 #host-volume is mounted.
-RUN mv ${OTRS_CONFIG_DIR} / && \
+    mv ${OTRS_CONFIG_DIR} / && \
     mv ${SKINS_PATH} /
 
 EXPOSE 80

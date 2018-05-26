@@ -346,21 +346,16 @@ function check_host_mount_dir(){
 }
 
 function check_custom_skins_dir() {
-  #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
-  #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
-  if [ "$(ls -A ${OTRS_SKINS_MOUNT_DIR})" ] && [ ! "$(ls -A ${SKINS_PATH})" ];
-  then
-    print_info "Copying default skins..."
-    mkdir -p ${SKINS_PATH}
-    cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
-    if [ $? -eq 0 ];
-      then
-        print_info "Done."
-      else
-        print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
-    fi
-  else
-    print_info "Default skins already exists, Ok."
+  #Copy the default skins from /skins (put there by the Dockerfile) to $SKINS_PATH
+  #to be able to use host-mounted volumes.
+  print_info "Copying default skins..."
+  mkdir -p ${SKINS_PATH}
+  cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
+  if [ $? -eq 0 ];
+    then
+      print_info "Done."
+    else
+      print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
   fi
 }
 
