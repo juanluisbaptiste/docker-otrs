@@ -2,4 +2,4 @@
 otrs/backup
 *~
 config/
-volumes
+volumes/*
