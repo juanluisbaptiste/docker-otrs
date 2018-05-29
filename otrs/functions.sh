@@ -147,13 +147,19 @@ function update_config_value(){
   sed  -i -r "s/($Self->\{$1\} *= *).*/\1\"$2\";/" ${OTRS_CONFIG_FILE}
 }
 
-function add_config_value(){
-  if grep -q "$1" ${OTRS_CONFIG_FILE}
+function add_config_value() {
+  local key=${1}
+  local value=${2}
+  #if grep -q "$1" ${OTRS_CONFIG_FILE}
+  grep -qE \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
+  if [ $? -eq 0 ]
   then
-    print_info "Config option already present, skipping..."
+    print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
+    sed  -i -r "s/($Self->\{*$key*\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
   else
+    print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
     sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
-    \$Self->{'$1'} = '$2';" ${OTRS_CONFIG_FILE}
+    \$Self->{'${key}'} = '${value}';" ${OTRS_CONFIG_FILE}
   fi
 }
 
