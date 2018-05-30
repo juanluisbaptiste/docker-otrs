@@ -338,7 +338,7 @@ function upgrade () {
 
   # Upgrade database
   print_info "[*] Doing database migration..." | tee -a ${upgrade_log}
-  $mysqlcmd -e "use ${OTRS_DATABASE}"
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
     su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
     if [ $? -gt 0  ]; then
