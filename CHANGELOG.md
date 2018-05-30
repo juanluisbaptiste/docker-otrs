@@ -1,5 +1,15 @@
 # docker-otrs Change Log
 
+## 6.0.7 - 2018-05-29
+### Added(
+- Check for backup file integrity before starting the restore backup process (OTRS_INSTALL=restore).
+
+### Changed
+- Fix issue #30: Set default passwords for OTRS_DB_PASSWORD, OTRS_ROOT_PASSWORD and MYSQL_ROOT_PASSWORD.
+
+### Removed
+- Removed all environment variables for setting a custom logo. Use a custom skin instead.
+
 ## 6.0.7 - 2018-05-07
 ### Added
 - New feature: do major version upgrades by setting env var OTRS_UPGRADE=yes.
