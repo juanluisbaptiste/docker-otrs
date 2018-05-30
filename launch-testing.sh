@@ -1,7 +1,6 @@
 #!/bin/bash
 # Helper script to cleanup the build environment, rebuild and relaunch. For the
 # desktop notification to work the script assumes the user belongs to docker group
-set -x
 NOTIFY_TIMEOUT=10000
 BUILD_IMAGE=0
 BUILD_NOCACHE=""
@@ -61,6 +60,7 @@ docker-compose rm -f -v
 if [ ${CLEAN} -eq 1 ]; then
   sudo rm -fr volumes/config
   sudo rm -fr volumes/mysql/*
+  sudo rm -fr volumes/skins
   params="--no-cache"
 fi
 

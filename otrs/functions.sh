@@ -21,14 +21,6 @@
 . ./otrs_ascii_logo.sh
 
 #Default configuration values
-DEFAULT_OTRS_AGENT_LOGO_HEIGHT="67"
-DEFAULT_OTRS_AGENT_LOGO_RIGHT="38"
-DEFAULT_OTRS_AGENT_LOGO_TOP="4"
-DEFAULT_OTRS_AGENT_LOGO_WIDTH="270"
-DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT="50"
-DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT="25"
-DEFAULT_OTRS_CUSTOMER_LOGO_TOP="2"
-DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH="135"
 DEFAULT_OTRS_ROOT_PASSWORD="changeme"
 DEFAULT_OTRS_DB_PASSWORD="changeme"
 DEFAULT_MYSQL_ROOT_PASSWORD="changeme"
@@ -166,30 +158,6 @@ function add_config_value() {
   fi
 }
 
-function set_variables() {
-  [ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "OTRS_HOSTNAME not set, setting hostname to '${OTRS_HOSTNAME}'"
-  [ -z "${OTRS_DB_PASSWORD}" ] && OTRS_DB_PASSWORD=`random_string` && print_info "OTRS_DB_PASSWORD not set, setting password to '${OTRS_DB_PASSWORD}'"
-  [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "OTRS_ROOT_PASSWORD not set, setting password to '${DEFAULT_OTRS_PASSWORD}'" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_PASSWORD}
-
-  #Set default skin to use for Agent interface
-  [ ! -z "${OTRS_AGENT_SKIN}" ] && print_info "Setting Agent Skin to '${OTRS_AGENT_SKIN}'"
-  if [ ! -z "${OTRS_AGENT_LOGO}" ]; then
-    print_info "Setting Agent Logo to: '${OTRS_AGENT_LOGO}'"
-    [ -z "${OTRS_AGENT_LOGO_HEIGHT}" ] && print_info "OTRS_AGENT_LOGO_HEIGHT not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_HEIGHT}'" && OTRS_AGENT_LOGO_HEIGHT=${DEFAULT_OTRS_AGENT_LOGO_HEIGHT}
-    [ -z "${OTRS_AGENT_LOGO_RIGHT}" ] && print_info "OTRS_AGENT_LOGO_RIGHT not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_RIGHT}'" && OTRS_AGENT_LOGO_RIGHT=${DEFAULT_OTRS_AGENT_LOGO_RIGHT}
-    [ -z "${OTRS_AGENT_LOGO_TOP}" ] && print_info "OTRS_AGENT_LOGO_TOP not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_TOP}'" && OTRS_AGENT_LOGO_TOP=${DEFAULT_OTRS_AGENT_LOGO_TOP}
-    [ -z "${OTRS_AGENT_LOGO_WIDTH}" ] && print_info "OTRS_AGENT_LOGO_WIDTH not set, setting default value '${DEFAULT_OTRS_AGENT_LOGO_WIDTH}'" && OTRS_AGENT_LOGO_WIDTH=${DEFAULT_OTRS_AGENT_LOGO_WIDTH}
-  fi
-  [ ! -z "${OTRS_CUSTOMER_SKIN}" ] && print_info "Setting Customer Skin to '$OTRS_CUSTOMER_SKIN'"
-  if [ ! -z "${OTRS_CUSTOMER_LOGO}" ]; then
-    print_info "Setting Customer Logo to: '$OTRS_CUSTOMER_LOGO'"
-    [ -z "${OTRS_CUSTOMER_LOGO_HEIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_HEIGHT not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT}'" && OTRS_CUSTOMER_LOGO_HEIGHT=${DEFAULT_OTRS_CUSTOMER_LOGO_HEIGHT}
-    [ -z "${OTRS_CUSTOMER_LOGO_RIGHT}" ] && print_info "OTRS_CUSTOMER_LOGO_RIGHT not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT}'" && OTRS_CUSTOMER_LOGO_RIGHT=${DEFAULT_OTRS_CUSTOMER_LOGO_RIGHT}
-    [ -z "${OTRS_CUSTOMER_LOGO_TOP}" ] && print_info "OTRS_CUSTOMER_LOGO_TOP not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_TOP}'" && OTRS_CUSTOMER_LOGO_TOP=${DEFAULT_OTRS_CUSTOMER_LOGO_TOP}
-    [ -z "${OTRS_CUSTOMER_LOGO_WIDTH}" ] && print_info "OTRS_CUSTOMER_LOGO_WIDTH not set, setting default value '${DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH}'" && OTRS_CUSTOMER_LOGO_WIDTH=${DEFAULT_OTRS_CUSTOMER_LOGO_WIDTH}
-  fi
-}
-
 # Sets default configuration options on $OTRS_ROOT/Kernel/Config.pm. Options set
 # here can't be modified via sysConfig later.
 function setup_otrs_config() {
@@ -249,11 +217,6 @@ function set_ticket_counter() {
 function set_skins() {
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
-  #Set Agent interface logo
-  [ ! -z ${OTRS_AGENT_LOGO} ] && set_agent_logo
-
-  #Set Customer interface logo
-  [ ! -z ${OTRS_CUSTOMER_LOGO} ] && set_customer_logo
 }
 
 function set_users_skin() {
@@ -261,33 +224,6 @@ function set_users_skin() {
   $mysqlcmd -e "UPDATE user_preferences SET preferences_value = '${OTRS_AGENT_SKIN}' WHERE preferences_key = 'UserSkin'" otrs
   [ $? -gt 0 ] && print_error "Couldn't change default skin for existing users !!\n"
 }
-
-function set_agent_logo() {
-  set_logo "Agent" ${OTRS_AGENT_LOGO_HEIGHT} ${OTRS_AGENT_LOGO_RIGHT} ${OTRS_AGENT_LOGO_TOP} ${OTRS_AGENT_LOGO_WIDTH} ${OTRS_AGENT_LOGO}
-}
-
-function set_customer_logo() {
-  set_logo "Customer" ${OTRS_CUSTOMER_LOGO_HEIGHT} ${OTRS_CUSTOMER_LOGO_RIGHT} ${OTRS_CUSTOMER_LOGO_TOP} ${OTRS_CUSTOMER_LOGO_WIDTH} ${OTRS_CUSTOMER_LOGO}
-}
-
-function set_logo () {
-  interface=$1
-  logo_height=$2
-  logo_right=$3
-  logo_top=$4
-  logo_width=$5
-  logo_url=$6
-
-  add_config_value "${interface}Logo" "{\n'StyleHeight' => '${logo_height}px',\
- \n'StyleRight' => '${logo_right}px',\
- \n'StyleTop' => '${logo_top}px',\
- \n'StyleWidth' => '${logo_width}px',\
- \n'URL' => '$logo_url'\n};"
-}
-
-# function set_customer_logo() {
-#   sed -i "/$Self->{'SecureMode'} = 1;/a\$Self->{'CustomerLogo'} =  {\n'StyleHeight' => '${OTRS_CUSTOMER_LOGO_HEIGHT}px',\n'StyleRight' => '${OTRS_CUSTOMER_LOGO_RIGHT}px',\n'StyleTop' => '${OTRS_CUSTOMER_LOGO_TOP}px',\n'StyleWidth' => '${OTRS_CUSTOMER_LOGO_WIDTH}px',\n'URL' => '$OTRS_CUSTOMER_LOGO'\n};" ${OTRS_ROOT}Kernel/Config.pm
-# }
 
 function check_host_mount_dir() {
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
