@@ -73,6 +73,16 @@ function restore_backup() {
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   add_config_value "DatabasePort" ${OTRS_DB_PORT}
 
+  #Check first that the backup file exists
+  restore_file="${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE}"
+  if [ ! -f ${restore_file} ]; then
+    print_error "Backup file does not exist !!" && exit 1
+  fi
+  #Check file integrity
+  if (! tar tf ${restore_file} &> /dev/null) || (! tar xOf ${restore_file} &> /dev/null); then
+    print_error "Backup file is corrupt !!" && exit 1
+  fi
+
   #As this is a restore, drop database first.
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
@@ -91,13 +101,13 @@ function restore_backup() {
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
   #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
   #backup file.
-  if [ -d ${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE} ]; then
+  if [ -d ${restore_file} ]; then
     restore_dir="${OTRS_BACKUP_DATE}/"
   else
     temp_dir=$(mktemp -d )
     cd ${temp_dir}
-    tar zxvf ${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE}
-    [ $? -gt 0 ] && print_error "Couldn't uncompress main backup file !!" && exit 1
+    tar zxvf ${restore_file}
+    [ $? -gt 0 ] && print_error "Could not uncompress main backup file !!" && exit 1
     cd ..
     restore_dir="$(ls -t ${temp_dir}|head -n1)"
   fi
