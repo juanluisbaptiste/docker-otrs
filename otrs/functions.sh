@@ -87,7 +87,7 @@ function restore_backup() {
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
     if [ "${OTRS_DROP_DATABASE}" == "yes" ]; then
-      print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DROP_DATABASE=\6[0m]\e[31m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
+      print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DROP_DATABASE=\e[0m\e[${OTRS_ASCII_COLOR_RED}m${OTRS_DROP_DATABASE}\e[0m, Dropping existing database\n"
       $mysqlcmd -e "drop database ${OTRS_DB_NAME}"
     else
       print_error "Couldn't load OTRS backup, databse already exists !!" && exit 1
