@@ -4,6 +4,10 @@
 ### Changed
 - Updated to latest OTRS version 6.0.8.
 
+## 5.0.28 - 2018-06-12
+### Changed
+- Updated to OTRS 5.0.28.
+
 ## 6.0.7 - 2018-05-29
 ### Added
 - Check for backup file integrity before starting the restore backup process (OTRS_INSTALL=restore).
