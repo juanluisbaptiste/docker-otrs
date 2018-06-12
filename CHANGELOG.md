@@ -1,7 +1,11 @@
 # docker-otrs Change Log
 
+## 6.0.8 - 2018-06-12
+### Changed
+- Updated to latest OTRS version 6.0.8.
+
 ## 6.0.7 - 2018-05-29
-### Added(
+### Added
 - Check for backup file integrity before starting the restore backup process (OTRS_INSTALL=restore).
 
 ### Changed
