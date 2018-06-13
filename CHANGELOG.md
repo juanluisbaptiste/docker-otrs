@@ -6,7 +6,12 @@
 
 ## 5.0.28 - 2018-06-12
 ### Changed
-- Updated to OTRS 5.0.28.
+- Updated otrs-5_0_x branch to OTRS 5.0.28.
+
+## 4.0.30 - 2018-06-12
+### Changed
+- Updated otrs-4_0_x branch to OTRS 4.0.30.
+
 
 ## 6.0.7 - 2018-05-29
 ### Added
