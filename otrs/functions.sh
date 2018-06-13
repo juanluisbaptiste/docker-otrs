@@ -36,23 +36,21 @@ OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
 OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
 OTRS_CONFIG_MOUNT_DIR="/Kernel"
 OTRS_DATABASE="otrs"
+OTRS_DB_HOST="mariadb"
+OTRS_DB_PORT=3306
+WAIT_TIMEOUT=2
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 
-mysqlcmd="mysql -uroot -h mariadb -p$MYSQL_ROOT_PASSWORD "
+mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -p${MYSQL_ROOT_PASSWORD} "
 
-function wait_for_db(){
-  while true; do
-    out="`$mysqlcmd -e "SELECT COUNT(*) FROM mysql.user;" 2>&1`"
-    print_info $out
-    echo "$out" | grep -E "COUNT|Enter" 2>&1 > /dev/null
-    if [ $? -eq 0 ]; then
-      print_info "Server is up !"
-      break
-    fi
-    print_warning "DB server still isn't up, sleeping a little bit ..."
-    sleep 2
+function wait_for_db() {
+  while [ ! "$(mysqladmin ping -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -u root \
+              --password="${MYSQL_ROOT_PASSWORD}"  --connect_timeout=3)" ]; do
+    print_info "Database server is not available. Waiting ${WAIT_TIMEOUT} seconds..."
+    sleep ${WAIT_TIMEOUT}
   done
+  print_info "Database server is up !"
 }
 
 function create_db(){
