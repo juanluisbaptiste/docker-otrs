@@ -270,10 +270,10 @@ function set_skins() {
   [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" $OTRS_AGENT_SKIN
   [ ! -z $OTRS_AGENT_SKIN ] &&  add_config_value "Loader::Customer::SelectedSkin" $OTRS_CUSTOMER_SKIN
   #Set Agent interface logo
-  [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
-
-  #Set Customer interface logo
-  [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
+  # [ ! -z $OTRS_AGENT_LOGO ] && set_agent_logo
+  #
+  # #Set Customer interface logo
+  # [ ! -z $OTRS_CUSTOMER_LOGO ] && set_customer_logo
 }
 
 function set_users_skin(){
