@@ -17,9 +17,10 @@ services:
   # variables. Look at the README.md file for a list of available variables.
     env_file: otrs-setup.env
     volumes:
-      - './volumes/config:/opt/otrs/Kernel'
-      - './volumes/backup:/var/otrs/backups'
-      - '/etc/localtime:/etc/localtime:ro'
+      - ./volumes/config:/opt/otrs/Kernel
+      - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
+      - ./volumes/backup:/var/otrs/backups
+      - /etc/localtime:/etc/localtime:ro
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
     build: mariadb
