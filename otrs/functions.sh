@@ -189,6 +189,7 @@ function load_defaults() {
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
+  check_custom_skins_dir
   #Setup OTRS configuration
   setup_otrs_config
 
@@ -251,6 +252,20 @@ function check_host_mount_dir() {
     fi
   else
     print_info "Found existing configuration directory, Ok."
+  fi
+}
+
+function check_custom_skins_dir() {
+  #Copy the default skins from /skins (put there by the Dockerfile) to $SKINS_PATH
+  #to be able to use host-mounted volumes.
+  print_info "Copying default skins..."
+  mkdir -p ${SKINS_PATH}
+  cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
+  if [ $? -eq 0 ];
+    then
+      print_info "Done."
+    else
+      print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
   fi
 }
 
