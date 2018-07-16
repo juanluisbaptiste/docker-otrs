@@ -226,7 +226,12 @@ function set_ticket_counter() {
 }
 
 function set_skins() {
-  [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+  if [ ! -z ${OTRS_AGENT_SKIN} ]; then
+    print_info "Setting custom logo..."
+    add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+    # Remove AgentLogo option to disable default logo so the skin one is picked up
+    sed -i '/AgentLogo/,/;/d' ${OTRS_CONFIG_DIR}/Config/Files/ZZZAAuto.pm
+  fi
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
 }
 
