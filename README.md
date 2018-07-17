@@ -63,8 +63,9 @@ Those environment variables is what you can configure by running the installer f
 
 The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
 
-### Note ####
-Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
+### Notes ####
+* Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
+* Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
 
     chown 27 volumes/mysql
     chown 500:48 volumes/config
@@ -112,7 +113,8 @@ To set the customer interface skin set `OTRS_CUSTOMER_SKIN` environment variable
 
     OTRS_CUSTOMER_SKIN: "ivory"
 
-If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. You can also set all the environment variables in there too, for example:
+### Custom skin
+If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. Take a look at the [official documentation](http://doc.otrs.com/doc/manual/developer/stable/en/html/skins.html) on instructions on how to create one. You can also set all the environment variables in there too, for example:
 
     FROM juanluisbaptiste/otrs:latest
     MAINTAINER Foo Bar <foo@bar.com>
