@@ -231,6 +231,8 @@ function set_skins() {
     add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
     # Remove AgentLogo option to disable default logo so the skin one is picked up
     sed -i '/AgentLogo/,/;/d' ${OTRS_CONFIG_DIR}/Config/Files/ZZZAAuto.pm
+    # Also disable default value of sysconfig so XML/Framework.xml AgentLogo is valid=0 
+    $mysqlcmd -e "UPDATE sysconfig_default SET is_valid = 0 WHERE name = 'AgentLogo'" otrs
   fi
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
 }
