@@ -107,32 +107,9 @@ To set the agent interface skin set `OTRS_AGENT_SKIN` environment variable, for 
 
     OTRS_AGENT_SKIN: "ivory"
 
-To set the agent Interface logo set `OTRS_AGENT_LOGO`:
-
-    OTRS_AGENT_LOGO: skins/Agent/ivory/img/your_logo.png
-
-You can also control the logo's size and placement (set in px units):
-
-    OTRS_AGENT_LOGO_HEIGHT: 50
-    OTRS_AGENT_LOGO_RIGHT: 40
-    OTRS_AGENT_LOGO_TOP: 5
-    OTRS_AGENT_LOGO_WIDTH: 240
-
 To set the customer interface skin set `OTRS_CUSTOMER_SKIN` environment variable, for example:
 
     OTRS_CUSTOMER_SKIN: "ivory"
-
-To set the customer Interface logo set `OTRS_CUSTOMER_LOGO`:
-
-    OTRS_CUSTOMER_LOGO: skins/Customer/ivory/img/your_logo.png
-
-You can also control the logo's size and placement (set in px units):
-
-    OTRS_CUSTOMER_LOGO_HEIGHT: 50
-    OTRS_CUSTOMER_LOGO_RIGHT: 40
-    OTRS_CUSTOMER_LOGO_TOP: 5
-    OTRS_CUSTOMER_LOGO_WIDTH: 240
-
 
 If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. You can also set all the environment variables in there too, for example:
 
