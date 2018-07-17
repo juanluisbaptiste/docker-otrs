@@ -177,6 +177,7 @@ function setup_otrs_config() {
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   #Set general configuration values
   [ ! -z "${OTRS_LANGUAGE}" ] && add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
+  [ ! -z "${OTRS_TIMEZONE}" ] && add_config_value "OTRSTimeZone" ${OTRS_TIMEZONE} && add_config_value "UserDefaultTimeZone" ${OTRS_TIMEZONE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   #Set email SMTP configuration
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"

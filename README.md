@@ -53,6 +53,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
+* `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
