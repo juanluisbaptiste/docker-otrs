@@ -50,8 +50,9 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_DB_HOST` Hostname or IP address of the database server. Default is `mariadb`.
 * `OTRS_DB_PORT` Port of the database server. Default is `3306`.
 * `OTRS_DB_USER` Database user. Default is `otrs`.
-* `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
+* `OTRS_DB_PASSWORD` otrs user database password. Default password is `changeme`.
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
+* `MYSQL_ROOT_PASSWORD` Database root password so it can be setup. Default password is `changeme`.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
 * `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
