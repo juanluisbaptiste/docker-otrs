@@ -41,7 +41,8 @@ do
   in
     b) BUILD_IMAGE=1
        ;;
-    B) BUILD_NOCACHE="--no-cache"
+    B) BUILD_IMAGE=1
+       BUILD_NOCACHE="--no-cache"
        ;;
     c) CLEAN=1
        ;;
