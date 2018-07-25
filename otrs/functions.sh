@@ -228,8 +228,8 @@ function set_ticket_counter() {
 
 function set_skins() {
   if [ ! -z ${OTRS_AGENT_SKIN} ]; then
-    print_info "Setting custom logo..."
     add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+    print_info "Setting Agent interface custom logo..."
     # Remove AgentLogo option to disable default logo so the skin one is picked up
     sed -i '/AgentLogo/,/;/d' ${OTRS_CONFIG_DIR}/Config/Files/ZZZAAuto.pm
     # Also disable default value of sysconfig so XML/Framework.xml AgentLogo is valid=0 
