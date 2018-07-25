@@ -1,5 +1,12 @@
 # docker-otrs Change Log
 
+## 6.0.9 - 2018-07-24
+### Changed
+- Updated to latest OTRS version 6.0.9.
+- improvements in custom skins handling.
+### Added
+- New environment variable OTRS_TIMEZONE to set the default timezone.
+
 ## 6.0.8 - 2018-06-12
 ### Changed
 - Updated to latest OTRS version 6.0.8.
