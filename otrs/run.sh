@@ -48,7 +48,6 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     restore_backup ${OTRS_BACKUP_DATE}
   fi
   reinstall_modules
-  set_skins
   set_ticket_counter
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
@@ -57,6 +56,7 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
+  set_skins
 else
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[${OTRS_ASCII_COLOR_BLUE}m OTRS $OTRS_VERSION \e[0minstaller !!"

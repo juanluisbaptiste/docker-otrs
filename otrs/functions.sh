@@ -176,7 +176,8 @@ function setup_otrs_config() {
   add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   #Set general configuration values
-  add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
+  [ ! -z "${OTRS_LANGUAGE}" ] && add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
+  [ ! -z "${OTRS_TIMEZONE}" ] && add_config_value "OTRSTimeZone" ${OTRS_TIMEZONE} && add_config_value "UserDefaultTimeZone" ${OTRS_TIMEZONE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   #Set email SMTP configuration
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
@@ -189,6 +190,7 @@ function load_defaults() {
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
+  check_custom_skins_dir
   #Setup OTRS configuration
   setup_otrs_config
 
@@ -225,7 +227,14 @@ function set_ticket_counter() {
 }
 
 function set_skins() {
-  [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+  if [ ! -z ${OTRS_AGENT_SKIN} ]; then
+    add_config_value "Loader::Agent::DefaultSelectedSkin" ${OTRS_AGENT_SKIN}
+    print_info "Setting Agent interface custom logo..."
+    # Remove AgentLogo option to disable default logo so the skin one is picked up
+    sed -i '/AgentLogo/,/;/d' ${OTRS_CONFIG_DIR}/Config/Files/ZZZAAuto.pm
+    # Also disable default value of sysconfig so XML/Framework.xml AgentLogo is valid=0 
+    $mysqlcmd -e "UPDATE sysconfig_default SET is_valid = 0 WHERE name = 'AgentLogo'" otrs
+  fi
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
 }
 
@@ -251,6 +260,20 @@ function check_host_mount_dir() {
     fi
   else
     print_info "Found existing configuration directory, Ok."
+  fi
+}
+
+function check_custom_skins_dir() {
+  #Copy the default skins from /skins (put there by the Dockerfile) to $SKINS_PATH
+  #to be able to use host-mounted volumes.
+  print_info "Copying default skins..."
+  mkdir -p ${SKINS_PATH}
+  cp -rfp ${OTRS_SKINS_MOUNT_DIR}/* ${SKINS_PATH}
+  if [ $? -eq 0 ];
+    then
+      print_info "Done."
+    else
+      print_error "Can't copy default skins to ${SKINS_PATH}" && exit 1
   fi
 }
 

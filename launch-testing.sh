@@ -6,6 +6,7 @@ BUILD_IMAGE=0
 BUILD_NOCACHE=""
 CLEAN=0
 DEBUG=0
+RUN=0
 params=""
 
 usage()
@@ -20,6 +21,7 @@ OPTIONS:
 -b    Build image.
 -B    Build image (--no-cache).
 -c    Clean volumes.
+-r    Run container.
 -h    Print help.
 -V    Debug mode.
 
@@ -33,15 +35,18 @@ function ctrl_c() {
         exit 0
 }
 
-while getopts bBchV option
+while getopts bBcrhV option
 do
   case "${option}"
   in
     b) BUILD_IMAGE=1
        ;;
-    B) BUILD_NOCACHE="--no-cache"
+    B) BUILD_IMAGE=1
+       BUILD_NOCACHE="--no-cache"
        ;;
     c) CLEAN=1
+       ;;
+    r) RUN=1
        ;;
     h) usage
        exit
@@ -76,4 +81,4 @@ if [ ${BUILD_IMAGE} -eq 1 ]; then
     paplay /usr/share/sounds/freedesktop/stereo/complete.oga
   fi
 fi
-docker-compose up
+[ ${RUN} -eq 1  ] && docker-compose up

@@ -50,9 +50,11 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_DB_HOST` Hostname or IP address of the database server. Default is `mariadb`.
 * `OTRS_DB_PORT` Port of the database server. Default is `3306`.
 * `OTRS_DB_USER` Database user. Default is `otrs`.
-* `OTRS_DB_PASSWORD` otrs user database password. If it's not set the password will be randomly generated (recommended).
+* `OTRS_DB_PASSWORD` otrs user database password. Default password is `changeme`.
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
+* `MYSQL_ROOT_PASSWORD` Database root password so it can be setup. Default password is `changeme`.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
+* `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
@@ -61,8 +63,9 @@ Those environment variables is what you can configure by running the installer f
 
 The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
 
-### Note ####
-Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
+### Notes ####
+* Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
+* Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
 
     chown 27 volumes/mysql
     chown 500:48 volumes/config
@@ -106,34 +109,12 @@ To set the agent interface skin set `OTRS_AGENT_SKIN` environment variable, for 
 
     OTRS_AGENT_SKIN: "ivory"
 
-To set the agent Interface logo set `OTRS_AGENT_LOGO`:
-
-    OTRS_AGENT_LOGO: skins/Agent/ivory/img/your_logo.png
-
-You can also control the logo's size and placement (set in px units):
-
-    OTRS_AGENT_LOGO_HEIGHT: 50
-    OTRS_AGENT_LOGO_RIGHT: 40
-    OTRS_AGENT_LOGO_TOP: 5
-    OTRS_AGENT_LOGO_WIDTH: 240
-
 To set the customer interface skin set `OTRS_CUSTOMER_SKIN` environment variable, for example:
 
     OTRS_CUSTOMER_SKIN: "ivory"
 
-To set the customer Interface logo set `OTRS_CUSTOMER_LOGO`:
-
-    OTRS_CUSTOMER_LOGO: skins/Customer/ivory/img/your_logo.png
-
-You can also control the logo's size and placement (set in px units):
-
-    OTRS_CUSTOMER_LOGO_HEIGHT: 50
-    OTRS_CUSTOMER_LOGO_RIGHT: 40
-    OTRS_CUSTOMER_LOGO_TOP: 5
-    OTRS_CUSTOMER_LOGO_WIDTH: 240
-
-
-If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. You can also set all the environment variables in there too, for example:
+### Custom skin
+If you are adding your own skins, the easiest way is create your own `Dockerfile` inherited from this image and then `COPY` the skin files there. Take a look at the [official documentation](http://doc.otrs.com/doc/manual/developer/stable/en/html/skins.html) on instructions on how to create one. You can also set all the environment variables in there too, for example:
 
     FROM juanluisbaptiste/otrs:latest
     MAINTAINER Foo Bar <foo@bar.com>
