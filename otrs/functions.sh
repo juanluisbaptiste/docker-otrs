@@ -175,6 +175,7 @@ function setup_otrs_config() {
   add_config_value "DatabaseUser" ${OTRS_DB_USER}
   add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
+  add_config_value "Database" ${OTRS_DB_NAME}
   #Set general configuration values
   [ ! -z "${OTRS_LANGUAGE}" ] && add_config_value "DefaultLanguage" ${OTRS_LANGUAGE}
   [ ! -z "${OTRS_TIMEZONE}" ] && add_config_value "OTRSTimeZone" ${OTRS_TIMEZONE} && add_config_value "UserDefaultTimeZone" ${OTRS_TIMEZONE}
