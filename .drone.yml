@@ -29,7 +29,7 @@ publish:
       - latest
 #      - $${BRANCH}-$${COMMIT:0:8}
 #      - 6.0.6-$${COMMIT:0:8}
-      - 6.0.8
+      - 6.0.10
     file: otrs/Dockerfile
     context: otrs
     environment:
