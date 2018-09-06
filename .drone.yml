@@ -27,7 +27,7 @@ publish:
     repo: $$DOCKER_USER/otrs
     tag:
       - latest-5x
-      - 5.0.27
+      - 5.0.29
     file: otrs/Dockerfile
     context: otrs
     environment:
