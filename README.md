@@ -70,7 +70,9 @@ The included docker-compose file uses `host mounted data containers` to store th
     chown 27 volumes/mysql
     chown 500:48 volumes/config
 
-For production use there's another `docker-compose` file that points to the pre-built images (be sure that the _host volume directory permissions are correct_ as described before). Then, after adjusting the [`docker-compose-prod.yml`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose-prod.yml) file with the previously described environment variables (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix)), you can test the service with `docker-compose`:
+For production use there's another `docker-compose` file that points to the pre-built images (be sure that the _host volume directory permissions are correct_ as described before).
+
+Before starting the service you need to configure it: copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/otrs/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
 
     sudo docker-compose -f docker-compose-prod.yml up
 
