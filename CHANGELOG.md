@@ -1,5 +1,20 @@
 # docker-otrs Change Log
 
+## 6.0.10 - 2018-09-06
+### Changed
+- Updated to latest OTRS version 6.0.10.
+- Improved backups restore documentation.
+### Added
+- New example env file with all configurable variables and updated README.md.
+
+## 5.0.29 - 2018-09-06
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.29.
+
+## 4.0.31 - 2018-09-06
+### Changed
+- Updated otrs-4_0_x branch to OTRS 4.0.31.
+
 ## 6.0.9 - 2018-07-24
 ### Changed
 - Updated to latest OTRS version 6.0.9.
@@ -18,7 +33,6 @@
 ## 4.0.30 - 2018-06-12
 ### Changed
 - Updated otrs-4_0_x branch to OTRS 4.0.30.
-
 
 ## 6.0.7 - 2018-05-29
 ### Added
