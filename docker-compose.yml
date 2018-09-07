@@ -13,9 +13,7 @@ services:
     depends_on:
       - mariadb
       - postfix
-  # You should use env_file: instead of environment: for your environment
-  # variables. Look at the README.md file for a list of available variables.
-    env_file: otrs-setup.env
+    env_file: .env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
       - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
@@ -26,7 +24,7 @@ services:
     build: mariadb
     expose:
       - "3306"
-    env_file: otrs-setup.env
+    env_file: .env
     volumes:
       - './volumes/mysql:/var/lib/mysql'
       - '/etc/localtime:/etc/localtime:ro'
@@ -36,4 +34,4 @@ services:
       - '25'
     # See juanluisbaptiste/postfix github page for the contents
     # and an explanation of credentials-smtp.
-    env_file: credentials-smtp.env
+    env_file: .env
