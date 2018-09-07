@@ -17,6 +17,7 @@ services:
     env_file: .env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
+      - './volumes/skins:/opt/otrs/var/httpd/htdocs/skins/'
       - './volumes/backup:/var/otrs/backups'
       - '/etc/localtime:/etc/localtime:ro'
   mariadb:
