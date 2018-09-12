@@ -20,6 +20,23 @@
 . ./util_functions.sh
 . ./otrs_ascii_logo.sh
 
+function enable_debug_mode () {
+  print_info "Preparing debug mode..."
+  yum install -y telnet dig
+  [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
+  print_info "Done."
+  env
+  set -x
+}
+
+if [ "$OTRS_DEBUG" == "yes" ];then
+  enable_debug_mode
+fi
+
+function random_string() {
+  echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
+}
+
 #Default configuration values
 DEFAULT_OTRS_ROOT_PASSWORD="changeme"
 DEFAULT_OTRS_DB_PASSWORD="changeme"
@@ -39,7 +56,7 @@ OTRS_ASCII_COLOR_RED="31"
 [ -z "${OTRS_DB_HOST}" ] && OTRS_DB_HOST="mariadb"
 [ -z "${OTRS_DB_PORT}" ] && OTRS_DB_PORT=3306
 [ -z "${SHOW_OTRS_LOGO}" ] && SHOW_OTRS_LOGO="yes"
-[ -z "${OTRS_HOSTNAME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_HOSTNAME\e[0m not set, setting hostname to '${OTRS_HOSTNAME}'" && OTRS_HOSTNAME="otrs-`random_string`"
+[ -z "${OTRS_HOSTNAME}" ] && OTRS_HOSTNAME="otrs-`random_string`" && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_HOSTNAME\e[0m not set, setting hostname to '${OTRS_HOSTNAME}'"
 [ -z "${OTRS_DB_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_PASSWORD}\e[0m" && OTRS_DB_PASSWORD=${DEFAULT_OTRS_DB_PASSWORD}
 [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_ROOT_PASSWORD}\e[0m" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_ROOT_PASSWORD}
 [ -z "${MYSQL_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_PASSWORD}\e[0m" && MYSQL_ROOT_PASSWORD=${DEFAULT_MYSQL_ROOT_PASSWORD}
@@ -146,10 +163,6 @@ check_version() {
     local winner=$(echo -e "$version\n$check" | sed '/^$/d' | sort -nr | head -1)
     [[ "$winner" = "$version" ]] && return 0
     return 1
-}
-
-function random_string() {
-  echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
 }
 
 function add_config_value() {
@@ -288,15 +301,6 @@ function write_log () {
 
   echo "$[ 1 + $[ RANDOM % 1000 ]]" >> ${BACKUP_LOG_FILE}
   echo "Status=$code,Message=$message" >> ${BACKUP_LOG_FILE}
-}
-
-function enable_debug_mode () {
-  print_info "Preparing debug mode..."
-  yum install -y telnet dig
-  [ $? -gt 0 ] && print_error "ERROR: Could not intall debug tools." && exit 1
-  print_info "Done."
-  env
-  set -x
 }
 
 function reinstall_modules () {
