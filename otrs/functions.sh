@@ -235,7 +235,7 @@ function set_ticket_counter() {
     echo "${OTRS_TICKET_COUNTER}" > ${OTRS_ROOT}var/log/TicketCounter.log
   fi
   if [ ! -z $OTRS_NUMBER_GENERATOR ]; then
-    add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${{OTRS_NUMBER_GENERATOR}}"
+    add_config_value "Ticket::NumberGenerator" "Kernel::System::Ticket::Number::${OTRS_NUMBER_GENERATOR}"
   fi
 }
 
