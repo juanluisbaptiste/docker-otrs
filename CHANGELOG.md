@@ -4,6 +4,13 @@
 ### Changed
 - Updated to latest OTRS version 6.0.101.
 
+## 5.0.30 - 2018-10-01
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.30.
+
+## 4.0.32 - 2018-10-01
+### Changed
+- Updated otrs-4_0_x branch to OTRS 4.0.32.
 
 ## 6.0.10 - 2018-09-12
 ### Changed
