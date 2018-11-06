@@ -65,6 +65,7 @@ docker-compose rm -f -v
 if [ ${CLEAN} -eq 1 ]; then
   sudo rm -fr volumes/config
   sudo rm -fr volumes/mysql/*
+  sudo chown -R 27 volumes/mysql
   sudo rm -fr volumes/skins
   params="--no-cache"
 fi
