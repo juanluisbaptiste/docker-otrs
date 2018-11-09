@@ -408,16 +408,21 @@ function term_handler () {
 
 function stop_all_services () {
   print_info "Stopping all OTRS services..."
-  supervisorctl stop crond &
+  # For some reason stop all hangs in the foreground and only starts one process
   supervisorctl stop rsyslog &
+  supervisorctl stop crond &
   supervisorctl stop httpd &
   su -c "${OTRS_ROOT}/bin/Cron.sh stop" -s /bin/bash otrs
   su -c "${OTRS_ROOT}/bin/otrs.Daemon.pl stop" -s /bin/bash otrs
+  sleep 3
 }
 
 function start_all_services () {
   print_info "Starting all OTRS services..."
-  supervisorctl start all
+  # For some reason start all hangs in the foreground and only starts one process
+  supervisorctl start rsyslog &
+  supervisorctl start crond &
+  supervisorctl start httpd &
   su -c "${OTRS_ROOT}/bin/otrs.Daemon.pl start" -s /bin/bash otrs
   su -c "${OTRS_ROOT}/bin/Cron.sh start" -s /bin/bash otrs
 }
