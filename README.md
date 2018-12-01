@@ -139,14 +139,10 @@ Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will 
 
 To restore an OTRS backup file (not necesarily created with this container) the following environment variables must be added:
 
-* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
-environment variable.
-* `OTRS_BACKUP_DATE` is the backup name to restore. It can have two values:
-   - Uncompressed backup file: A directory with its name in the same *date_time* format that the OTRS backup
-script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name).
-   - Compressed backup file: A gzip tarball file created by OTRS.
+* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` environment variable. 
+* `OTRS_BACKUP_DATE` is the file name of the compressed tarbal that should be restored. Simply define it inside `.env` by adding the following line: `OTRS_BACKUP_DATE=otrs-30-11-2018_08_00-full.tar.gz`. Remember to replace its value with the full file name with the correct date of your backup.
 
-Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
+Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file). Be sure to set `OTRS_INSTALL` back to `no` once the backup is restored and to reboot otrs.
 
 ## Upgrading
 
