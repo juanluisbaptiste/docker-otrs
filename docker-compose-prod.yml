@@ -24,7 +24,7 @@ services:
     image: juanluisbaptiste/otrs-mariadb:latest
     expose:
     - "3306"
-    env_file: otrs-setup.env
+    env_file: .env
     volumes:
       - './volumes/mysql:/var/lib/mysql'
       - '/etc/localtime:/etc/localtime:ro'
