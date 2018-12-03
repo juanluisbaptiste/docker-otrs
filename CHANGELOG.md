@@ -14,7 +14,7 @@
 
 ## 6.0.11 - 2018-10-01
 ### Changed
-- Updated to latest OTRS version 6.0.101.
+- Updated to latest OTRS version 6.0.11.
 
 ## 5.0.30 - 2018-10-01
 ### Changed
