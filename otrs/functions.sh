@@ -93,12 +93,23 @@ function restore_backup() {
 
   #Check first that the backup file exists
   restore_file="${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE}"
-  if [ ! -f ${restore_file} ]; then
+  if [ -f ${restore_file} ]; then
+    #Check file integrity
+    if (! tar tf ${restore_file} &> /dev/null) || (! tar xOf ${restore_file} &> /dev/null); then
+      print_error "Backup file is corrupt !!" && exit 1
+    fi
+    # Uncompress file
+    temp_dir=$(mktemp -d )
+    cd ${temp_dir}
+    tar zxvf ${restore_file}
+    [ $? -gt 0 ] && print_error "Could not uncompress main backup file !!" && exit 1
+    cd ..
+    restore_dir="$(ls -t ${temp_dir}|head -n1)"
+
+  elif [[ -d ${restore_file} ]]; then
+    restore_dir="${restore_file}/"
+  else
     print_error "Backup file does not exist !!" && exit 1
-  fi
-  #Check file integrity
-  if (! tar tf ${restore_file} &> /dev/null) || (! tar xOf ${restore_file} &> /dev/null); then
-    print_error "Backup file is corrupt !!" && exit 1
   fi
 
   #As this is a restore, drop database first.
@@ -117,18 +128,6 @@ function restore_backup() {
   tmpdir=`mktemp -d`
   [ ! -z $OTRS_AGENT_SKIN ] && cp -rp ${SKINS_PATH}Agent $tmpdir/
   [ ! -z $OTRS_CUSTOMER_SKIN ] && cp -rp ${SKINS_PATH}Customer $tmpdir/
-  #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
-  #backup file.
-  if [ -d ${restore_file} ]; then
-    restore_dir="${OTRS_BACKUP_DATE}/"
-  else
-    temp_dir=$(mktemp -d )
-    cd ${temp_dir}
-    tar zxvf ${restore_file}
-    [ $? -gt 0 ] && print_error "Could not uncompress main backup file !!" && exit 1
-    cd ..
-    restore_dir="$(ls -t ${temp_dir}|head -n1)"
-  fi
 
   restore_dir=${temp_dir}/${restore_dir}
   ${OTRS_ROOT}scripts/restore.pl -b ${restore_dir} -d ${OTRS_ROOT}
