@@ -146,7 +146,7 @@ environment variable.
 script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
    - Compressed backup file: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
 
-If you have created a backup with this container then you will have a tarball . Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
+Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
 
 ## Upgrading
 
