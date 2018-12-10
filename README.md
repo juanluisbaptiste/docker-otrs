@@ -163,7 +163,7 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
 
 ### Major Version - EXPERIMENTAL !!!
 
-This upgrade option will do a major version upgrade of OTRS. For example from OTRS 5.0x to 6.0.x. The upgrade process will also upgrade installed packages from the official repository only.
+This upgrade option will do a major version upgrade of OTRS. For example from OTRS 5.0x to 6.0.x. The upgrade process will also upgrade installed packages only from the _official repository_.
 
 To do a major version upgrade, follow these steps:
 
@@ -191,7 +191,7 @@ The upgrade procedure will pause the boot process for 10 seconds to give the use
 The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
 
 #### Modules (Add-ons)
-The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have aditional 3rd party modules you will need to manually update them in _Package Manager_.
+The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have additional 3rd party modules you will need to manually update them in the _Package Manager_.
 
 #### Custom Skins & Configuration Files
 If you have custom skins or additional XML configuration files you will have to manually update them if needed.
