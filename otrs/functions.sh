@@ -45,6 +45,7 @@ DEFAULT_OTRS_DB_NAME="otrs"
 DEFAULT_OTRS_DB_USER="otrs"
 DEFAULT_OTRS_DB_HOST="mariadb"
 DEFAULT_OTRS_DB_PORT=3306
+DEFAULT_OTRS_BACKUP_TIME="0 4 * * *"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
 OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
@@ -63,6 +64,7 @@ OTRS_ASCII_COLOR_RED="31"
 [ -z "${OTRS_DB_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_PASSWORD}\e[0m" && OTRS_DB_PASSWORD=${DEFAULT_OTRS_DB_PASSWORD}
 [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_ROOT_PASSWORD}\e[0m" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_ROOT_PASSWORD}
 [ -z "${MYSQL_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_PASSWORD}\e[0m" && MYSQL_ROOT_PASSWORD=${DEFAULT_MYSQL_ROOT_PASSWORD}
+[ -z "${OTRS_BACKUP_TIME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_BACKUP_TIME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_BACKUP_TIME}\e[0m" && OTRS_BACKUP_TIME=${DEFAULT_OTRS_BACKUP_TIME}
 
 mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
@@ -202,6 +204,8 @@ function setup_otrs_config() {
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
   add_config_value "SecureMode" "1"
+  # Configure automatic backups
+  setup_backup_cron
 }
 
 function load_defaults() {
@@ -387,4 +391,23 @@ function upgrade () {
 
   rm -fr ${tmp_dir}
   print_info "[*] Major version upgrade finished !!"  | tee -a ${upgrade_log}
+}
+
+function setup_backup_cron() {
+  if [ "${OTRS_BACKUP_TIME}" != "" ]; then
+    # Remove string quotes
+    OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME%\"}"
+    OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME#\"}"
+    # Check if there's already a backup entry
+    crontab -l 2>/dev/null| grep -q "do_backup.sh"
+    if [ $? -gt 0 ]; then
+      # it does not exists, add it
+      print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
+      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} /do_backup.sh") | crontab -
+    else
+      print_info "Updating backup time to: ${OTRS_BACKUP_TIME}"
+      crontab -l 2>/dev/null | grep -v "do_backup.sh" | crontab  -
+      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} /do_backup.sh") | crontab -
+    fi
+  fi
 }
