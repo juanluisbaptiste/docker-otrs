@@ -131,7 +131,7 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
 ## Backups & Restore Procedures
 
 ### Backup
-Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup that will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
+Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup in tarball format. The backup file will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
 
     docker exec otrs_container /opt/otrs/scripts/otrs_backup.sh
 
@@ -142,11 +142,11 @@ To restore an OTRS backup file (not necesarily created with this container) the 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
 environment variable.
 * `OTRS_BACKUP_DATE` is the backup name to restore. It can have two values:
-   - Uncompressed backup file: A directory with its name in the same *date_time* format that the OTRS backup
-script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"`. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name).
-   - Compressed backup file: A gzip tarball file created by OTRS.
+   - Uncompressed backup: A directory with its name in the same *date_time* format that the OTRS backup
+script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
+   - Compressed backup file: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
 
-Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
+If you have created a backup with this container then you will have a tarball . Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
 
 ## Upgrading
 
