@@ -36,10 +36,15 @@ By default, when the container is run it will load a default vanilla OTRS
 installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load
 a backup or run the installer by defining one of these environment variables:
 
-* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` 
-environment variable. 
-* `OTRS_BACKUP_DATE` is the backup name to restore, in the same *date_time* format that the OTRS backup
-script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` (This is the notation that the backup script that comes with OTRS uses). Backups must be inside the */var/otrs/backups* directory (you should host mount it).
+* `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
+environment variable.
+* `OTRS_BACKUP_DATE` is the backup name to restore. It can have two values:
+   - Uncompressed backup: A directory with its name in the same *date_time* format that the OTRS backup
+script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
+   - Compressed backup file: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
+
+Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
+
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
 
 You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting 
