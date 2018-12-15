@@ -1,5 +1,15 @@
 # docker-otrs Change Log
 
+## 6.0.15 - 2018-12-14
+### Changed
+- Updated to latest OTRS version 6.0.15.
+### Added
+- New feature: configurable automatic backups, controlled by environment variableS OTRS_BACKUP_TIME, OTRS_BACKUP_TYPE, OTRS_BACKUP_COMPRESSION and OTRS_BACKUP_ROTATION. 
+
+## 5.0.33 - 2018-12-14
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.33.
+
 ## 6.0.14 - 2018-12-02
 ### Changed
 - Updated to latest OTRS version 6.0.14.
