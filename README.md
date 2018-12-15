@@ -131,20 +131,33 @@ If you are adding your own skins, the easiest way is create your own `Dockerfile
 ## Backups & Restore Procedures
 
 ### Backup
-Run `/opt/otrs/scripts/otrs_backup.sh` script to create a full backup in tarball format. The backup file will be copied to */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server. You can setup a periodic cron job on the host that runs the following command:
+By default, automated backups are done daily at 6:00 AM. Backups are compressed using _gzip_ and are stored in */var/otrs/backups*. If you mounted that directory as a host volume then you will have access to the backups files from the docker host server.
 
-    docker exec otrs_container /opt/otrs/scripts/otrs_backup.sh
+You can control the backup behavior with the following variables:
+
+  * `OTRS_BACKUP_TIME`: Sets the backup excecution time, in _cron_ format. If set to _disable_ automated backups will be disabled.
+  * `OTRS_BACKUP_TYPE`: Sets the type of backup, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html):
+    * _fullbackup_: Saves the database and the whole OTRS home directory (except /var/tmp and cache directories). This is the default.
+    * _nofullbackup_: Saves the database and the whole OTRS home directory (except /var/tmp and cache directories).
+    * _dbonly_: Only the database will be saved.
+  * `OTRS_BACKUP_COMPRESSION`: Sets the backup compression method to use, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html) (gzip|bzip2). The default is gzip.
+  * `OTRS_BACKUP_ROTATION`: Sets the number of days to keep the backup files. The default is 30 days.
+
+For example, to change the backup time to database only backups, compress them using _bzip2_ and run twice each day set those variables like this:
+
+    OTRS_BACKUP_TYPE=dbonly
+    OTRS_BACKUP_TIME="0 12,12 * * *"
+    OTRS_BACKUP_COMPRESSION=bzip2
 
 ### Restore
 
-To restore an OTRS backup file (not necesarily created with this container) the following environment variables must be added:
+To restore an OTRS backup file (not necessarily created with this container) the following environment variables must be added:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
 environment variable.
 * `OTRS_BACKUP_DATE` is the backup name to restore. It can have two values:
-   - Uncompressed backup: A directory with its name in the same *date_time* format that the OTRS backup
-script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
-   - Compressed backup file: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
+   - _Uncompressed backup_: A directory with its name in the same *date_time* format that the OTRS backup script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
+   - _Compressed backup file_: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
 
 Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
 

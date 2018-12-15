@@ -53,6 +53,7 @@ OTRS_CONFIG_MOUNT_DIR="/Kernel"
 WAIT_TIMEOUT=2
 OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
+OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 [ -z "${OTRS_DB_NAME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_NAME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_NAME}\e[0m" && OTRS_DB_NAME=${DEFAULT_OTRS_DB_NAME}
@@ -394,20 +395,23 @@ function upgrade () {
 }
 
 function setup_backup_cron() {
-  if [ "${OTRS_BACKUP_TIME}" != "" ]; then
+  if [ "${OTRS_BACKUP_TIME}" != "" ] || [ "${OTRS_BACKUP_TIME}" != "disable" ]; then
     # Remove string quotes
     OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME%\"}"
     OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME#\"}"
     # Check if there's already a backup entry
-    crontab -l 2>/dev/null| grep -q "do_backup.sh"
+    crontab -l 2>/dev/null| grep -q "${OTRS_BACKUP_SCRIPT} > /var/log/otrs/last_backup.log"
     if [ $? -gt 0 ]; then
       # it does not exists, add it
       print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
-      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} /do_backup.sh") | crontab -
+      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} ${OTRS_BACKUP_SCRIPT}") | crontab -
     else
       print_info "Updating backup time to: ${OTRS_BACKUP_TIME}"
-      crontab -l 2>/dev/null | grep -v "do_backup.sh" | crontab  -
-      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} /do_backup.sh") | crontab -
+      crontab -l 2>/dev/null | grep -v "${OTRS_BACKUP_SCRIPT}" | crontab  -
+      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} ${OTRS_BACKUP_SCRIPT}") | crontab -
     fi
+  elif [ "${OTRS_BACKUP_TIME}" == "disable" ]; then
+    print_warning "Disabling automated backups !!"
+    crontab -l 2>/dev/null | grep -v "${OTRS_BACKUP_SCRIPT}" | crontab  -
   fi
 }

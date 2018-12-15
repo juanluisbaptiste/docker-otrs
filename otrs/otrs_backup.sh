@@ -7,7 +7,10 @@
 
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/var/otrs/backups"
-DEFAULT_BACKUP_TYPE="fullbackup"
+BACKUP_COMPRESSION_METHOD="${OTRS_BACKUP_COMPRESSION:-gzip}"
+BACKUP_ROTATION_DAYS="${OTRS_BACKUP_ROTATION:-30}"
+BACKUP_TYPE="${OTRS_BACKUP_TYPE:-fullbackup}"
+
 trap cleanup INT
 
 function get_current_date(){
@@ -22,17 +25,14 @@ function cleanup () {
 }
 
 DATE=$(get_current_date)
-BACKUP_FILE_NAME="otrs-${DATE}-full.tar.gz"
-
-BACKUP_TYPE=$1
-[ -z $BACKUP_TYPE ] && BACKUP_TYPE=$DEFAULT_BACKUP_TYPE
+BACKUP_FILE_NAME="otrs-${DATE}-${BACKUP_TYPE}.tar.gz"
 
 echo -e "[${DATE}] Starting OTRS backup for host ${OTRS_HOSTNAME}..."
 [ ! -e $TEMP_BACKUP_DIR ] && mkdir -p $TEMP_BACKUP_DIR
 
 stop_all_services
 
-/opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE
+/opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE -r $BACKUP_ROTATION_DAYS -c $BACKUP_COMPRESSION_METHOD
 
 if [ $? -eq 0 ]; then
   [ ! -e $OTRS_BACKUP_DIR ] && mkdir -p $OTRS_BACKUP_DIR
