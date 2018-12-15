@@ -395,23 +395,20 @@ function upgrade () {
 }
 
 function setup_backup_cron() {
-  if [ "${OTRS_BACKUP_TIME}" != "" ] || [ "${OTRS_BACKUP_TIME}" != "disable" ]; then
+  if [ "${OTRS_BACKUP_TIME}" != "" ] && [ "${OTRS_BACKUP_TIME}" != "disable" ]; then
+
+    # Store in a file env vars so they can be sourced from the backup cronjob
+    printenv | sed 's/^\(.*\)$/export \1/g' | grep -E "^export OTRS_" > /.backup.env
     # Remove string quotes
     OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME%\"}"
     OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME#\"}"
-    # Check if there's already a backup entry
-    crontab -l 2>/dev/null| grep -q "${OTRS_BACKUP_SCRIPT} > /var/log/otrs/last_backup.log"
-    if [ $? -gt 0 ]; then
-      # it does not exists, add it
-      print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
-      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} ${OTRS_BACKUP_SCRIPT}") | crontab -
-    else
-      print_info "Updating backup time to: ${OTRS_BACKUP_TIME}"
-      crontab -l 2>/dev/null | grep -v "${OTRS_BACKUP_SCRIPT}" | crontab  -
-      (crontab -l 2>/dev/null; echo "${OTRS_BACKUP_TIME} ${OTRS_BACKUP_SCRIPT}") | crontab -
-    fi
+
+    # Set cron entry
+    print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
+    echo "${OTRS_BACKUP_TIME} root . /.backup.env; ${OTRS_BACKUP_SCRIPT}" > /etc/cron.d/otrs_backup
+
   elif [ "${OTRS_BACKUP_TIME}" == "disable" ]; then
     print_warning "Disabling automated backups !!"
-    crontab -l 2>/dev/null | grep -v "${OTRS_BACKUP_SCRIPT}" | crontab  -
+    rm /etc/cron.d/otrs_backup
   fi
 }
