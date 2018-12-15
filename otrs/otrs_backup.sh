@@ -14,7 +14,7 @@ BACKUP_TYPE="${OTRS_BACKUP_TYPE:-fullbackup}"
 trap cleanup INT
 
 function get_current_date(){
-   date "+%Y-%m-%d_%H_%M"
+   date "+%Y-%m-%d_%H-%M"
 }
 
 # SIGTERM-handler
