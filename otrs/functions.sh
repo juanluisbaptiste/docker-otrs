@@ -174,7 +174,7 @@ check_version() {
 function add_config_value() {
   local key=${1}
   local value=${2}
-  #if grep -q "$1" ${OTRS_CONFIG_FILE}
+
   grep -qE \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
   then
