@@ -17,8 +17,8 @@
 # - OTRS_DB_PASSWORD to set the database password
 # - OTRS_ROOT_PASSWORD to set the admin user 'root@localhost' password.
 #
-. ./util_functions.sh
-. ./otrs_ascii_logo.sh
+. /util_functions.sh
+. /otrs_ascii_logo.sh
 
 function enable_debug_mode () {
   print_info "Preparing debug mode..."

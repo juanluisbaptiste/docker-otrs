@@ -3,7 +3,7 @@
 #move it to the container's mounted backup directory.
 #
 
-. ./functions.sh
+. /functions.sh
 
 TEMP_BACKUP_DIR=`mktemp -d`
 OTRS_BACKUP_DIR="/var/otrs/backups"
