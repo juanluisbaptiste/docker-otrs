@@ -8,7 +8,9 @@ assignees: ''
 ---
 
 **Reporting a bug**
-First of all this is **not** a problem reporting forum, only report if you are pretty sure what you are experiencing is a bug, not a configuration issue, for that you can go to the [OTRS community forums](https://forums.otterhub.org/). Also be sure you are using the latest image by doing _docker pull juanluisbaptiste/otrs_.
+First of all, this is **not** a problem reporting forum, only report if you are pretty sure what you are experiencing is a bug with this image _and_ docker, not a configuration issue of OTRS, for that you can go to the [OTRS community forums](https://forums.otterhub.org/). 
+
+Also be sure you are using the latest image by doing _docker pull juanluisbaptiste/otrs_.
 
 **Image and OTRS versions**
 
