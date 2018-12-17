@@ -10,6 +10,8 @@ assignees: ''
 **Reporting a bug**
 First of all, this is **not** a problem reporting forum, only report if you are pretty sure what you are experiencing is a bug with this image _and_ docker, not a configuration issue of OTRS, for that you can go to the [OTRS community forums](https://forums.otterhub.org/). 
 
+If the container starts up, you can login and don't have any issues with the stuff you configured on the .env file, then the problem probably is in OTRS.
+
 Also be sure you are using the latest image by doing _docker pull juanluisbaptiste/otrs_.
 
 **Image and OTRS versions**
