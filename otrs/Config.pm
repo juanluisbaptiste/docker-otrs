@@ -93,9 +93,6 @@ sub Load {
     $Self->{'LogModule::LogFile'} = '/tmp/otrs.log';
     $Self->{'DefaultLanguage'} = 'en';
     $Self->{'CheckMXRecord'} = '1';
-    $Self->{'SendmailModule'} = 'Kernel::System::Email::SMTP';
-    $Self->{'SendmailModule::Host'} = 'postfix';
-    $Self->{'SendmailModule::Port'} = '25';
     $Self->{'SecureMode'} = 1;
 
 }
