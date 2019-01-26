@@ -34,6 +34,7 @@ By default, when the container is run it will load a default vanilla OTRS instal
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` environment variable. See bellow for more details on backup and restore procedures.
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
+* `OTRS_CHECK_DATABASE=no` Will disable mysqladmin ping on the database (by default the container will check mysql connectivity and fail if there is no database connectivity).
 
 You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting a host volume which contains the backup files.
 
