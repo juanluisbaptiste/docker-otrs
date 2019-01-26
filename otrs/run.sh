@@ -25,7 +25,7 @@ if [ "$OTRS_DEBUG" == "yes" ];then
 fi
 
 #Wait for database to come up
-if [ "$OTRS_DATABASE_CHECK" != "no" ];then
+if [ "$OTRS_CHECK_DATABASE" != "no" ];then
 wait_for_db
 fi
 print_otrs_ascii_logo
