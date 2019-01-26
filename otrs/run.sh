@@ -25,7 +25,9 @@ if [ "$OTRS_DEBUG" == "yes" ];then
 fi
 
 #Wait for database to come up
+if [ "$OTRS_DATABASE_CHECK" != "no" ];then
 wait_for_db
+fi
 print_otrs_ascii_logo
 #If OTRS_INSTALL isn't defined load a default install
 if [ "${OTRS_INSTALL}" != "yes" ]; then
