@@ -61,16 +61,10 @@ There are also some other environment variables that can be set to customize the
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
-The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
-
 ### Notes ####
+* The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
 * Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
-* Make sure that the directories on the docker host for both OTRS configuration and the MySQL data containers have the correct permissions to be accessed from within the containers. The `volumes/mysql` directory should be owned by the MySQL user (27) and the `volumes/config` directory must be owned by id 500 and group id 48. Before running `docker-compose up` make sure permissions are ok:
-
-    chown 27 volumes/mysql
-    chown 500:48 volumes/config
-
-For production use there's another `docker-compose` file that points to the pre-built images (be sure that the _host volume directory permissions are correct_ as described before).
+* For production use there's another `docker-compose` file that points to the pre-built images.
 
 Before starting the service you need to configure it: copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/otrs/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
 
