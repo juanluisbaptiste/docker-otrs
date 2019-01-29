@@ -1,5 +1,11 @@
 # docker-otrs Change Log
 
+## 6.0.16 - 2019-01-29
+### Changed
+- Fixed mysql database container problem when starting due to running it with an incorrect user.
+- Moved to official MariaDB image.
+
+
 ## 6.0.16 - 2019-01-23
 ### Changed
 - Updated to latest OTRS version 6.0.16.
