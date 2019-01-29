@@ -19,7 +19,5 @@ RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=64M' /etc/my.cnf && \
 #Use a separate volume for data.
 #VOLUME [ "/var/lib/mysql" ]
 #EXPOSE 3306
-#Switch to mysql user back
-USER 27
 #Call launch script
 #CMD ["/usr/bin/run.sh"]
