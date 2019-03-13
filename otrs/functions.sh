@@ -43,6 +43,7 @@ DEFAULT_OTRS_DB_PASSWORD="changeme"
 DEFAULT_MYSQL_ROOT_PASSWORD="changeme"
 DEFAULT_OTRS_DB_NAME="otrs"
 DEFAULT_OTRS_DB_USER="otrs"
+DEFAULT_MYSQL_ROOT_USER="root"
 DEFAULT_OTRS_DB_HOST="mariadb"
 DEFAULT_OTRS_DB_PORT=3306
 DEFAULT_OTRS_BACKUP_TIME="0 4 * * *"
@@ -65,12 +66,13 @@ OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 [ -z "${OTRS_DB_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_PASSWORD}\e[0m" && OTRS_DB_PASSWORD=${DEFAULT_OTRS_DB_PASSWORD}
 [ -z "${OTRS_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_ROOT_PASSWORD}\e[0m" && OTRS_ROOT_PASSWORD=${DEFAULT_OTRS_ROOT_PASSWORD}
 [ -z "${MYSQL_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_PASSWORD}\e[0m" && MYSQL_ROOT_PASSWORD=${DEFAULT_MYSQL_ROOT_PASSWORD}
+[ -z "${MYSQL_ROOT_USER}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_USER\e[0m not set, setting user to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_USER}\e[0m" && MYSQL_ROOT_USER=${DEFAULT_MYSQL_ROOT_USER}
 [ -z "${OTRS_BACKUP_TIME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_BACKUP_TIME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_BACKUP_TIME}\e[0m" && OTRS_BACKUP_TIME=${DEFAULT_OTRS_BACKUP_TIME}
 
-mysqlcmd="mysql -uroot -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
+mysqlcmd="mysql -u${MYSQL_ROOT_USER} -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
 function wait_for_db() {
-  while [ ! "$(mysqladmin ping -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -u root \
+  while [ ! "$(mysqladmin ping -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -u ${MYSQL_ROOT_USER} \
               --password="${MYSQL_ROOT_PASSWORD}" --silent --connect_timeout=3)" ]; do
     print_info "Database server is not available. Waiting ${WAIT_TIMEOUT} seconds..."
     sleep ${WAIT_TIMEOUT}
@@ -255,7 +257,7 @@ function set_skins() {
     print_info "Setting Agent interface custom logo..."
     # Remove AgentLogo option to disable default logo so the skin one is picked up
     sed -i '/AgentLogo/,/;/d' ${OTRS_CONFIG_DIR}/Config/Files/ZZZAAuto.pm
-    # Also disable default value of sysconfig so XML/Framework.xml AgentLogo is valid=0 
+    # Also disable default value of sysconfig so XML/Framework.xml AgentLogo is valid=0
     $mysqlcmd -e "UPDATE sysconfig_default SET is_valid = 0 WHERE name = 'AgentLogo'" otrs
   fi
   [ ! -z ${OTRS_AGENT_SKIN} ] &&  add_config_value "Loader::Customer::SelectedSkin" ${OTRS_CUSTOMER_SKIN}
