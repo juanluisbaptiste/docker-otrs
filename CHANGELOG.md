@@ -1,10 +1,16 @@
 # docker-otrs Change Log
 
+## 6.0.17 - 2019-03-12
+### Added
+- Merged PR #57 that adds a new variable MYSQL_ROOT_USER to configure the database root username.
+### Changed
+- Updated to latest OTRS version 6.0.17.
+
+
 ## 6.0.16 - 2019-01-29
 ### Changed
 - Fixed mysql database container problem when starting due to running it with an incorrect user.
 - Moved to official MariaDB image.
-
 
 ## 6.0.16 - 2019-01-23
 ### Changed
