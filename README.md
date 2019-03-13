@@ -52,6 +52,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_DB_USER` Database user. Default is `otrs`.
 * `OTRS_DB_PASSWORD` otrs user database password. Default password is `changeme`.
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
+* `MYSQL_ROOT_USER` Database root user so it can be setup. Default user is `root`.
 * `MYSQL_ROOT_PASSWORD` Database root password so it can be setup. Default password is `changeme`.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
 * `OTRS_TIMEZONE` to set the default timezone.
@@ -166,7 +167,7 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
     sudo docker-compose -f docker-compose-prod.yml pull
     sudo docker-compose -f docker-compose-prod.yml stop
     sudo docker-compose -f docker-compose-prod.yml rm -f -v
-    sudo docker-compose -f docker-compose-prod.yml up    
+    sudo docker-compose -f docker-compose-prod.yml up
 
 ### Major Version - EXPERIMENTAL !!!
 
