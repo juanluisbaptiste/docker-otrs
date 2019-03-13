@@ -328,7 +328,7 @@ function reinstall_modules () {
 
 # SIGTERM-handler
 function term_handler () {
- service supervisord stop
+ systemctl stop supervisord
  pkill -SIGTERM anacron
  su -c "${OTRS_ROOT}bin/otrs.Daemon.pl stop" -s /bin/bash otrs
  exit 143; # 128 + 15 -- SIGTERM
