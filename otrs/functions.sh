@@ -47,6 +47,10 @@ DEFAULT_MYSQL_ROOT_USER="root"
 DEFAULT_OTRS_DB_HOST="mariadb"
 DEFAULT_OTRS_DB_PORT=3306
 DEFAULT_OTRS_BACKUP_TIME="0 4 * * *"
+DEFAULT_SMTP_SERVER="postfix"
+DEFAULT_SMTP_PORT=25
+DEFAULT_SENDMAIL_MODULE="SMTP"
+DEFAULT_CONFIGURE_MAIL_VIA_SYSCONF="disabled"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
 OTRS_CONFIG_FILE="${OTRS_CONFIG_DIR}Config.pm"
@@ -68,6 +72,10 @@ OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 [ -z "${MYSQL_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_PASSWORD}\e[0m" && MYSQL_ROOT_PASSWORD=${DEFAULT_MYSQL_ROOT_PASSWORD}
 [ -z "${MYSQL_ROOT_USER}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_USER\e[0m not set, setting user to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_USER}\e[0m" && MYSQL_ROOT_USER=${DEFAULT_MYSQL_ROOT_USER}
 [ -z "${OTRS_BACKUP_TIME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_BACKUP_TIME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_BACKUP_TIME}\e[0m" && OTRS_BACKUP_TIME=${DEFAULT_OTRS_BACKUP_TIME}
+[ -z "${SMTP_SERVER}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mSMTP_SERVER\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_SMTP_SERVER}\e[0m" && SMTP_SERVER=${DEFAULT_SMTP_SERVER}
+[ -z "${SMTP_PORT}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mSMTP_PORT\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_SMTP_PORT}\e[0m" && SMTP_PORT=${DEFAULT_SMTP_PORT}
+[ -z "${SENDMAIL_MODULE}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mSENDMAIL_MODULE\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_SENDMAIL_MODULE}\e[0m" && SENDMAIL_MODULE=${DEFAULT_SENDMAIL_MODULE}
+[ -z "${CONFIGURE_MAIL_VIA_SYSCONF}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mCONFIGURE_MAIL_VIA_SYSCONF\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_CONFIGURE_MAIL_VIA_SYSCONF}\e[0m" && CONFIGURE_MAIL_VIA_SYSCONF=${DEFAULT_CONFIGURE_MAIL_VIA_SYSCONF}
 
 mysqlcmd="mysql -u${MYSQL_ROOT_USER} -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
@@ -203,9 +211,14 @@ function setup_otrs_config() {
   [ ! -z "${OTRS_TIMEZONE}" ] && add_config_value "OTRSTimeZone" ${OTRS_TIMEZONE} && add_config_value "UserDefaultTimeZone" ${OTRS_TIMEZONE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   #Set email SMTP configuration
-  add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
-  add_config_value "SendmailModule::Host" "postfix"
-  add_config_value "SendmailModule::Port" "25"
+
+  if [ ${CONFIGURE_MAIL_VIA_SYSCONF} != 'enabled' ]; then
+    add_config_value "SendmailModule" "Kernel::System::Email::${SENDMAIL_MODULE}"
+    add_config_value "SendmailModule::Host" "${SMTP_SERVER}"
+    add_config_value "SendmailModule::Port" "${SMTP_PORT}"
+    [ ! -z "${SMTP_USERNAME}" ] && add_config_value "SendmailModule::AuthUser" "${SMTP_USERNAME}"
+    [ ! -z "${SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${SMTP_PASSWORD}"
+  fi
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
