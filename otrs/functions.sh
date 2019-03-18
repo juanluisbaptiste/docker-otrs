@@ -37,6 +37,15 @@ function random_string() {
   echo `cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 8 | head -n 1`
 }
 
+function apply_docker_secrets() {
+  print_info "Apply docker secrets..."
+  if [ -f $OTRS_SECRETS_FILE ]; then
+    . $OTRS_SECRETS_FILE
+    return 0
+  fi
+  print_warning "Secrets file $OTRS_SECRETS_FILE not found"
+}
+
 #Default configuration values
 DEFAULT_OTRS_ROOT_PASSWORD="changeme"
 DEFAULT_OTRS_DB_PASSWORD="changeme"
@@ -56,6 +65,7 @@ OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 
+[ ! -z "${OTRS_SECRETS_FILE}"] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 [ -z "${OTRS_DB_NAME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_NAME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_NAME}\e[0m" && OTRS_DB_NAME=${DEFAULT_OTRS_DB_NAME}
 [ -z "${OTRS_DB_USER}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_USER\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_USER}\e[0m" && OTRS_DB_USER=${DEFAULT_OTRS_DB_USER}
