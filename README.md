@@ -60,12 +60,11 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
-* `CONFIGURE_MAIL_VIA_SYSCONF` Defines if the smtp-settings (set via `.env` file) should be applied or if you want to be able to change them aftewards via SysConf. Default is `disabled`
-* `SENDMAIL_MODULE` Module OTRS should use to send mails (e.g `SMTP`, `SMTPS`, `Sendmail`). Depends on the modules you've installed. Won't be applied if `CONFIGURE_MAIL_VIA_SYSCONF` is set to `enabled`. Default is `SMTP`
-* `SMTP_SERVER` Server address of the SMTP server to use. Won't be applied if `CONFIGURE_MAIL_VIA_SYSCONF` is set to `enabled`. Default is `postfix`
-* `SMTP_PORT` Port of the SMTP server to use. Won't be applied if `CONFIGURE_MAIL_VIA_SYSCONF` is set to `enabled`. Default is `25`
-* `SMTP_USERNAME` Username to authenticate with. Won't be applied if `CONFIGURE_MAIL_VIA_SYSCONF` is set to `enabled`. (Optional, unset by default)
-* `SMTP_PASSWORD` Password to authenticate with. Won't be applied if `CONFIGURE_MAIL_VIA_SYSCONF` is set to `enabled`. (Optional, unset by default)
+* `SENDMAIL_MODULE` Module OTRS should use to send mails (e.g `SMTP`, `SMTPS`, `Sendmail`).
+* `SMTP_SERVER` Server address of the SMTP server to use.
+* `SMTP_PORT` Port of the SMTP server to use.
+* `SMTP_USERNAME` Username to authenticate with.
+* `SMTP_PASSWORD` Password to authenticate with.
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
