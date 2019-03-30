@@ -93,7 +93,7 @@ function restore_backup(){
   #Check if OTRS_BACKUP_DIR points to a directory (with the backup file inside) or a
   #backup file.
   if [ -d ${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE} ]; then
-    restore_dir="${OTRS_BACKUP_DATE}/"
+    restore_dir="${OTRS_BACKUP_DIR}/${OTRS_BACKUP_DATE}/"
   else
     temp_dir=$(mktemp -d )
     cd ${temp_dir}
@@ -101,9 +101,9 @@ function restore_backup(){
     [ $? -gt 0 ] && print_error "Couldn't uncompress main backup file !!" && exit 1
     cd ..
     restore_dir="$(ls -t ${temp_dir}|head -n1)"
+    restore_dir=${temp_dir}/${restore_dir}
   fi
 
-  restore_dir=${temp_dir}/${restore_dir}
   ${OTRS_ROOT}scripts/restore.pl -b ${restore_dir} -d ${OTRS_ROOT}
   [ $? -gt 0 ] && print_error "Couldn't load OTRS backup !!" && exit 1
 
