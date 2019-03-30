@@ -55,6 +55,10 @@ function create_db(){
   print_info "Creating OTRS database..."
   $mysqlcmd -e "CREATE DATABASE IF NOT EXISTS otrs;"
   [ $? -gt 0 ] && print_error "Couldn't create OTRS database !!" && exit 1
+  create_db_user
+}
+
+function create_db_user() {
   $mysqlcmd -e " GRANT ALL ON otrs.* to 'otrs'@'%' identified by '$OTRS_DB_PASSWORD'";
   [ $? -gt 0 ] && print_error "Couldn't create database user !!" && exit 1
 }
@@ -217,6 +221,8 @@ function load_defaults(){
     fi
   else
     print_warning "otrs database already exists, Ok."
+    # Set permissions again in case OTRS_DB_PASSWORD was changed.
+    create_db_user
   fi
 }
 
