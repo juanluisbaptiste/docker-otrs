@@ -55,6 +55,7 @@ WAIT_TIMEOUT=2
 OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
+OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
 [ -z "${OTRS_DB_NAME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_DB_NAME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_DB_NAME}\e[0m" && OTRS_DB_NAME=${DEFAULT_OTRS_DB_NAME}
@@ -369,10 +370,13 @@ function upgrade () {
   setup_otrs_config
 
   # Backup
-  print_info "[*] Backing up container prior to upgrade..." | tee -a ${upgrade_log}
-  /otrs_backup.sh &> ${upgrade_log}
-  if [ ! $? -eq 143  ]; then
-    print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
+  if [ "${OTRS_UPGRADE_BACKUP}" == "yes" ]; then
+    print_info "[*] Backing up container prior to upgrade..." | tee -a ${upgrade_log}
+    /otrs_backup.sh &> ${upgrade_log}
+
+    if [ ! $? -eq 143  ]; then
+      print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
+    fi
   fi
 
   # Upgrade database
