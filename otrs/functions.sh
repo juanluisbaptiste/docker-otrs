@@ -388,7 +388,15 @@ function upgrade () {
   if [ $? -eq 0  ]; then
     su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
     if [ $? -gt 0  ]; then
-      print_error "Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+      print_error "[1] Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+    fi
+    grep -q "Not possible to complete migration" ${upgrade_log}
+    if [ $? -eq 0 ]; then
+      print_error "[2] Cannot migrate database" | tee -a ${upgrade_log}
+      print_error "Please connect to the databse container and fix the issues\
+  listed in the previous error message and follow the provided instructions\
+  to fix them.\n\nWhen you have run the fixes restart the upgrade process.\n\n" | tee -a ${upgrade_log}
+  exit 1
     fi
   fi
 
