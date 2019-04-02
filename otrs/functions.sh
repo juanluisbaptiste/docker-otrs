@@ -352,7 +352,10 @@ function start_all_services () {
 }
 
 function upgrade () {
-  print_warning "OTRS \e[${OTRS_ASCII_COLOR_BLUE}mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
+  print_warning "\e[${OTRS_ASCII_COLOR_BLUE}m****************************************************************************\e[0m\n"
+  print_warning "\t\t\t\t\e[${OTRS_ASCII_COLOR_RED}m OTRS MAJOR VERSION UPGRADE\e[0m\n"
+  print_warning "\t\tPress ctrl-C if you want to CANCEL !! (you have 10 seconds)\n"
+  print_warning "\e[${OTRS_ASCII_COLOR_BLUE}m****************************************************************************\e[0m\n"
   sleep 10
 
   local version_blacklist="5.0.91\n5.0.92"
@@ -362,7 +365,7 @@ function upgrade () {
   mkdir -p ${tmp_dir}
   echo -e ${version_blacklist} > ${tmp_dir}/blacklist.txt
 
-  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..." | tee -a ${upgrade_log}
+  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m...\n" | tee -a ${upgrade_log}
 
   # Update configuration files
   check_host_mount_dir
