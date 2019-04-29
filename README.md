@@ -54,6 +54,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_ROOT_PASSWORD` root@localhost user password. Default password is `changeme`.
 * `MYSQL_ROOT_USER` Database root user so it can be setup. Default user is `root`.
 * `MYSQL_ROOT_PASSWORD` Database root password so it can be setup. Default password is `changeme`.
+* `OTRS_SECRETS_FILE` Path to the docker secret file inside the container.
 * `OTRS_LANGUAGE` Set the default language for both agent and customer interfaces (For example, "es" for spanish).
 * `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
@@ -61,6 +62,24 @@ There are also some other environment variables that can be set to customize the
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
+
+### Docker Secrets
+In order to keep your repositories and images free from any sensitive information you can specify a path to you secrets file to deploy the container easier and safer within a docker swarm/kubernetes environment. You can store any key/value-pair from the list above exactly like the `.env` file.
+
+e.g.
+```bash
+OTRS_DB_PASSWORD=12345
+MYSQL_ROOT_PASSWORD=67890
+OTRS_ROOT_PASSWORD=54321
+```
+
+And add the path to this secret file (within the container) to `OTRS_SECRETS_FILE`. Docker stores those files in `/run/secrets/`.
+```YAML
+services:
+  otrs:
+    environment:
+      - OTRS_SECRETS_FILE=/run/secrets/my_otrs_secrets
+```
 
 ### Notes ####
 * The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
