@@ -1,5 +1,15 @@
 # docker-otrs Change Log
 
+## 6.0.18 - 2019-04-19
+### Added
+- New environment variable OTRS_UPGRADE_BACKUP=(yes|no) to enable/disable automatic
+  backup before starting a major version upgrade. Default is yes.
+- Merged PR #60 that adds support for docker secrets.
+### Changed
+- Updated to latest OTRS version 6.0.18.
+- Mask root@localhost password at boot.
+- Fixed issue #59 by setting LANG and LANGUAGE environment variables on Dockerfile.
+
 ## 6.0.17 - 2019-03-12
 ### Added
 - Merged PR #57 that adds a new variable MYSQL_ROOT_USER to configure the database root username.
