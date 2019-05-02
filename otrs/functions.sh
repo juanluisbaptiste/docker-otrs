@@ -64,6 +64,7 @@ WAIT_TIMEOUT=2
 OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
+OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -364,7 +365,10 @@ function start_all_services () {
 }
 
 function upgrade () {
-  print_warning "OTRS \e[${OTRS_ASCII_COLOR_BLUE}mMAJOR VERSION UPGRADE\e[0m, press ctrl-C if you want to CANCEL !! (you have 10 seconds)"
+  print_warning "\e[${OTRS_ASCII_COLOR_BLUE}m****************************************************************************\e[0m\n"
+  print_warning "\t\t\t\t\e[${OTRS_ASCII_COLOR_RED}m OTRS MAJOR VERSION UPGRADE\e[0m\n"
+  print_warning "\t\tPress ctrl-C if you want to CANCEL !! (you have 10 seconds)\n"
+  print_warning "\e[${OTRS_ASCII_COLOR_BLUE}m****************************************************************************\e[0m\n"
   sleep 10
 
   local version_blacklist="5.0.91\n5.0.92"
@@ -374,7 +378,7 @@ function upgrade () {
   mkdir -p ${tmp_dir}
   echo -e ${version_blacklist} > ${tmp_dir}/blacklist.txt
 
-  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m..." | tee -a ${upgrade_log}
+  print_info "Staring OTRS major version upgrade to version \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_VERSION}\e[0m...\n" | tee -a ${upgrade_log}
 
   # Update configuration files
   check_host_mount_dir
@@ -382,10 +386,13 @@ function upgrade () {
   setup_otrs_config
 
   # Backup
-  print_info "[*] Backing up container prior to upgrade..." | tee -a ${upgrade_log}
-  /otrs_backup.sh &> ${upgrade_log}
-  if [ ! $? -eq 143  ]; then
-    print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
+  if [ "${OTRS_UPGRADE_BACKUP}" == "yes" ]; then
+    print_info "[*] Backing up container prior to upgrade..." | tee -a ${upgrade_log}
+    /otrs_backup.sh &> ${upgrade_log}
+
+    if [ ! $? -eq 143  ]; then
+      print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
+    fi
   fi
 
   # Upgrade database
@@ -394,7 +401,15 @@ function upgrade () {
   if [ $? -eq 0  ]; then
     su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
     if [ $? -gt 0  ]; then
-      print_error "Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+      print_error "[1] Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+    fi
+    grep -q "Not possible to complete migration" ${upgrade_log}
+    if [ $? -eq 0 ]; then
+      print_error "[2] Cannot migrate database" | tee -a ${upgrade_log}
+      print_error "Please connect to the databse container and fix the issues\
+  listed in the previous error message and follow the provided instructions\
+  to fix them.\n\nWhen you have run the fixes restart the upgrade process.\n\n" | tee -a ${upgrade_log}
+  exit 1
     fi
   fi
 
