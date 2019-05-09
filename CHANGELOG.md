@@ -34,7 +34,7 @@
 ### Changed
 - Updated to latest OTRS version 6.0.15.
 ### Added
-- New feature: configurable automatic backups, controlled by environment variables OTRS_BACKUP_TIME, OTRS_BACKUP_TYPE, OTRS_BACKUP_COMPRESSION and OTRS_BACKUP_ROTATION. 
+- New feature: configurable automatic backups, controlled by environment variables OTRS_BACKUP_TIME, OTRS_BACKUP_TYPE, OTRS_BACKUP_COMPRESSION and OTRS_BACKUP_ROTATION.
 
 ## 5.0.33 - 2018-12-14
 ### Changed
