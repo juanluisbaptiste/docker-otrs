@@ -208,7 +208,6 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
 
     sudo docker-compose -f docker-compose-prod.yml pull
     sudo docker-compose -f docker-compose-prod.yml stop
-    sudo docker-compose -f docker-compose-prod.yml rm -f -v
     sudo docker-compose -f docker-compose-prod.yml up
 
 ### Major Version - EXPERIMENTAL !!!
@@ -233,7 +232,6 @@ To do a major version upgrade, follow these steps:
 4. Restart the containers:
 ```
     sudo docker-compose -f docker-compose-prod.yml stop
-    sudo docker-compose -f docker-compose-prod.yml rm -f -v
     sudo docker-compose -f docker-compose-prod.yml up
 ```
 The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade.
