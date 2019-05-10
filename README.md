@@ -19,6 +19,29 @@ _Note:_
 
 _If you want to follow the development of this project check out [my blog](http://not403.blogspot.com.co/search/label/otrs)._
 
+Table of Contents
+=================
+
+* [Build Instructions](#build-instructions)
+* [How To Run It](#how-to-run-it)
+   * [Docker Secrets](#docker-secrets)
+   * [Notes](#notes)
+* [Administration Interface](#administration-interface)
+* [Customer Interface](#customer-interface)
+* [Installing Modules](#installing-modules)
+* [Changing Default Skins](#changing-default-skins)
+   * [Custom skin](#custom-skin)
+* [Backups &amp; Restore Procedures](#backups--restore-procedures)
+   * [Backup](#backup)
+   * [Restore](#restore)
+* [Upgrading](#upgrading)
+   * [Minor Version](#minor-version)
+   * [Major Version - EXPERIMENTAL !!!](#major-version---experimental-)
+      * [Modules (Add-ons)](#modules-add-ons)
+      * [Custom Skins &amp; Configuration Files](#custom-skins--configuration-files)
+      * [Troubleshooting](#troubleshooting)
+* [Enabling debug mode](#enabling-debug-mode)
+
 ## Build Instructions
 
 We use `docker-compose` to build the images. Clone this repo and then:
