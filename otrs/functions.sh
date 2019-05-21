@@ -214,9 +214,12 @@ function setup_otrs_config() {
   [ ! -z "${OTRS_TIMEZONE}" ] && add_config_value "OTRSTimeZone" ${OTRS_TIMEZONE} && add_config_value "UserDefaultTimeZone" ${OTRS_TIMEZONE}
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   #Set email SMTP configuration
-  add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
-  add_config_value "SendmailModule::Host" "postfix"
-  add_config_value "SendmailModule::Port" "25"
+
+  [ ! -z "${OTRS_SENDMAIL_MODULE}" ] && add_config_value "SendmailModule" "Kernel::System::Email::${OTRS_SENDMAIL_MODULE}"
+  [ ! -z "${OTRS_SMTP_SERVER}" ] && add_config_value "SendmailModule::Host" "${OTRS_SMTP_SERVER}"
+  [ ! -z "${OTRS_SMTP_PORT}" ] && add_config_value "SendmailModule::Port" "${OTRS_SMTP_PORT}"
+  [ ! -z "${OTRS_SMTP_USERNAME}" ] && add_config_value "SendmailModule::AuthUser" "${OTRS_SMTP_USERNAME}"
+  [ ! -z "${OTRS_SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${OTRS_SMTP_PASSWORD}"
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
