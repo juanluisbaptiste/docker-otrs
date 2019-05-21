@@ -441,6 +441,13 @@ function upgrade () {
 
   print_info "Staring OTRS major version upgrade to version \e[92m${OTRS_VERSION}\e[0m..." | tee ${upgrade_log}
 
+  # Backup
+  print_info "[*] Backing up container prior to upgrade..." | tee ${upgrade_log}
+  /otrs_backup.sh &> ${upgrade_log}
+  if [ ! $? -eq 143  ]; then
+    print_error "Cannot create backup" | tee ${upgrade_log} && exit 1
+  fi
+
   # Update configuration files
   check_host_mount_dir
   #Setup OTRS configuration
@@ -451,12 +458,6 @@ function upgrade () {
     print_error "Cannot set permissions" && exit 1
   fi
 
-  # Backup
-  print_info "[*] Backing up container prior to upgrade..." | tee ${upgrade_log}
-  /otrs_backup.sh &> ${upgrade_log}
-  if [ ! $? -eq 143  ]; then
-    print_error "Cannot create backup" | tee ${upgrade_log} && exit 1
-  fi
 
   # Upgrade database
   print_info "[*] Doing database migration..." | tee ${upgrade_log}
