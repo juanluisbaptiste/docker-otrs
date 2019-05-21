@@ -215,11 +215,11 @@ function setup_otrs_config() {
   add_config_value "FQDN" ${OTRS_HOSTNAME}
   #Set email SMTP configuration
 
-  [ ! -z "${SENDMAIL_MODULE}" ] && add_config_value "SendmailModule" "Kernel::System::Email::${SENDMAIL_MODULE}"
-  [ ! -z "${SMTP_SERVER}" ] && add_config_value "SendmailModule::Host" "${SMTP_SERVER}"
-  [ ! -z "${SMTP_PORT}" ] && add_config_value "SendmailModule::Port" "${SMTP_PORT}"
-  [ ! -z "${SMTP_USERNAME}" ] && add_config_value "SendmailModule::AuthUser" "${SMTP_USERNAME}"
-  [ ! -z "${SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${SMTP_PASSWORD}"
+  [ ! -z "${OTRS_SENDMAIL_MODULE}" ] && add_config_value "SendmailModule" "Kernel::System::Email::${OTRS_SENDMAIL_MODULE}"
+  [ ! -z "${OTRS_SMTP_SERVER}" ] && add_config_value "SendmailModule::Host" "${OTRS_SMTP_SERVER}"
+  [ ! -z "${OTRS_SMTP_PORT}" ] && add_config_value "SendmailModule::Port" "${OTRS_SMTP_PORT}"
+  [ ! -z "${OTRS_SMTP_USERNAME}" ] && add_config_value "SendmailModule::AuthUser" "${OTRS_SMTP_USERNAME}"
+  [ ! -z "${OTRS_SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${OTRS_SMTP_PASSWORD}"
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
