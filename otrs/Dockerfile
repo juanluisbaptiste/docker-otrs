@@ -10,6 +10,8 @@ ENV OTRS_SKINS_MOUNT_DIR "/skins/"
 ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 
 RUN yum install -y epel-release && \
+    yum --disablerepo=epel -y update && \
+    yum install --disablerepo=epel -y ca-certificates \
     yum update -y && \
     yum -y install cronie httpd httpd-devel mysql mod_perl \
     perl-core "perl(Crypt::SSLeay)" "perl(Net::LDAP)" "perl(URI)" \
