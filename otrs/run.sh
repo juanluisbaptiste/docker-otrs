@@ -47,11 +47,12 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     print_info "Restoring OTRS backup: \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_BACKUP_DATE}\e[0m for host \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_HOSTNAME}\e[0m"
     restore_backup ${OTRS_BACKUP_DATE}
   fi
+
+  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
   reinstall_modules
   set_ticket_counter
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS
-  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
   ${OTRS_ROOT}bin/Cron.sh start otrs
   su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
