@@ -49,7 +49,10 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   fi
 
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
+  # Reinstall any existing addons in case there was a minor version upgrade
   reinstall_modules
+  # Install any new modules found in ${OTRS_ADDONS_PATH}
+  install_modules ${OTRS_ADDONS_PATH}
   set_ticket_counter
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
   #Start OTRS

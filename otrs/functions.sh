@@ -65,6 +65,8 @@ OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
+OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
+INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -331,16 +333,44 @@ function write_log () {
 
 function reinstall_modules () {
   if [ "${OTRS_UPGRADE}" != "yes" ]; then
-    print_info "Reinstalling OTRS modules..."
+    print_info "Reinstalling OTRS addons..."
     su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::ReinstallAll > /dev/null 2>&1" -s /bin/bash otrs
 
     if [ $? -gt 0 ]; then
-      print_error "Could not reinstall OTRS modules, try to do it manually with the Package Manager at the admin section."
+      print_error "Could not reinstall OTRS addons, try to do it manually with the Package Manager in the admin section of the web interface."
     else
       print_info "Done."
     fi
   fi
 }
+
+function install_modules () {
+  location=${1}
+  mkdir -p ${INSTALLED_ADDONS_DIR}
+
+  print_info "Installing OTRS addons..."
+  if [ "${location}" != "" ]; then
+    packages="$(ls ${location}/*.opm 2> /dev/null)"
+    if [ "${packages}" != "" ]; then
+
+      for i in ${packages}; do
+        print_info "Installing addon: ${i}"
+        su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::Install ${i}> /dev/null 2>&1" -s /bin/bash otrs
+        if [ $? -gt 0 ]; then
+          print_error "Could not install OTRS addon: ${i}, try to do it manually with the Package Manager in the admin section of the web interface."
+        else
+          mv ${i} ${INSTALLED_ADDONS_DIR}
+        fi
+      done
+      print_info "Done."
+    else
+      print_info "No addons found to install."
+    fi
+  else
+    print_info "No directory with addons to install."
+  fi
+}
+
 
 # SIGTERM-handler
 function term_handler () {

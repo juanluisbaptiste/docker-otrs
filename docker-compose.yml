@@ -18,6 +18,7 @@ services:
       - './volumes/config:/opt/otrs/Kernel'
       - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
       - './volumes/backup:/var/otrs/backups'
+      - './volumes/addons:/opt/otrs/addons'
       - '/etc/localtime:/etc/localtime:ro'
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
