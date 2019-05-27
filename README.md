@@ -140,9 +140,11 @@ addresses:
 ## Customer Interface
     http://$OTRS_HOSTNAME/otrs/customer.pl
 
-## Installing Modules
+## Installing Addons
 
-If you have installed any additional module, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working.
+To install any addon at container start, map /opt/otrs/addons directory to  a volume and place the /opm files there. The container will install them when starting up.
+
+If you have installed any additional addon, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working.
 
 ## Changing Default Skins
 
