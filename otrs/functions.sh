@@ -394,6 +394,28 @@ function start_all_services () {
   su -c "${OTRS_ROOT}/bin/Cron.sh start" -s /bin/bash otrs
 }
 
+function upgrade_database() {
+  # Upgrade database
+  print_info "[*] Doing database migration..." | tee -a ${upgrade_log}
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
+  if [ $? -eq 0  ]; then
+    su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
+    if [ $? -gt 0  ]; then
+      print_error "[1] Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+    fi
+    grep -q "Not possible to complete migration" ${upgrade_log}
+    if [ $? -eq 0 ]; then
+      print_error "[2] Cannot migrate database" | tee -a ${upgrade_log}
+      print_error "Please connect to the databse container and fix the issues\
+  listed in the previous error message and follow the provided instructions\
+  to fix them.\n\nWhen you have run the fixes restart the upgrade process.\n\n" | tee -a ${upgrade_log}
+  exit 1
+    fi
+  else
+    print_error "Database does not exist!" && exit 1
+  fi
+}
+
 function upgrade () {
   print_warning "\e[${OTRS_ASCII_COLOR_BLUE}m****************************************************************************\e[0m\n"
   print_warning "\t\t\t\t\e[${OTRS_ASCII_COLOR_RED}m OTRS MAJOR VERSION UPGRADE\e[0m\n"
@@ -422,24 +444,6 @@ function upgrade () {
 
     if [ ! $? -eq 143  ]; then
       print_error "Cannot create backup" | tee -a ${upgrade_log} && exit 1
-    fi
-  fi
-
-  # Upgrade database
-  print_info "[*] Doing database migration..." | tee -a ${upgrade_log}
-  $mysqlcmd -e "use ${OTRS_DB_NAME}"
-  if [ $? -eq 0  ]; then
-    su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
-    if [ $? -gt 0  ]; then
-      print_error "[1] Cannot migrate database" | tee -a ${upgrade_log} && exit 1
-    fi
-    grep -q "Not possible to complete migration" ${upgrade_log}
-    if [ $? -eq 0 ]; then
-      print_error "[2] Cannot migrate database" | tee -a ${upgrade_log}
-      print_error "Please connect to the databse container and fix the issues\
-  listed in the previous error message and follow the provided instructions\
-  to fix them.\n\nWhen you have run the fixes restart the upgrade process.\n\n" | tee -a ${upgrade_log}
-  exit 1
     fi
   fi
 
