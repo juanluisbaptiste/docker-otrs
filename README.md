@@ -243,7 +243,9 @@ To do a major version upgrade, follow these steps:
 ```
 The upgrade procedure will pause the boot process for 10 seconds to give the user the chance to cancel the upgrade.
 
-The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image).
+The first thing done by the upgrade process is to do a backup of the current version before starting with the upgrade process. Then it will follow the official upgrade instructions (run db upgrade script and upgrade modules, software was updated when pulling the new image). You can use these variables to control the upgrade process:
+  * `OTRS_UPGRADE_BACKUP=yes|no` to control if a backup should be done before starting an upgrade (default: yes).
+
 
 #### Modules (Add-ons)
 The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have additional 3rd party modules you will need to manually update them in the _Package Manager_.
