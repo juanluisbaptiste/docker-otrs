@@ -67,6 +67,7 @@ OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
 INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
+OTRS_UPGRADE_XML_FILES="${OTRS_UPGRADE_XML_FILES:-no}"
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -453,6 +454,18 @@ function upgrade () {
   if [ $? -gt 0  ]; then
     print_warning "Cannot upgrade package: ${i}-${latest_version}"  | tee -a ${upgrade_log}
   fi
+
+  if [[ "${OTRS_UPGRADE_XML_FILES}" == "yes" ]]; then
+    # Upgrade XML config files
+    print_info "[*] Converting configuration files to new XML format ..." | tee -a ${upgrade_log}
+    su -c "${OTRS_ROOT}/bin/otrs.Console.pl Dev::Tools::Migrate::ConfigXMLStructure --source-directory ${OTRS_ROOT}/Kernel/Config/Files" -s /bin/bash otrs &> ${upgrade_log}
+    if [ $? -gt 0  ]; then
+      print_warning "Cannot convert configuration files"  | tee -a ${upgrade_log}
+    fi
+  fi
+
+  # Run db upgrade script
+  upgrade_database
 
   rm -fr ${tmp_dir}
   print_info "[*] Major version upgrade finished !!"  | tee -a ${upgrade_log}
