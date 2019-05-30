@@ -67,6 +67,7 @@ OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
 INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
+OTRS_UPGRADE_SQL_FILES="${OTRS_ROOT}/db_upgrade"
 OTRS_UPGRADE_XML_FILES="${OTRS_UPGRADE_XML_FILES:-no}"
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
@@ -395,6 +396,30 @@ function start_all_services () {
   su -c "${OTRS_ROOT}/bin/Cron.sh start" -s /bin/bash otrs
 }
 
+function fix_database_upgrade() {
+  print_info "[*] Running database pre-upgrade scripts..." | tee -a ${upgrade_log}
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
+  if [ $? -eq 0  ]; then
+    sql_files="$(ls ${OTRS_UPGRADE_SQL_FILES/*.sql})"
+
+    #Get all sql files and load them into the database
+    if [[ "${sql_files}" != "" ]]; then
+      for i in ${sql_files}; do
+        print_info "Loading SQL file: ${i}"
+        $mysqlcmd otrs < ${OTRS_UPGRADE_SQL_FILES}/${i} | tee -a ${upgrade_log}
+        if [ $? -gt 0  ]; then
+          print_error "Cannot load sql file: ${OTRS_UPGRADE_SQL_FILES}/${i}" | tee -a ${upgrade_log} && exit 1
+        fi
+        print_info "Done"
+      done
+    else
+      print_info "No additional SQL files to load were found."
+    fi
+  else
+    print_error "Database does not exist!" && exit 1
+  fi
+}
+
 function upgrade_database() {
   # Upgrade database
   print_info "[*] Doing database migration..." | tee -a ${upgrade_log}
@@ -402,7 +427,7 @@ function upgrade_database() {
   if [ $? -eq 0  ]; then
     su -c "/opt/otrs//scripts/DBUpdate-to-6.pl" -s /bin/bash otrs | tee -a ${upgrade_log}
     if [ $? -gt 0  ]; then
-      print_error "[1] Cannot migrate database" | tee -a ${upgrade_log} && exit 1
+      print_error "Cannot migrate database" | tee -a ${upgrade_log} && exit 1
     fi
     grep -q "Not possible to complete migration" ${upgrade_log}
     if [ $? -eq 0 ]; then
@@ -464,6 +489,12 @@ function upgrade () {
     fi
   fi
 
+  # Run any sql file to fix any issues before starting the update. For ex the
+  # sql commands that are asked to be run by the db upgrade script bellow,
+  # which are needed to be be executed before the upgrade to be able to complete
+  # the uupgrade.
+  fix_database_upgrade
+  
   # Run db upgrade script
   upgrade_database
 
