@@ -42,8 +42,9 @@ function apply_docker_secrets() {
   if [ -f $OTRS_SECRETS_FILE ]; then
     . $OTRS_SECRETS_FILE
     return 0
+  else
+    print_warning "Secrets file $OTRS_SECRETS_FILE not found"
   fi
-  print_warning "Secrets file $OTRS_SECRETS_FILE not found"
 }
 
 #Default configuration values
