@@ -110,7 +110,7 @@ function restore_backup() {
   #container
   check_host_mount_dir
   add_config_value "DatabaseUser" ${OTRS_DB_USER}
-  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
+  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD} true
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   add_config_value "DatabasePort" ${OTRS_DB_PORT}
   add_config_value "Database" ${OTRS_DB_NAME}
@@ -192,14 +192,21 @@ check_version() {
 function add_config_value() {
   local key=${1}
   local value=${2}
+  local mask=${3:-false}
+
+  if [ "${mask}" == true ]; then
+    print_value="**********"
+  else
+    print_value=${value}
+  fi
 
   grep -qE \{\'\?${key}\'\?\} ${OTRS_CONFIG_FILE}
   if [ $? -eq 0 ]
   then
-    print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
+    print_info "Updating configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${print_value}\e[0m"
     sed  -i -r "s/($Self->\{*$key*\} *= *).*/\1\"${value}\";/" ${OTRS_CONFIG_FILE}
   else
-    print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${value}\e[0m"
+    print_info "Adding configuration option \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m with value: \e[31m${print_value}\e[0m"
     sed -i "/$Self->{Home} = '\/opt\/otrs';/a \
     \$Self->{'${key}'} = '${value}';" ${OTRS_CONFIG_FILE}
   fi
@@ -210,7 +217,7 @@ function add_config_value() {
 function setup_otrs_config() {
   #Set database configuration
   add_config_value "DatabaseUser" ${OTRS_DB_USER}
-  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD}
+  add_config_value "DatabasePw" ${OTRS_DB_PASSWORD} true
   add_config_value "DatabaseHost" ${OTRS_DB_HOST}
   add_config_value "DatabasePort" ${OTRS_DB_PORT}
   add_config_value "Database" ${OTRS_DB_NAME}
@@ -224,7 +231,7 @@ function setup_otrs_config() {
   [ ! -z "${OTRS_SMTP_SERVER}" ] && add_config_value "SendmailModule::Host" "${OTRS_SMTP_SERVER}"
   [ ! -z "${OTRS_SMTP_PORT}" ] && add_config_value "SendmailModule::Port" "${OTRS_SMTP_PORT}"
   [ ! -z "${OTRS_SMTP_USERNAME}" ] && add_config_value "SendmailModule::AuthUser" "${OTRS_SMTP_USERNAME}"
-  [ ! -z "${OTRS_SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${OTRS_SMTP_PASSWORD}"
+  [ ! -z "${OTRS_SMTP_PASSWORD}" ] && add_config_value "SendmailModule::AuthPassword" "${OTRS_SMTP_PASSWORD}" true
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
