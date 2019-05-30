@@ -249,7 +249,10 @@ The first thing done by the upgrade process is to do a backup of the current ver
 #### Aditional SQL files
 Sometimes there are fixes needed to be done to the database when doing an upgrade. When the database upgrade script is executed it will do some inconsistencies checks and it will spit out the sql commands needed to be run to fix the database and continue with the  upgrade process. Map `/opt/otrs/db_upgrade` to a host directory and put the sql files in it, they will get loaded before the database upgrade script is run.
 
-#### Modules (Add-ons)
+#### XML Configuration Files
+Since OTRS 6 the location and XML schema of configuration files has changed. OTRS can try to migrate this configuration files and put them in the new location. For this set `OTRS_UPGRADE_XML_FILES=yes` (default value: `no`).
+
+#### Add-ons
 The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have additional 3rd party modules you will need to manually update them in the _Package Manager_.
 
 #### Custom Skins & Configuration Files
