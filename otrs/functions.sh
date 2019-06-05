@@ -198,6 +198,7 @@ function setup_otrs_config(){
   add_config_value "SendmailModule" "Kernel::System::Email::SMTP"
   add_config_value "SendmailModule::Host" "postfix"
   add_config_value "SendmailModule::Port" "25"
+  add_config_value "SecureMode" "1"
 }
 
 function load_defaults(){
