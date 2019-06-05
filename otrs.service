@@ -1,0 +1,14 @@
+[Unit]
+Description = OTRS Docker Container Service
+
+Wants    = network.target
+Requires = docker.service
+
+[Service]
+Type = simple
+
+ExecStart = /usr/bin/docker-compose -p otrs -f /opt/docker-otrs/docker-compose-prod.yml up
+ExecStop = /usr/bin/docker-compose -p otrs -f /opt/docker-otrs/docker-compose-prod.yml down
+
+[Install]
+WantedBy = multi-user.target
