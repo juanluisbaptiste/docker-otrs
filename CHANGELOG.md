@@ -1,5 +1,14 @@
 # docker-otrs Change Log
 
+## 6.0.19 - 2019-06-04
+### Changed
+- Updated to latest OTRS version 6.0.19.
+
+## 5.0.36 - 2019-06-04
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.36.
+- Disabled secure mode by default so the container can be configured.
+
 ## 6.0.17 - 2019-05-29
 ### Changed
 - Rebuild 6.0.17 with latest container code.
@@ -10,6 +19,10 @@
 - New feature: load additional sql files before db upgrade during major version upgrade.
 - Added new environment variable OTRS_UPGRADE_XML_FILES=(yes|no) to enable migration of XML configuration files during an major version upgrade.
 - Merged PR #64 that makes OTRS SMTP configurable.
+
+## 5.0.35 - 2019-05-21
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.35.
 
 ## 6.0.18 - 2019-04-19
 ### Added
