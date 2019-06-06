@@ -260,7 +260,7 @@ Since OTRS 6 the location and XML schema of configuration files has changed. OTR
 The upgrade process will upgrade official modules (FAQ, Survey, etc). If you have additional 3rd party modules you will need to manually update them in the _Package Manager_.
 
 #### Custom Skins & Configuration Files
-If you have custom skins or additional XML configuration files you will have to manually update them if needed.
+As mentioned before, the XML files of custom skins can be migrated to the new location and updated schema setting `OTRS_UPGRADE_XML_FILES=yes`.
 
 #### Troubleshooting ####
  - If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
