@@ -188,7 +188,7 @@ You can control the backup behavior with the following variables:
   * `OTRS_BACKUP_TIME`: Sets the backup excecution time, in _cron_ format. If set to _disable_ automated backups will be disabled.
   * `OTRS_BACKUP_TYPE`: Sets the type of backup, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html):
     * _fullbackup_: Saves the database and the whole OTRS home directory (except /var/tmp and cache directories). This is the default.
-    * _nofullbackup_: Saves the database and the whole OTRS home directory (except /var/tmp and cache directories).
+    * _nofullbackup_: Saves only the database, /Kernel/Config* and /var directories.
     * _dbonly_: Only the database will be saved.
   * `OTRS_BACKUP_COMPRESSION`: Sets the backup compression method to use, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html) (gzip|bzip2). The default is gzip.
   * `OTRS_BACKUP_ROTATION`: Sets the number of days to keep the backup files. The default is 30 days.
