@@ -95,6 +95,8 @@ There are also some other environment variables that can be set to customize the
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
+As a convenience a premade service file `otrs.service` is included as part of the repository. To use it you will need to update `/opt/docker-otrs/docker-compose-prod.yml` to the path to your docker compose file, copy the service file from the repository to `/usr/lib/systemd/system/`, and run the command `systemctl daemon-reload`. You will then be able to use systemd to control your container.
+
 ### Docker Secrets
 In order to keep your repositories and images free from any sensitive information you can specify a path to you secrets file to deploy the container easier and safer within a docker swarm/kubernetes environment. You can store any key/value-pair from the list above exactly like the `.env` file.
 
