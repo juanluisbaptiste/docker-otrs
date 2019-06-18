@@ -26,11 +26,14 @@ Table of Contents
    * [Table of Contents](#table-of-contents)
       * [Build Instructions](#build-instructions)
       * [How To Run It](#how-to-run-it)
+         * [Administration Interface](#administration-interface)
+         * [Customer Interface](#customer-interface)
+         * [Runtime Configuration](#runtime-configuration)
+         * [Custom Configuration File](#custom-configuration-file)
+         * [Container auto-start](#container-auto-start)
          * [Docker Secrets](#docker-secrets)
          * [Notes](#notes)
-      * [Administration Interface](#administration-interface)
-      * [Customer Interface](#customer-interface)
-      * [Installing Addons](#installing-addons)
+         * [Installing Addons](#installing-addons)
       * [Changing Default Skins](#changing-default-skins)
          * [Custom skin](#custom-skin)
       * [Backups &amp; Restore Procedures](#backups--restore-procedures)
@@ -45,6 +48,7 @@ Table of Contents
             * [Custom Skins &amp; Configuration Files](#custom-skins--configuration-files)
             * [Troubleshooting](#troubleshooting)
       * [Enabling debug mode](#enabling-debug-mode)
+
 
 ## Build Instructions
 
@@ -158,7 +162,7 @@ services:
 * For production use there's another `docker-compose` file that points to the pre-built images.
 
 
-## Installing Addons
+### Installing Addons
 
 To install any addon at container start, map /opt/otrs/addons directory to  a volume and place the /opm files there. The container will install them when starting up.
 
