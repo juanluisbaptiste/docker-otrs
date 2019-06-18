@@ -32,8 +32,8 @@ Table of Contents
          * [Custom Configuration File](#custom-configuration-file)
          * [Container auto-start](#container-auto-start)
          * [Docker Secrets](#docker-secrets)
-         * [Notes](#notes)
          * [Installing Addons](#installing-addons)
+         * [Notes](#notes)
       * [Changing Default Skins](#changing-default-skins)
          * [Custom skin](#custom-skin)
       * [Backups &amp; Restore Procedures](#backups--restore-procedures)
@@ -156,17 +156,16 @@ services:
       - OTRS_SECRETS_FILE=/run/secrets/my_otrs_secrets
 ```
 
-### Notes ####
-* The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
-* Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
-* For production use there's another `docker-compose` file that points to the pre-built images.
-
-
 ### Installing Addons
 
 To install any addon at container start, map /opt/otrs/addons directory to  a volume and place the /opm files there. The container will install them when starting up.
 
 If you have installed any additional addon, the OTRS container will reinstall them after an upgrade or when a container is removed so they continue working.
+
+### Notes ####
+* The included docker-compose file uses `host mounted data containers` to store the database and configuration contents outside the containers. Please take a look at the `docker-compose.yml` file to see the directory mappings and adjust them to your needs.
+* Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
+* For production use there's another `docker-compose` file that points to the pre-built images.
 
 ## Changing Default Skins
 
