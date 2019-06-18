@@ -57,18 +57,41 @@ This command will build all the images and pull the missing ones like the [SMTP 
 
 ## How To Run It
 
-By default, when the container is run it will load a default vanilla OTRS installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load a backup or run the installer by defining one of these environment variables:
+The container behavior is controlled by environment variables ([see full list below](#runtime-configuration)). By default, when the container is run it will load a default vanilla OTRS installation (`OTRS_INSTALL=no`) that is ready to be configured as you need. However, you can load a backup or run the installer by defining one of these environment variables:
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` environment variable. See bellow for more details on backup and restore procedures.
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
-
-You need to mount that backups volume from somewhere, it can be from another volume (using *--volumes-from*) or mounting a host volume which contains the backup files.
-
 * `OTRS_INSTALL=yes` Will run the installer which you can access at:
 
     http://localhost/otrs/install.pl
 
-If you are running the container remotely, replace *localhost* with the server's hostname.
+If you are running the container remotely, replace *localhost* with the server's hostname. If starting with the default mode (_OTRS__INSTALL=no_), you will need to configure it before starting it. Copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/otrs/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
+
+    sudo docker-compose -f docker-compose-prod.yml up
+
+This will pull and bring up all needed containers, link them and mount volumes according
+to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
+
+![Container boot](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/otrs6_boot_medium.png)
+
+The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
+`MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
+running `docker-compose`.
+
+To start the containers in production mode the the `-d` parameter to the previous command:
+
+    sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
+
+After the containers finish starting up you can access the OTRS system at the following
+addresses:
+
+### Administration Interface
+    http://$OTRS_HOSTNAME/otrs/index.pl
+
+### Customer Interface
+    http://$OTRS_HOSTNAME/otrs/customer.pl
+
+### Runtime Configuration
 
 There are also some other environment variables that can be set to customize the default install:
 
@@ -95,7 +118,6 @@ There are also some other environment variables that can be set to customize the
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
-As a convenience a premade service file `otrs.service` is included as part of the repository. To use it you will need to update `/opt/docker-otrs/docker-compose-prod.yml` to the path to your docker compose file, copy the service file from the repository to `/usr/lib/systemd/system/`, and run the command `systemctl daemon-reload`. You will then be able to use systemd to control your container.
 
 ### Docker Secrets
 In order to keep your repositories and images free from any sensitive information you can specify a path to you secrets file to deploy the container easier and safer within a docker swarm/kubernetes environment. You can store any key/value-pair from the list above exactly like the `.env` file.
@@ -120,31 +142,6 @@ services:
 * Any setting set using the previous environment variables cannot be edited later through the web interface, if you need to change them then you need to update it in your docker-compose/env file and restart your container. The reason for this is that OTRS sets as read-only any setting set on `$OTRS_ROOT/Kernel/Config.pm`.
 * For production use there's another `docker-compose` file that points to the pre-built images.
 
-Before starting the service you need to configure it: copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/otrs/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
-
-    sudo docker-compose -f docker-compose-prod.yml up
-
-This will pull and bring up all needed containers, link them and mount volumes according
-to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
-
-![Container boot](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/otrs6_boot_medium.png)
-
-The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
-`MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
-running `docker-compose`.
-
-To start the containers in production mode the the `-d` parameter to the previous command:
-
-    sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
-
-After the containers finish starting up you can access the OTRS system at the following
-addresses:
-
-## Administration Interface
-    http://$OTRS_HOSTNAME/otrs/index.pl
-
-## Customer Interface
-    http://$OTRS_HOSTNAME/otrs/customer.pl
 
 ## Installing Addons
 
