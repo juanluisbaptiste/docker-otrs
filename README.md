@@ -48,6 +48,8 @@ Table of Contents
             * [Custom Skins &amp; Configuration Files](#custom-skins--configuration-files)
             * [Troubleshooting](#troubleshooting)
             * [Enabling debug mode](#enabling-debug-mode)
+      * [Consulting &amp; Support](#consulting--support)
+
 
 
 ## Build Instructions
@@ -288,3 +290,7 @@ Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afte
 ##### Enabling debug mode
 
 If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output. It will also install some tools to aid with troubleshooting like _telnet_ and _dig_.
+
+## Consulting & Support
+
+Do you need help setting your OTRS ticketing system or configuring it to match your organization's needs ? I also offer consulting services, drop me a line at: juancho _at_ juanbaptiste dot tech
