@@ -47,7 +47,7 @@ Table of Contents
             * [Add-ons](#add-ons)
             * [Custom Skins &amp; Configuration Files](#custom-skins--configuration-files)
             * [Troubleshooting](#troubleshooting)
-      * [Enabling debug mode](#enabling-debug-mode)
+            * [Enabling debug mode](#enabling-debug-mode)
 
 
 ## Build Instructions
@@ -285,6 +285,6 @@ As mentioned before, the XML files of custom skins can be migrated to the new lo
 
 Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afterwards.
 
-## Enabling debug mode
+##### Enabling debug mode
 
 If you are having issues starting up the containers you can set `OTRS_DEBUG=yes` to print a more verbose container startup output. It will also install some tools to aid with troubleshooting like _telnet_ and _dig_.
