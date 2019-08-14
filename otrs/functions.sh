@@ -70,6 +70,7 @@ OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
 INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
 OTRS_UPGRADE_SQL_FILES="${OTRS_ROOT}/db_upgrade"
 OTRS_UPGRADE_XML_FILES="${OTRS_UPGRADE_XML_FILES:-no}"
+OTRS_DISABLE_EMAIL_FETCH="${OTRS_DISABLE_EMAIL_FETCH:-no}"
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -235,6 +236,10 @@ function setup_otrs_config() {
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
+
+  if [ "${OTRS_DISABLE_EMAIL_FETCH}" == "yes" ]; then
+    disable_email_fetch
+  fi
 }
 
 function load_defaults() {
@@ -502,7 +507,7 @@ function upgrade () {
   # which are needed to be be executed before the upgrade to be able to complete
   # the uupgrade.
   fix_database_upgrade
-  
+
   # Run db upgrade script
   upgrade_database
 
@@ -527,4 +532,11 @@ function setup_backup_cron() {
     print_warning "Disabling automated backups !!"
     rm /etc/cron.d/otrs_backup
   fi
+}
+
+# Useful while testing or setting up a new instance.
+function disable_email_fetch() {
+  print_info "Disabling Email Accounts fetching..."  | tee -a ${upgrade_log}
+  su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Daemon::SchedulerCronTaskManager::Task###MailAccountFetch --valid 0" -s /bin/bash otrs
+
 }
