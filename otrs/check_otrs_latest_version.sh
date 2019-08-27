@@ -32,7 +32,8 @@ function control_c() {
 function cleanup(){
   #Remove temp directory
   print_info "Removing temp directory..."
-  #rm -fr ${tempdir}
+  cat ${tempdir}/docker-otrs/.drone.yml
+  rm -fr ${tempdir}
   return $?
 }
 
@@ -110,7 +111,7 @@ if [ $? -eq 0 ]; then
   if [ $? -eq 0 ];then
 
     verbose "Updating version in drone.io build file"
-    sed -i s/.*${docker_otrs_version}/  - ${otrs_version}/g .drone.yml
+    sed -i s/${docker_otrs_version}/${otrs_version}/g .drone.yml
     if [ $? -gt 0 ];then
       verbose "ERROR: Cannot update version tag in .drone.yml file !: ${out}" ${ERROR_CODE} && exit 1
     fi
