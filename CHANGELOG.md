@@ -1,5 +1,13 @@
 # docker-otrs Change Log
 
+## 6.0.21 - 2019-09-30
+### Changed
+- Updated to latest OTRS version 6.0.22.
+
+## 6.0.21 - 2019-08-31
+### Changed
+- Updated to latest OTRS version 6.0.21.
+
 ## 6.0.20 - 2019-07-19
 ### Added
 - Added example systemd service file to run docker-compose at docker host boot.
