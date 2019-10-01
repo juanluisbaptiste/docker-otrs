@@ -50,4 +50,4 @@ else
 fi
 
 start_all_services
-cleanup
+rm -fr $TEMP_BACKUP_DIR
