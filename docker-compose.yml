@@ -3,7 +3,10 @@ version: '3'
 services:
   otrs:
     image: juanluisbaptiste/otrs:latest
-    build: otrs
+    build:
+      context: otrs
+      args:
+        - OTRS_DOWNLOAD_MIRROR=${OTRS_DOWNLOAD_MIRROR}
     ports:
       - '80:80'
     # If running behind a proxy container, expose the ports instead

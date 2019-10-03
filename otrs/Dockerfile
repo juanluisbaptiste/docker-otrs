@@ -10,6 +10,8 @@ ENV OTRS_SKINS_MOUNT_DIR "/skins/"
 ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
+ARG OTRS_DOWNLOAD_MIRROR
+ENV OTRS_DOWNLOAD_MIRROR "${OTRS_DOWNLOAD_MIRROR}"
 
 RUN yum install -y yum-plugin-fastestmirror && \
     yum install -y epel-release && \
@@ -23,7 +25,7 @@ RUN yum install -y yum-plugin-fastestmirror && \
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" "perl(DateTime)" \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
     rsyslog supervisor tar which && \
-    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
+    yum install -y ${OTRS_DOWNLOAD_MIRROR}/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
     /opt/otrs/bin/otrs.CheckModules.pl && \
     yum clean all
 # Add scripts and function files
