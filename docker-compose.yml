@@ -6,7 +6,7 @@ services:
     build:
       context: otrs
       args:
-        - OTRS_DOWNLOAD_MIRROR=${OTRS_DOWNLOAD_MIRROR}
+        - OTRS_DOWNLOAD_MIRROR=${OTRS_DOWNLOAD_MIRROR:-http://ftp.otrs.org/pub/otrs}
     ports:
       - '80:80'
     # If running behind a proxy container, expose the ports instead

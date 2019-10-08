@@ -10,8 +10,7 @@ ENV OTRS_SKINS_MOUNT_DIR "/skins/"
 ENV SKINS_PATH "${OTRS_ROOT}/var/httpd/htdocs/skins/"
 ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US.UTF-8
-ARG OTRS_DOWNLOAD_MIRROR
-ENV OTRS_DOWNLOAD_MIRROR "${OTRS_DOWNLOAD_MIRROR}"
+ARG OTRS_DOWNLOAD_MIRROR=http://ftp.otrs.org/pub/otrs
 
 RUN yum install -y yum-plugin-fastestmirror && \
     yum install -y epel-release && \
