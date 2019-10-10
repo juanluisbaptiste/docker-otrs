@@ -24,8 +24,6 @@ if [ "$OTRS_DEBUG" == "yes" ];then
   enable_debug_mode
 fi
 
-#Wait for database to come up
-wait_for_db
 print_otrs_ascii_logo
 #If OTRS_INSTALL isn't defined load a default install
 if [ "${OTRS_INSTALL}" != "yes" ]; then
@@ -62,6 +60,9 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
   set_skins
 else
+  #Wait for database to come up
+  wait_for_db
+  
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[${OTRS_ASCII_COLOR_BLUE}m OTRS $OTRS_VERSION \e[0minstaller !!"
   check_host_mount_dir
