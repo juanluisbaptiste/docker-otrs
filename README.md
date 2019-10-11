@@ -228,6 +228,8 @@ environment variable.
 
 Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
 
+ :heavy_exclamation_mark: Remember to remove the _OTRS_INSTALL=restore_ from the docker-compose file environment variables afterwards.
+
 ## Upgrading
 
 There are two types of upgrades When upgrading OTRS: _minor_ and _major_ version upgrades. This section describes how to upgrade on each case.
@@ -285,7 +287,7 @@ As mentioned before, the XML files of custom skins can be migrated to the new lo
  - If after upgrade you can't login with any account, delete the cookies for your OTRS website and try again.
 - If you get an 500 error after login it could mean that a module could not be automatically upgraded. Check the container output and look for the messages about modules upgrade.
 
-Remember to remove the `OTRS_UPGRADE` variable from the docker-compose file afterwards.
+:heavy_exclamation_mark: Remember to remove the `OTRS_UPGRADE=yes` from the docker-compose file environment variables afterwards.
 
 ## Enabling debug mode
 
