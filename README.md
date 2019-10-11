@@ -223,7 +223,7 @@ To restore an OTRS backup file (not necessarily created with this container) the
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE`
 environment variable.
 * `OTRS_BACKUP_DATE` is the backup name to restore. It can have two values:
-   - _Uncompressed backup_: A directory with its name in the same *date_time* format that the OTRS backup script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This is useful when migrating from another OTRS install to this container.
+   - _Uncompressed backup_: A directory with its name in the same *date_time* format that the OTRS backup script uses, for example `OTRS_BACKUP_DATE="2015-05-26_00-32"` with the backup files inside. A backup file created with this image or with any OTRS installation will work (the backup script creates the directory with that name). This feature is useful when migrating from another OTRS install to this container.
    - _Compressed backup file_: A gzip tarball of the previously described directory with the backup files. These tarballs are created by this container when doing a backup.
 
 Backups must be inside the */var/otrs/backups* directory (host mounted by default in the docker-compose file).
