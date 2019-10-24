@@ -8,6 +8,7 @@ CLEAN=0
 DEBUG=0
 RUN=0
 params=""
+COMPOSE_FILE="docker-compose.yml"
 
 usage()
 {
@@ -21,6 +22,7 @@ OPTIONS:
 -b    Build image.
 -B    Build image (--no-cache).
 -c    Clean volumes.
+-f    compsoe file to use (default is docker-compose.yml)
 -r    Run container.
 -h    Print help.
 -V    Debug mode.
@@ -35,7 +37,7 @@ function ctrl_c() {
         exit 0
 }
 
-while getopts bBcrhV option
+while getopts bBcf:rhV option
 do
   case "${option}"
   in
@@ -45,6 +47,8 @@ do
        BUILD_NOCACHE="--no-cache"
        ;;
     c) CLEAN=1
+       ;;
+    f) COMPOSE_FILE="${OPTARG}"
        ;;
     r) RUN=1
        ;;
@@ -71,7 +75,7 @@ if [ ${CLEAN} -eq 1 ]; then
 fi
 
 if [ ${BUILD_IMAGE} -eq 1 ]; then
-  docker-compose build ${BUILD_NOCACHE}
+  docker-compose -f ${COMPOSE_FILE} build ${BUILD_NOCACHE}
   if [ $? -gt 0 ]; then
     out=$(echo ${out}|tail -n 10)
     notify-send 'App rebuild failure' "There was an error building the container, see console for build output" -t ${NOTIFY_TIMEOUT} -i dialog-error && \
@@ -82,4 +86,4 @@ if [ ${BUILD_IMAGE} -eq 1 ]; then
     paplay /usr/share/sounds/freedesktop/stereo/complete.oga
   fi
 fi
-[ ${RUN} -eq 1  ] && docker-compose up
+[ ${RUN} -eq 1  ] && docker-compose -f ${COMPOSE_FILE} up
