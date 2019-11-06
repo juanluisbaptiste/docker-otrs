@@ -41,8 +41,8 @@ Table of Contents
          * [Backup](#backup)
          * [Restore](#restore)
       * [Upgrading](#upgrading)
-         * [Minor Version](#minor-version)
-         * [Major Version - EXPERIMENTAL !!!](#major-version---experimental-)
+         * [Minor Version Upgrade](#minor-version-upgrade)
+         * [Major Version Upgrade](#major-version-upgrade)
             * [Aditional SQL files](#aditional-sql-files)
             * [XML Configuration Files](#xml-configuration-files)
             * [Add-ons](#add-ons)
@@ -241,7 +241,7 @@ Backups must be inside the */var/otrs/backups* directory (host mounted by defaul
 
 There are two types of upgrades When upgrading OTRS: _minor_ and _major_ version upgrades. This section describes how to upgrade on each case.
 
-### Minor Version
+### Minor Version Upgrade
 
 For example from 6.0.1 to 6.0.5, just pull the new image and restart your services:
 
@@ -249,7 +249,7 @@ For example from 6.0.1 to 6.0.5, just pull the new image and restart your servic
     sudo docker-compose -f docker-compose-prod.yml stop
     sudo docker-compose -f docker-compose-prod.yml up -d
 
-### Major Version - EXPERIMENTAL !!!
+### Major Version Upgrade
 
 This upgrade option will do a major version upgrade of OTRS. For example from OTRS 5.0x to 6.0.x. The upgrade process will also upgrade installed packages only from the _official repository_.
 
