@@ -63,7 +63,7 @@ function create_db(){
 
 function restore_backup(){
   [ -z $1 ] && print_error "\n\e[1;31mERROR:\e[0m OTRS_BACKUP_DATE not set.\n" && exit 1
-  #set_variables
+  set_variables
   #setup OTRS docker configuration
   setup_otrs_config
 
@@ -206,7 +206,7 @@ function load_defaults(){
   #container
   check_host_mount_dir
   check_custom_skins_dir
-  #set_variables
+  set_variables
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   setup_otrs_config
