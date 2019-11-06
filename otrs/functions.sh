@@ -65,6 +65,8 @@ WAIT_TIMEOUT=2
 OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
+OTRS_CRON_BACKUP_SCRIPT="${OTRS_CRON_BACKUP_SCRIPT:-/etc/cron.d/otrs_backup}"
+OTRS_ARTICLE_STORAGE_TYPE="${OTRS_ARTICLE_STORAGE_TYPE:-ArticleStorageDB}"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
 INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
@@ -85,6 +87,8 @@ OTRS_DISABLE_EMAIL_FETCH="${OTRS_DISABLE_EMAIL_FETCH:-no}"
 [ -z "${MYSQL_ROOT_PASSWORD}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_PASSWORD\e[0m not set, setting password to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_PASSWORD}\e[0m" && MYSQL_ROOT_PASSWORD=${DEFAULT_MYSQL_ROOT_PASSWORD}
 [ -z "${MYSQL_ROOT_USER}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mMYSQL_ROOT_USER\e[0m not set, setting user to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_MYSQL_ROOT_USER}\e[0m" && MYSQL_ROOT_USER=${DEFAULT_MYSQL_ROOT_USER}
 [ -z "${OTRS_BACKUP_TIME}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mOTRS_BACKUP_TIME\e[0m not set, setting value to \e[${OTRS_ASCII_COLOR_RED}m${DEFAULT_OTRS_BACKUP_TIME}\e[0m" && OTRS_BACKUP_TIME=${DEFAULT_OTRS_BACKUP_TIME}
+[ ! -z "${OTRS_CRON_BACKUP_SCRIPT}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mSetting OTRS_CRON_BACKUP_SCRIPT\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${OTRS_CRON_BACKUP_SCRIPT}\e[0m"
+[ ! -z "${OTRS_ARTICLE_STORAGE_TYPE}" ] && print_info "\e[${OTRS_ASCII_COLOR_BLUE}mSetting OTRS_ARTICLE_STORAGE_TYPE\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${OTRS_ARTICLE_STORAGE_TYPE}\e[0m"
 
 mysqlcmd="mysql -u${MYSQL_ROOT_USER} -h ${OTRS_DB_HOST} -P ${OTRS_DB_PORT} -p${MYSQL_ROOT_PASSWORD} "
 
@@ -236,6 +240,8 @@ function setup_otrs_config() {
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
+  # Check if storage type needs to be changed
+  switch_article_storage_type
 
   if [ "${OTRS_DISABLE_EMAIL_FETCH}" == "yes" ]; then
     disable_email_fetch
@@ -526,7 +532,7 @@ function setup_backup_cron() {
 
     # Set cron entry
     print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
-    echo "${OTRS_BACKUP_TIME} root . /.backup.env; ${OTRS_BACKUP_SCRIPT}" > /etc/cron.d/otrs_backup
+    echo "${OTRS_BACKUP_TIME} root . /.backup.env; ${OTRS_BACKUP_SCRIPT}" > ${OTRS_CRON_BACKUP_SCRIPT}
 
   elif [ "${OTRS_BACKUP_TIME}" == "disable" ]; then
     print_warning "Disabling automated backups !!"
@@ -539,4 +545,29 @@ function disable_email_fetch() {
   print_info "Disabling Email Accounts fetching..."  | tee -a ${upgrade_log}
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Daemon::SchedulerCronTaskManager::Task###MailAccountFetch --valid 0" -s /bin/bash otrs
 
+}
+
+function switch_article_storage_type() {
+  if [ "${OTRS_ARTICLE_STORAGE_TYPE}" != "ArticleStorageFS" ] && [ "${OTRS_ARTICLE_STORAGE_TYPE}" != "ArticleStorageDB" ]; then
+    print_warning "Unsupported article storage type."
+  else
+    print_info "Swtiching Article Storage Type to: ${OTRS_ARTICLE_STORAGE_TYPE} ..."  | tee -a ${upgrade_log}
+
+    current_type=$(su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Read --setting-name Ticket::Article::Backend::MIMEBase::ArticleStorage" -s /bin/bash otrs|grep Kernel|cut -d':' -f 13)
+
+    if [ ${current_type} != ${OTRS_ARTICLE_STORAGE_TYPE} ];then
+      su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Ticket::Article::Backend::MIMEBase::ArticleStorage --value Kernel::System::Ticket::Article::Backend::MIMEBase::${OTRS_ARTICLE_STORAGE_TYPE}" -s /bin/bash otrs
+      if [ $? -eq 0 ]; then
+        if [ "${OTRS_ARTICLE_STORAGE_TYPE}" == "ArticleStorageFS" ]; then
+          print_info "Swtiching Article Storage Type: Moving ticket articles from database to filesystem..."  | tee -a ${upgrade_log}
+          #statements
+        elif [ "${OTRS_ARTICLE_STORAGE_TYPE}" == "ArticleStorageDB" ]; then
+          print_info "Swtiching Article Storage Type: Moving ticket articles from filesystem to database..."  | tee -a ${upgrade_log}
+        fi
+        su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Article::StorageSwitch --target ${OTRS_ARTICLE_STORAGE_TYPE}" -s /bin/bash otrs
+      fi
+    else
+      print_info "Current Article storage type already configured to: \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m ${OTRS_ARTICLE_STORAGE_TYPE}"
+    fi
+  fi
 }
