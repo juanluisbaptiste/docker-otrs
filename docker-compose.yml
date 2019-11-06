@@ -16,6 +16,8 @@ services:
     env_file: .env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
+      # Uncomment if using OTRS_ARTICLE_STORAGE_TYPE=ArticleStorageFS
+      #- ./volumes/article:/opt/otrs/var/article
       - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
       - './volumes/backup:/var/otrs/backups'
       - './volumes/addons:/opt/otrs/addons'

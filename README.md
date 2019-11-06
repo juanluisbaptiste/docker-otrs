@@ -139,7 +139,7 @@ You can also add your own _Config.pm_ file configured as you need, by creating a
 ### Changing Default Article Storage Type
 The article storage type can be controlled using the `OTRS_ARTICLE_STORAGE_TYPE` environment variable, useful when the database size is getting out of hands so a *filesystem based* storage is better suited. Possible values are *ArticleStorageFS* and *ArticleStorageDB* (this is the default).
 
-This feature will also move the articles from the database to the filesystem or vice-versa as [described in the documentation](https://doc.otrs.com/doc/manual/admin/5.0/en/html/performance-tuning.html#performance-tuning-otrs-storage).
+This feature will also move the articles from the database to the filesystem or vice-versa as [described in the documentation](https://doc.otrs.com/doc/manual/admin/5.0/en/html/performance-tuning.html#performance-tuning-otrs-storage). If you change the storage type to *ArticleStorageFS* you have to mount */opt/otrs/var/article* directory so exported articles from the database aren't lost at container restart/recreation. The example [docker-compose](https://github.com/juanluisbaptiste/docker-otrs/blob/master/docker-compose.yml) files has this commented out.
 
 ### Container auto-start
 
