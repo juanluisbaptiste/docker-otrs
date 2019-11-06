@@ -532,7 +532,11 @@ function setup_backup_cron() {
 
     # Set cron entry
     print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
-    echo "${OTRS_BACKUP_TIME} root . /.backup.env; ${OTRS_BACKUP_SCRIPT}" > ${OTRS_CRON_BACKUP_SCRIPT}
+    if [ -f ${OTRS_CRON_BACKUP_SCRIPT} ]; then
+      echo "${OTRS_BACKUP_TIME} root . /.backup.env; ${OTRS_BACKUP_SCRIPT}" > ${OTRS_CRON_BACKUP_SCRIPT}
+    else
+      print_warning "Custom cron script: ${OTRS_CRON_BACKUP_SCRIPT} does not exist."
+    fi
 
   elif [ "${OTRS_BACKUP_TIME}" == "disable" ]; then
     print_warning "Disabling automated backups !!"
