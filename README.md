@@ -31,6 +31,7 @@ Table of Contents
          * [Runtime Configuration](#runtime-configuration)
          * [Custom Configuration File](#custom-configuration-file)
          * [Container auto-start](#container-auto-start)
+         * [Changing Default Article Storage Type](#changing-default-article-storage-type)
          * [Docker Secrets](#docker-secrets)
          * [Installing Addons](#installing-addons)
          * [Notes](#notes)
@@ -135,6 +136,10 @@ You can also add your own _Config.pm_ file configured as you need, by creating a
 
     COPY Config.pm /Kernel
 
+### Changing Default Article Storage Type
+The article storage type can be controlled using the `OTRS_ARTICLE_STORAGE_TYPE` environment variable, useful when the database size is getting out of hands so a *filesystem based* storage is better suited. Possible values are *ArticleStorageFS* and *ArticleStorageDB* (this is the default).
+
+This feature will also move the articles from the database to the filesystem or vice-versa as [described in the documentation](https://doc.otrs.com/doc/manual/admin/5.0/en/html/performance-tuning.html#performance-tuning-otrs-storage).
 
 ### Container auto-start
 
