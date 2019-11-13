@@ -15,9 +15,3 @@ RUN sed -i.bk -r '/^\[mysqld\]$/a max_allowed_packet=64M' /etc/mysql/my.cnf && \
     sed -i.bk -r '/^\[mysqld\]$/a collation-server = utf8_general_ci' /etc/mysql/my.cnf && \
     sed -i.bk -r "/^\[mysqld\]$/a init-connect=\'SET NAMES utf8\'" /etc/mysql/my.cnf && \
     sed -i.bk -r '/^\[mysqld\]$/a character-set-server = utf8' /etc/mysql/my.cnf
-
-#Use a separate volume for data.
-#VOLUME [ "/var/lib/mysql" ]
-#EXPOSE 3306
-#Call launch script
-#CMD ["/usr/bin/run.sh"]
