@@ -57,6 +57,7 @@ DEFAULT_MYSQL_ROOT_USER="root"
 DEFAULT_OTRS_DB_HOST="mariadb"
 DEFAULT_OTRS_DB_PORT=3306
 DEFAULT_OTRS_BACKUP_TIME="0 4 * * *"
+DEFAULT_BACKUP_SCRIPT="/otrs_backup.sh"
 DEFAULT_OTRS_CRON_BACKUP_SCRIPT="/etc/cron.d/otrs_backup"
 OTRS_BACKUP_DIR="/var/otrs/backups"
 OTRS_CONFIG_DIR="${OTRS_ROOT}Kernel/"
@@ -65,7 +66,7 @@ OTRS_CONFIG_MOUNT_DIR="/Kernel"
 WAIT_TIMEOUT=2
 OTRS_ASCII_COLOR_BLUE="38;5;31"
 OTRS_ASCII_COLOR_RED="31"
-OTRS_BACKUP_SCRIPT="/otrs_backup.sh"
+OTRS_BACKUP_SCRIPT="${OTRS_BACKUP_SCRIPT:-/otrs_backup.sh}"
 OTRS_CRON_BACKUP_SCRIPT="${OTRS_CRON_BACKUP_SCRIPT:-/etc/cron.d/otrs_backup}"
 OTRS_ARTICLE_STORAGE_TYPE="${OTRS_ARTICLE_STORAGE_TYPE:-ArticleStorageDB}"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
@@ -533,6 +534,11 @@ function setup_backup_cron() {
 
     # Set cron entry
     print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
+
+    if [ ! -f ${OTRS_BACKUP_SCRIPT} ]; then
+      print_warning "Custom backup script: ${OTRS_BACKUP_SCRIPT} does not exist, using default one: ${DEFAULT_BACKUP_SCRIPT}"
+      OTRS_BACKUP_SCRIPT=${DEFAULT_BACKUP_SCRIPT}
+    fi
 
     if [ ! -f ${OTRS_CRON_BACKUP_SCRIPT} ]; then
       print_warning "Custom cron script: ${OTRS_CRON_BACKUP_SCRIPT} does not exist, creating default one: ${DEFAULT_OTRS_CRON_BACKUP_SCRIPT}"
