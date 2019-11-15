@@ -116,7 +116,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
-* `OTRS_CRON_BACKUP_SCRIPT` Path to a custom backup script to be called by cron added by cstom image. Default value is /etc/cron.d/otrs_backup.
+* `OTRS_CRON_BACKUP_SCRIPT` Path to a custom backup script to be called by cron. The script must be added by custom image. Default value is /etc/cron.d/otrs_backup.
 * `OTRS_ARTICLE_STORAGE_TYPE` Change the article storage type (attachments), possible values are *ArticleStorageFS* and *ArticleStorageDB*. This feature will also move the articles from the database to the filesystem or vice-versa.
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
 * `OTRS_SENDMAIL_MODULE` Module OTRS should use to send mails (e.g `SMTP`, `SMTPS`, `Sendmail`).
