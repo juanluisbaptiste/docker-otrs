@@ -1,6 +1,7 @@
 ![OTRS Free](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/logo_otrs6free.png)
 
 # OTRS 6 Ticketing System
+[![Docker Build Status](https://img.shields.io/docker/build/juanluisbaptiste/otrs?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/build/)
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
