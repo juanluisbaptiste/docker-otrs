@@ -1,5 +1,13 @@
 # docker-otrs Change Log
 
+## 6.0.25 - 2019-12-13
+### Changed
+- Updated to latest OTRS version 6.0.24.
+
+## 5.0.39 - 2019-12-13
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.39.
+
 ## 6.0.23 - 2019-11-06
 ### Added
 - New feature: Added new environment variable OTRS_CRON_BACKUP_SCRIPT to change the default script called by cron for periodic backups.
