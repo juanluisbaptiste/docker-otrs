@@ -1,6 +1,6 @@
 #OTRS ticketing system docker image.
 FROM centos:7
-MAINTAINER Juan Luis Baptiste <juan.baptiste@gmail.com>
+MAINTAINER Pedro Henrique <pedro@jac.bsb.br>
 ENV OTRS_VERSION=6.0.24-01
 ENV OTRS_ROOT "/opt/otrs/"
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
@@ -15,14 +15,33 @@ RUN yum install -y yum-plugin-fastestmirror && \
     yum install -y epel-release && \
     yum update -y && \
     yum -y install bzip2 cronie httpd mysql mod_perl \
-    perl-core "perl(Crypt::SSLeay)" "perl(Net::LDAP)" "perl(URI)" \
-    procmail "perl(Date::Format)" "perl(LWP::UserAgent)" \
-    "perl(Net::DNS)" "perl(IO::Socket::SSL)" "perl(XML::Parser)" \
-    "perl(Apache2::Reload)" "perl(Crypt::Eksblowfish::Bcrypt)" \
-    "perl(Encode::HanExtra)" "perl(GD)" "perl(GD::Text)" "perl(GD::Graph)" \
-    "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" "perl(DateTime)" \
-    "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
+    perl-core procmail \
     rsyslog supervisor tar which && \
+    yum -y install cpanm gcc perl perl-App-cpanminus perl-Config-Tiny && \
+    cpanm install Crypt::SSLeay ; \
+    cpanm install Net::LDAP ; \
+    cpanm install Net::SMTP ; \
+    cpanm install URI ; \
+    cpanm install Date::Format ; \
+    cpanm install LWP::UserAgent ; \
+    cpanm install Net::DNS ; \
+    cpanm install IO::Socket::SSL ; \
+    cpanm install XML::Parser ; \
+    cpanm install Apache2::Reload ; \
+    cpanm install Authen::NTLM ; \
+    cpanm install Crypt::Eksblowfish::Bcrypt ; \
+    cpanm install Encode::HanExtra ; \
+    cpanm install GD ; \
+    cpanm install GD::Text ; \
+    cpanm install GD::Graph ; \
+    cpanm install JSON::XS ; \
+    cpanm install Mail::IMAPClient ; \
+    cpanm install PDF::API2 ; \
+    cpanm install DateTime ; \
+    cpanm install Text::CSV_XS ; \
+    cpanm install YAML::XS ; \
+    cpanm install Text::CSV_XS ; \
+    cpanm install DBD::mysql ; \
     yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
     /opt/otrs/bin/otrs.CheckModules.pl && \
     yum clean all
