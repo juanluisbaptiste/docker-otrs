@@ -1,6 +1,15 @@
 # docker-otrs Change Log
 
-## 6.0.25 - 2019-12-13
+## 6.0.25 - 2020-01-19
+### Changed
+- Updated to latest OTRS version 6.0.25.
+
+## 5.0.40 - 2020-01-19
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.40.
+
+
+## 6.0.24 - 2019-12-13
 ### Changed
 - Updated to latest OTRS version 6.0.24.
 
