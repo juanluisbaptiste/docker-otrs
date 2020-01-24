@@ -304,4 +304,4 @@ If you are having issues starting up the containers you can set `OTRS_DEBUG=yes`
 
 ## Consulting & Support
 
-Do you need help setting your OTRS ticketing system or configuring it to match your organization's needs ? I also offer consulting services, drop me a line at: juancho _at_ juanbaptiste dot tech
+Do you need help setting your OTRS ticketing system or configuring it to match your organization's needs ? I also offer consulting services, drop me a line at: juan _at_ juanbaptiste dot tech
