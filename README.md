@@ -73,7 +73,7 @@ The container behavior is controlled by environment variables ([see full list be
 
     http://localhost/otrs/install.pl
 
-If you are running the container remotely, replace *localhost* with the server's hostname. If starting with the default mode (_OTRS__INSTALL=no_), you will need to configure it before starting it. Copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/otrs/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
+If you are running the container remotely, replace *localhost* with the server's hostname. If starting with the default mode (_OTRS__INSTALL=no_), you will need to configure it before starting it. Copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
 
     sudo docker-compose -f docker-compose-prod.yml up
 
