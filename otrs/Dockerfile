@@ -41,9 +41,9 @@ RUN chmod 755 /*.sh  && \
     sed -i -e '/<ValidateModule>Kernel::System::SysConfig::StateValidate<\/ValidateModule>/ s/^#*/#/' \
         ${OTRS_ROOT}Kernel/Config/Files/XML/Ticket.xml  && \
     mkdir -p ${OTRS_ROOT}var/{run,tmp}/ && \
-    perl -cw ${OTRS_ROOT}bin/cgi-bin/index.pl && \
-    perl -cw ${OTRS_ROOT}bin/cgi-bin/customer.pl && \
-    perl -cw ${OTRS_ROOT}bin/otrs.Console.pl && \
+    # perl -cw ${OTRS_ROOT}bin/cgi-bin/index.pl && \
+    # perl -cw ${OTRS_ROOT}bin/cgi-bin/customer.pl && \
+    # perl -cw ${OTRS_ROOT}bin/otrs.Console.pl && \
     sed -i -e '/\$ModLoad imjournal/ s/^#*/#/' /etc/rsyslog.conf && \
     sed -i -e '/\$IMJournalStateFile imjournal.state/ s/^#*/#/' /etc/rsyslog.conf && \
     sed -i 's/\(^\$OmitLocalLogging \).*/\1off/' /etc/rsyslog.conf && \
