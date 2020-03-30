@@ -13,6 +13,7 @@ ENV LANGUAGE=en_US.UTF-8
 
 RUN yum install -y yum-plugin-fastestmirror && \
     yum install -y epel-release && \
+    yum -y install https://harbottle.gitlab.io/epmel/7/x86_64/epmel-release.rpm && \
     yum update -y && \
     yum -y install bzip2 cronie httpd mysql mod_perl \
     perl-core "perl(Crypt::SSLeay)" "perl(Net::LDAP)" "perl(URI)" \
@@ -22,7 +23,9 @@ RUN yum install -y yum-plugin-fastestmirror && \
     "perl(Encode::HanExtra)" "perl(GD)" "perl(GD::Text)" "perl(GD::Graph)" \
     "perl(JSON::XS)" "perl(Mail::IMAPClient)" "perl(PDF::API2)" "perl(DateTime)" \
     "perl(Text::CSV_XS)" "perl(YAML::XS)" "perl(Text::CSV_XS)" "perl(DBD::mysql)" \
-    rsyslog supervisor tar which && \
+    perl-Moo "perl(namespace::clean)" "perl(Crypt::Random::Source)" "perl(Exporter::Tiny)" \
+    "perl(Math::Random::ISAAC)" "perl(Math::Random::Secure)" "perl(Module::Find)" \
+    "perl(Types::TypeTiny)" rsyslog supervisor tar which && \
     yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
     /opt/otrs/bin/otrs.CheckModules.pl && \
     yum clean all
