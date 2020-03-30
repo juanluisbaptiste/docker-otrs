@@ -242,12 +242,6 @@ function setup_otrs_config() {
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
-  # Check if storage type needs to be changed
-  switch_article_storage_type
-
-  if [ "${OTRS_DISABLE_EMAIL_FETCH}" == "yes" ]; then
-    disable_email_fetch
-  fi
 }
 
 function load_defaults() {

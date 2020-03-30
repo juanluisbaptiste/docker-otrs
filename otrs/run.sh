@@ -61,6 +61,14 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Config::Rebuild" -s /bin/bash otrs
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Maint::Cache::Delete" -s /bin/bash otrs
   set_skins
+
+  # Check if storage type needs to be changed
+  switch_article_storage_type
+
+  if [ "${OTRS_DISABLE_EMAIL_FETCH}" == "yes" ]; then
+    disable_email_fetch
+  fi
+
 else
   #If neither of previous cases is true the installer will be run.
   print_info "Starting \e[${OTRS_ASCII_COLOR_BLUE}m OTRS $OTRS_VERSION \e[0minstaller !!"
