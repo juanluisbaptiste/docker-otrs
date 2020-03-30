@@ -48,6 +48,22 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     restore_backup ${OTRS_BACKUP_DATE}
   fi
 
+  # Check if OTRS minor version changed and do a minor version upgrade
+  if [ -e ${OTRS_ROOT}/Kernel/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
+    current_version=$(cat ${OTRS_ROOT}/Kernel/current_version)
+    new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
+    check_version ${current_version} ${new_version}
+    if [ $? -eq 1 ]; then
+      print_info "Doing minor version upgrade..."
+      upgrade_minor_version
+      echo ${new_version} > ${OTRS_ROOT}/Kernel/current_version
+    fi
+  else
+    current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
+    current_version="${current_version## }"
+    echo ${current_version} > ${OTRS_ROOT}/Kernel/current_version
+  fi
+
   ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
   # Reinstall any existing addons in case there was a minor version upgrade
   reinstall_modules
@@ -55,6 +71,8 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
   install_modules ${OTRS_ADDONS_PATH}
   set_ticket_counter
   rm -fr ${OTRS_ROOT}var/tmp/firsttime
+
+
   #Start OTRS
   ${OTRS_ROOT}bin/Cron.sh start otrs
   su -c "${OTRS_ROOT}bin/otrs.Daemon.pl start" -s /bin/bash otrs

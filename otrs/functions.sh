@@ -69,6 +69,7 @@ OTRS_ASCII_COLOR_RED="31"
 OTRS_BACKUP_SCRIPT="${OTRS_BACKUP_SCRIPT:-/otrs_backup.sh}"
 OTRS_CRON_BACKUP_SCRIPT="${OTRS_CRON_BACKUP_SCRIPT:-/etc/cron.d/otrs_backup}"
 OTRS_ARTICLE_STORAGE_TYPE="${OTRS_ARTICLE_STORAGE_TYPE:-ArticleStorageDB}"
+OTRS_UPGRADE="${OTRS_UPGRADE:-no}"
 OTRS_UPGRADE_BACKUP="${OTRS_UPGRADE_BACKUP:-yes}"
 OTRS_ADDONS_PATH="${OTRS_ROOT}/addons/"
 INSTALLED_ADDONS_DIR="${OTRS_ADDONS_PATH}/installed"
@@ -429,6 +430,20 @@ function fix_database_upgrade() {
       done
     else
       print_info "No additional SQL files to load were found."
+    fi
+  else
+    print_error "Database does not exist!" && exit 1
+  fi
+}
+
+function upgrade_minor_version() {
+  # Upgrade database
+  print_info "[*] Doing minor version upgrade, running DBUpdate-to-6.pl script..." | tee -a ${upgrade_log}
+  $mysqlcmd -e "use ${OTRS_DB_NAME}"
+  if [ $? -eq 0  ]; then
+    su -c "${OTRS_ROOT}/scripts/DBUpdate-to-6.pl --non-interactive" -s /bin/bash otrs | tee -a ${upgrade_log}
+    if [ $? -gt 0  ]; then
+      print_error "Cannot migrate database" | tee -a ${upgrade_log} && exit 1
     fi
   else
     print_error "Database does not exist!" && exit 1
