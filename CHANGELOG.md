@@ -1,5 +1,15 @@
 # docker-otrs Change Log
 
+## 6.0.27 - 2020-03-30
+### Changed
+- Updated to latest OTRS version 6.0.27.
+- Run DBUpdate-to-6.pl script when a minor upgrade is detected (Issue #86).
+
+## 5.0.42 - 2020-03-27
+### Changed
+- Updated otrs-5_0_x branch to OTRS 5.0.42.
+
+
 ## 6.0.26 - 2020-03-12
 ### Changed
 - Updated to latest OTRS version 6.0.26.
