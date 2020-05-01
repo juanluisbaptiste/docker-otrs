@@ -7,7 +7,7 @@
 
 **_Unofficial_**  [OTRS 6 Free](https://community.otrs.com/) docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
 
-We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/stable/en/html/installation.html).
+We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/6.0/en/html/installation.html).
 
 The OTRS image doesn't include a SMTP service, decoupling applications into multiple containers makes it much easier to scale horizontally and reuse containers. If you don't have access to a SMTP server, you can instead link against this [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) postfix container.
 
