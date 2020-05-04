@@ -1,5 +1,10 @@
 # docker-otrs Change Log
 
+## 6.0.28 - 2020-05-04
+### Changed
+- Updated to latest OTRS version 6.0.2.
+
+
 ## 6.0.27 - 2020-03-30
 ### Changed
 - Updated to latest OTRS version 6.0.27.
