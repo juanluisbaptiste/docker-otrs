@@ -64,7 +64,18 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     echo ${current_version} > ${OTRS_ROOT}/Kernel/current_version
   fi
 
-  ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
+  # Only adjust permissions if OTRS_SET_PERMISSIONS == yes
+  if [ "${OTRS_SET_PERMISSIONS}" == "yes" ]; then
+    print_info "Setting OTRS permissions"
+    ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT}
+  elif [ "${OTRS_SET_PERMISSIONS}" == "skip-article-dir" ]; then
+    # Adjust permissions but skip articles directory if OTRS_SET_PERMISSIONS == skip-article-dir
+    print_info "Setting permissions but skipping articles directory"
+    ${OTRS_ROOT}bin/otrs.SetPermissions.pl --otrs-user=otrs --web-group=apache ${OTRS_ROOT} --skip-article-dir
+  else
+    print_info "OTRS_SET_PERMISSIONS set to \e[${OTRS_ASCII_COLOR_RED}mno\e[0m, Skipping setting permissions"
+  fi
+
   # Reinstall any existing addons in case there was a minor version upgrade
   reinstall_modules
   # Install any new modules found in ${OTRS_ADDONS_PATH}

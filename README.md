@@ -117,6 +117,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_TIMEZONE` to set the default timezone.
 * `OTRS_TICKET_COUNTER` Sets the starting point for the ticket counter.
 * `OTRS_NUMBER_GENERATOR` Sets the ticket number generator, possible values are : *DateChecksum*, *Date*, *AutoIncrement* or *Random*.
+* `OTRS_SET_PERMISSIONS` Configure OTRS permissions, possible values are: *yes*, *no* or *skip-article-dir* (if using *OTRS_ARTICLE_STORAGE_TYPE=ArticleStorageFS*, useful with big articles directories). Default is `yes`.
 * `OTRS_BACKUP_SCRIPT` Path to a custom backup script to be called by cron by default /etc/cron.d/otrs_backup script. The script must be added by custom image. Default value is /otrs_backup.sh.
 * `OTRS_CRON_BACKUP_SCRIPT` Path to a custom backup script to be called by cron. The script must be added by custom image. Default value is /etc/cron.d/otrs_backup.
 * `OTRS_ARTICLE_STORAGE_TYPE` Change the article storage type (attachments), possible values are *ArticleStorageFS* and *ArticleStorageDB*. This feature will also move the articles from the database to the filesystem or vice-versa.
