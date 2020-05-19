@@ -7,7 +7,7 @@ ENV MYSQL_ROOT_PASSWORD changeme
 USER root
 
 #Change db configuration as required by official install docs and Enable utf8 support
-RUN echo "[mysqld]" >> /etc/mysql/conf.d/my-otrs.cnf &&\
+RUN echo "[mysqld]" >> /etc/mysql/conf.d/otrs.cnf &&\
     echo "max_allowed_packet=64M" >> /etc/mysql/conf.d/otrs.cnf &&\
     echo "query_cache_size=32M" >> /etc/mysql/conf.d/otrs.cnf &&\
     echo "innodb_log_file_size=256M" >> /etc/mysql/conf.d/otrs.cnf &&\
