@@ -574,7 +574,7 @@ function switch_article_storage_type() {
   if [ "${OTRS_ARTICLE_STORAGE_TYPE}" != "ArticleStorageFS" ] && [ "${OTRS_ARTICLE_STORAGE_TYPE}" != "ArticleStorageDB" ]; then
     print_warning "Unsupported article storage type."
   else
-    print_info "Swtiching Article Storage Type to: ${OTRS_ARTICLE_STORAGE_TYPE} ..."  | tee -a ${upgrade_log}
+    print_info "Swtiching Article Storage Type to: \e[${OTRS_ASCII_COLOR_RED}m${OTRS_ARTICLE_STORAGE_TYPE}\e[0m ..."  | tee -a ${upgrade_log}
 
     current_type=$(su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Read --setting-name Ticket::Article::Backend::MIMEBase::ArticleStorage" -s /bin/bash otrs|grep Kernel|cut -d':' -f 13)
 
@@ -590,7 +590,7 @@ function switch_article_storage_type() {
         su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Article::StorageSwitch --target ${OTRS_ARTICLE_STORAGE_TYPE}" -s /bin/bash otrs
       fi
     else
-      print_info "Current Article storage type already configured to: \e[${OTRS_ASCII_COLOR_BLUE}m${key}\e[0m ${OTRS_ARTICLE_STORAGE_TYPE}"
+      print_info "Current Article storage type already configured to: \e[${OTRS_ASCII_COLOR_RED}m${OTRS_ARTICLE_STORAGE_TYPE}\e[0m"
     fi
   fi
 }
