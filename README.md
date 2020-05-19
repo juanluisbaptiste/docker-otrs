@@ -1,11 +1,13 @@
 ![OTRS Free](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/logo_otrs6free.png)
 
-# OTRS 6 Ticketing System
+# ((OTRS)) Community Edition Ticketing System
 [![Docker Build Status](https://img.shields.io/docker/build/juanluisbaptiste/otrs?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/build/)
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
-**_Unofficial_**  [OTRS 6 Free](https://community.otrs.com/) docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
+**_Unofficial_**  [((OTRS)) Community Edition](https://community.otrs.com/) docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
+
+Current community edition is at version 6.
 
 We also include a *MariaDB Dockerfile* for a pre-configured image with the [required database settings](http://otrs.github.io/doc/manual/admin/6.0/en/html/installation.html).
 
