@@ -84,7 +84,7 @@ to the `docker-compose-prod.yml` configuration file. This is a sample output of 
 
 ![Container boot](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/otrs6_boot_medium.png)
 
-The default database password is `changeme`, to change it, edit the `docker-compose.yml` file and change the
+The default database password is `changeme`, to change it, edit your copy of the [`env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/.env.example) file and change the
 `MYSQL_ROOT_PASSWORD` environment variable on the `mariadb` image definition before
 running `docker-compose`.
 
