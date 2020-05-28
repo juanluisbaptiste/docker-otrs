@@ -71,7 +71,7 @@ The container behavior is controlled by environment variables ([see full list be
 
 * `OTRS_INSTALL=restore` Will restore the backup specified by `OTRS_BACKUP_DATE` environment variable. See bellow for more details on backup and restore procedures.
 * `OTRS_DROP_DATABASE=yes` Will drop the otrs database it if already exists (by default the container will fail if the database already exists).
-* `OTRS_INSTALL=yes` Will run the installer which you can access at:
+* `OTRS_INSTALL=yes` (currently unsupported) Will run the installer which you can access at:
 
     http://localhost/otrs/install.pl
 
@@ -94,6 +94,8 @@ To start the containers in production mode the the `-d` parameter to the previou
 
 After the containers finish starting up you can access the OTRS system at the following
 addresses:
+
+*_NOTE_*: `OTRS_INSTALL=yes` was used to run the installer but currently is unsupported and have not been tested in a long time so please do not use it, it will be removed soon.
 
 ### Administration Interface
     http://$OTRS_HOSTNAME/otrs/index.pl
