@@ -1,9 +1,16 @@
 # docker-otrs Change Log
 
-## 6.0.28 - 2020-05-04
+## 6.0.28 - 2020-06-30
 ### Changed
-- Updated to latest OTRS version 6.0.2.
+- Updated to latest OTRS version 6.0.28 and fixed bad update to this version 
+  from May.
+- Use a separate configuration file with OTRS mysql recommended settings 
+  instead of modifying the configuration file with sed (PR #90).
 
+### Added
+- Print all services logs to stdout (issue #71)
+- Added new  New env variable OTRS_SET_PERMISSIONS to control running of 
+  otrs.SetPermissions.pl (issue #91)
 
 ## 6.0.27 - 2020-03-30
 ### Changed
