@@ -20,7 +20,7 @@ _Note:_
 * OTRS 5 image sources are still available in [otrs-5_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-5_0_x).
 * OTRS 4 image sources are still available in [otrs-4_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-4_0_x).
 
-_If you want to follow the development of this project check out [my blog](http://not403.blogspot.com.co/search/label/otrs)._
+_If you want to follow the development of this project check out [my blog](https://www.juanbaptiste.tech/category/otrs)._
 
 Table of Contents
 =================
