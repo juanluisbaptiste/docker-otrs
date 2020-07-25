@@ -77,6 +77,7 @@ OTRS_UPGRADE_SQL_FILES="${OTRS_ROOT}/db_upgrade"
 OTRS_UPGRADE_XML_FILES="${OTRS_UPGRADE_XML_FILES:-no}"
 OTRS_DISABLE_EMAIL_FETCH="${OTRS_DISABLE_EMAIL_FETCH:-no}"
 OTRS_SET_PERMISSIONS="${OTRS_SET_PERMISSIONS:-yes}"
+_MINOR_VERSION_UPGRADE=false
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
 [ -z "${OTRS_INSTALL}" ] && OTRS_INSTALL="no"
@@ -247,6 +248,23 @@ function setup_otrs_config() {
 }
 
 function load_defaults() {
+  # Check if OTRS minor version changed and do a minor version upgrade
+  if [ -e ${OTRS_ROOT}/Kernel/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
+    current_version=$(cat ${OTRS_ROOT}/Kernel/current_version)
+    new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
+    check_version ${current_version} ${new_version}
+    if [ $? -eq 1 ]; then
+      print_info "Doing minor version upgrade..."
+      upgrade_minor_version
+      _MINOR_VERSION_UPGRADE=true
+      echo ${new_version} > ${OTRS_ROOT}/Kernel/current_version
+    fi
+  else
+    current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
+    current_version="${current_version## }"
+    echo ${current_version} > ${OTRS_ROOT}/Kernel/current_version
+  fi
+
   #Check if a host-mounted volume for configuration storage was added to this
   #container
   check_host_mount_dir
@@ -307,7 +325,7 @@ function set_users_skin() {
 function check_host_mount_dir() {
   #Copy the configuration from /Kernel (put there by the Dockerfile) to $OTRS_CONFIG_DIR
   #to be able to use host-mounted volumes. copy only if ${OTRS_CONFIG_DIR} doesn't exist
-  if ([ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ]) || [ "${OTRS_UPGRADE}" == "yes" ];
+  if ([ "$(ls -A ${OTRS_CONFIG_MOUNT_DIR})" ] && [ ! "$(ls -A ${OTRS_CONFIG_DIR})" ]) || [ "${OTRS_UPGRADE}" == "yes" ] || [ ${_MINOR_VERSION_UPGRADE} == true ];
   then
     print_info "Found empty \e[${OTRS_ASCII_COLOR_BLUE}m${OTRS_CONFIG_DIR}\e[0m, copying default configuration to it..."
     mkdir -p ${OTRS_CONFIG_DIR}

@@ -48,22 +48,6 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     restore_backup ${OTRS_BACKUP_DATE}
   fi
 
-  # Check if OTRS minor version changed and do a minor version upgrade
-  if [ -e ${OTRS_ROOT}/Kernel/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
-    current_version=$(cat ${OTRS_ROOT}/Kernel/current_version)
-    new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
-    check_version ${current_version} ${new_version}
-    if [ $? -eq 1 ]; then
-      print_info "Doing minor version upgrade..."
-      upgrade_minor_version
-      echo ${new_version} > ${OTRS_ROOT}/Kernel/current_version
-    fi
-  else
-    current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
-    current_version="${current_version## }"
-    echo ${current_version} > ${OTRS_ROOT}/Kernel/current_version
-  fi
-
   # Only adjust permissions if OTRS_SET_PERMISSIONS == yes
   if [ "${OTRS_SET_PERMISSIONS}" == "yes" ]; then
     print_info "Setting OTRS permissions"
