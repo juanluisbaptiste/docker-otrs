@@ -1,5 +1,14 @@
 # docker-otrs Change Log
 
+## 6.0.29 - 2020-07-29
+### Changed
+- Updated to latest OTRS version 6.0.29.
+-  Added internal variable \_MINOR_VERSION_UPGRADE to allow the copy of
+upgraded perl modules on /opt/otrs/Kernel when a minor upgrade is
+detected. (issue #95).
+- Print versions being upgraded on minor upgrade.
+
+
 ## 6.0.28 - 2020-06-30
 ### Changed
 - Updated to latest OTRS version 6.0.28 and fixed bad update to this version 
