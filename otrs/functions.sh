@@ -254,7 +254,7 @@ function load_defaults() {
     new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
     check_version ${current_version} ${new_version}
     if [ $? -eq 1 ]; then
-      print_info "Doing minor version upgrade..."
+      print_info "Doing minor version upgrade from \e[${OTRS_ASCII_COLOR_BLUE}m${current_version}\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${new_version}\e[0m"
       upgrade_minor_version
       _MINOR_VERSION_UPGRADE=true
       echo ${new_version} > ${OTRS_ROOT}/Kernel/current_version
