@@ -249,20 +249,20 @@ function setup_otrs_config() {
 
 function load_defaults() {
   # Check if OTRS minor version changed and do a minor version upgrade
-  if [ -e ${OTRS_ROOT}/Kernel/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
-    current_version=$(cat ${OTRS_ROOT}/Kernel/current_version)
+  if [ -e ${OTRS_ROOT}/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
+    current_version=$(cat ${OTRS_ROOT}/current_version)
     new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
     check_version ${current_version} ${new_version}
     if [ $? -eq 1 ]; then
       print_info "Doing minor version upgrade from \e[${OTRS_ASCII_COLOR_BLUE}m${current_version}\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${new_version}\e[0m"
       upgrade_minor_version
       _MINOR_VERSION_UPGRADE=true
-      echo ${new_version} > ${OTRS_ROOT}/Kernel/current_version
+      echo ${new_version} > ${OTRS_ROOT}/current_version
     fi
   else
     current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
     current_version="${current_version## }"
-    echo ${current_version} > ${OTRS_ROOT}/Kernel/current_version
+    echo ${current_version} > ${OTRS_ROOT}/current_version
   fi
 
   #Check if a host-mounted volume for configuration storage was added to this
