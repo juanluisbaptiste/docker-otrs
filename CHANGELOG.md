@@ -1,5 +1,10 @@
 # docker-otrs Change Log
 
+## 6.0.29-2 - 2020-08-14
+### Changed
+- Move location of current_version file outside of Kernel directory as it breaks initial setup of a clean image (issue #97).
+
+
 ## 6.0.29 - 2020-07-29
 ### Changed
 - Updated to latest OTRS version 6.0.29.
