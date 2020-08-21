@@ -21,7 +21,6 @@ function get_current_date(){
 function cleanup () {
   echo -e "Cleaning up..."
   rm -fr $TEMP_BACKUP_DIR
-  find $OTRS_BACKUP_DIR -type f -mtime "+${BACKUP_ROTATION_DAYS}" -delete
   exit 143; # 128 + 15 -- SIGTERM
 }
 
