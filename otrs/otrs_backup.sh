@@ -21,6 +21,7 @@ function get_current_date(){
 function cleanup () {
   echo -e "Cleaning up..."
   rm -fr $TEMP_BACKUP_DIR
+  find $OTRS_BACKUP_DIR -type f -mtime "+${BACKUP_ROTATION_DAYS}" -delete
   exit 143; # 128 + 15 -- SIGTERM
 }
 
@@ -44,6 +45,9 @@ if [ $? -eq 0 ]; then
   cd ..
   chmod -R 755 $OTRS_BACKUP_DIR
   echo -e "${DATE} Backup successful."
+  echo -e "Deleting older backups than ${BACKUP_ROTATION_DAYS} days."
+  find $OTRS_BACKUP_DIR -type f -mtime "+${BACKUP_ROTATION_DAYS}" -ls -delete
+  echo -e "Done."
 else
   echo -e "ERROR: Backup process failed."
   exit 1
