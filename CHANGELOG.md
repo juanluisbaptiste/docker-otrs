@@ -1,8 +1,13 @@
 # docker-otrs Change Log
 
+## 6.0.29-3 - 2020-09-08
+### Changed
+- Merged PR #98 to fix backup rotations.
+
 ## 6.0.29-2 - 2020-08-14
 ### Changed
-- Move location of current_version file outside of Kernel directory as it breaks initial setup of a clean image (issue #97).
+- Move location of current_version file outside of Kernel directory as it breaks 
+initial setup of a clean image (issue #97).
 
 
 ## 6.0.29 - 2020-07-29
