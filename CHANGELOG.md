@@ -1,5 +1,9 @@
 # docker-otrs Change Log
 
+## 6.0.30 - 2020-10-09
+### Changed
+- Updated to latest OTRS version 6.0.30.
+
 ## 6.0.29-3 - 2020-09-08
 ### Changed
 - Merged PR #98 to fix backup rotations.
