@@ -1,5 +1,12 @@
 # docker-otrs Change Log
 
+## 6.0.30-2 - 2020-11-04
+### Changed
+- Upgrade installed addons whe a minor upgrade is needed instead of reinstalling
+  them.
+- Save current_version file in ${OTRS_CONFIG_DIR} instead of ${OTRS_ROOT} so it
+  persists during redeploys and upgrades.
+
 ## 6.0.30 - 2020-10-09
 ### Changed
 - Updated to latest OTRS version 6.0.30.
@@ -10,7 +17,7 @@
 
 ## 6.0.29-2 - 2020-08-14
 ### Changed
-- Move location of current_version file outside of Kernel directory as it breaks 
+- Move location of current_version file outside of Kernel directory as it breaks
 initial setup of a clean image (issue #97).
 
 
@@ -25,14 +32,14 @@ detected. (issue #95).
 
 ## 6.0.28 - 2020-06-30
 ### Changed
-- Updated to latest OTRS version 6.0.28 and fixed bad update to this version 
+- Updated to latest OTRS version 6.0.28 and fixed bad update to this version
   from May.
-- Use a separate configuration file with OTRS mysql recommended settings 
+- Use a separate configuration file with OTRS mysql recommended settings
   instead of modifying the configuration file with sed (PR #90).
 
 ### Added
 - Print all services logs to stdout (issue #71)
-- Added new  New env variable OTRS_SET_PERMISSIONS to control running of 
+- Added new  New env variable OTRS_SET_PERMISSIONS to control running of
   otrs.SetPermissions.pl (issue #91)
 
 ## 6.0.27 - 2020-03-30
