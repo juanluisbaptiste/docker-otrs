@@ -248,17 +248,21 @@ function setup_otrs_config() {
 }
 
 function load_defaults() {
+  local current_version_file="${OTRS_CONFIG_DIR}/current_version"
+
   # Check if OTRS minor version changed and do a minor version upgrade
-  if [ -e ${OTRS_ROOT}/current_version ] && [ ${OTRS_UPGRADE} != "yes" ]; then
-    current_version=$(cat ${OTRS_ROOT}/current_version)
+  if [ -e ${current_version_file} ] && [ ${OTRS_UPGRADE} != "yes" ]; then
+    current_version=$(cat ${current_version_file})
     new_version=$(echo ${OTRS_VERSION}|cut -d'-' -f1)
+    print_info "Current installed OTRS version: \e[1;31m$current_version\e[1;0m"
+    print_info "Starting up container with OTRS version: \e[1;31m$new_version\e[1;0m"
     check_version ${current_version} ${new_version}
     if [ $? -eq 1 ]; then
       print_info "Doing minor version upgrade from \e[${OTRS_ASCII_COLOR_BLUE}m${current_version}\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${new_version}\e[0m"
       upgrade_minor_version
       upgrade_modules
       _MINOR_VERSION_UPGRADE=true
-      echo ${new_version} > ${OTRS_ROOT}/current_version
+      echo ${new_version} > ${current_version_file}
     fi
   else
     current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
