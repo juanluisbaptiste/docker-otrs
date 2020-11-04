@@ -60,8 +60,6 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
     print_info "OTRS_SET_PERMISSIONS set to \e[${OTRS_ASCII_COLOR_RED}mno\e[0m, Skipping setting permissions"
   fi
 
-  # Reinstall any existing addons in case there was a minor version upgrade
-  reinstall_modules
   # Install any new modules found in ${OTRS_ADDONS_PATH}
   install_modules ${OTRS_ADDONS_PATH}
   set_ticket_counter

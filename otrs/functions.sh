@@ -256,6 +256,7 @@ function load_defaults() {
     if [ $? -eq 1 ]; then
       print_info "Doing minor version upgrade from \e[${OTRS_ASCII_COLOR_BLUE}m${current_version}\e[0m to \e[${OTRS_ASCII_COLOR_RED}m${new_version}\e[0m"
       upgrade_minor_version
+      upgrade_modules
       _MINOR_VERSION_UPGRADE=true
       echo ${new_version} > ${OTRS_ROOT}/current_version
     fi
@@ -263,6 +264,8 @@ function load_defaults() {
     current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
     current_version="${current_version## }"
     echo ${current_version} > ${OTRS_ROOT}/current_version
+    # Reinstall any existing addons in case there was a minor version upgrade
+    reinstall_modules
   fi
 
   #Check if a host-mounted volume for configuration storage was added to this
@@ -380,6 +383,18 @@ function reinstall_modules () {
     fi
   fi
 }
+
+function upgrade_modules () {
+    print_info "Upgrading OTRS addons..."
+    su -c "$OTRS_ROOT/bin/otrs.Console.pl Admin::Package::UpgradeAll > /dev/null 2>&1" -s /bin/bash otrs
+
+    if [ $? -gt 0 ]; then
+      print_error "Could not upgrade OTRS addons, try to do it manually with the Package Manager in the admin section of the web interface."
+    else
+      print_info "Done."
+    fi
+}
+
 
 function install_modules () {
   location=${1}
