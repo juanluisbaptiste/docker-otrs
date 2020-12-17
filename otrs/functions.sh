@@ -543,10 +543,7 @@ function upgrade () {
 
   #Update installed packages
   print_info "[*] Updating installed packages..." | tee -a ${upgrade_log}
-  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Admin::Package::UpgradeAll" -s /bin/bash otrs &> ${upgrade_log}
-  if [ $? -gt 0  ]; then
-    print_warning "Cannot upgrade package: ${i}-${latest_version}"  | tee -a ${upgrade_log}
-  fi
+  upgrade_modules
 
   if [[ "${OTRS_UPGRADE_XML_FILES}" == "yes" ]]; then
     # Upgrade XML config files
