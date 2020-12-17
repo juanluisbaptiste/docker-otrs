@@ -245,6 +245,8 @@ function setup_otrs_config() {
   add_config_value "SecureMode" "1"
   # Configure automatic backups
   setup_backup_cron
+  # Reinstall any existing addons
+  reinstall_modules
 }
 
 function load_defaults() {
@@ -268,8 +270,6 @@ function load_defaults() {
     current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
     current_version="${current_version## }"
     echo ${current_version} > ${OTRS_ROOT}/current_version
-    # Reinstall any existing addons in case there was a minor version upgrade
-    reinstall_modules
   fi
 
   #Check if a host-mounted volume for configuration storage was added to this
