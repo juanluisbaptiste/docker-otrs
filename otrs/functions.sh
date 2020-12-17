@@ -613,6 +613,7 @@ function switch_article_storage_type() {
     current_type=$(su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Read --setting-name Ticket::Article::Backend::MIMEBase::ArticleStorage" -s /bin/bash otrs|grep Kernel|cut -d':' -f 13)
 
     if [ ${current_type} != ${OTRS_ARTICLE_STORAGE_TYPE} ];then
+      # First switch Ticket::Article::Backend::MIMEBase::CheckAllStorageBackends setting
       su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Ticket::Article::Backend::MIMEBase::ArticleStorage --value Kernel::System::Ticket::Article::Backend::MIMEBase::${OTRS_ARTICLE_STORAGE_TYPE}" -s /bin/bash otrs
       if [ $? -eq 0 ]; then
         if [ "${OTRS_ARTICLE_STORAGE_TYPE}" == "ArticleStorageFS" ]; then
@@ -621,6 +622,7 @@ function switch_article_storage_type() {
         elif [ "${OTRS_ARTICLE_STORAGE_TYPE}" == "ArticleStorageDB" ]; then
           print_info "Swtiching Article Storage Type: Moving ticket articles from filesystem to database..."  | tee -a ${upgrade_log}
         fi
+        # Then do the switch
         su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Article::StorageSwitch --target ${OTRS_ARTICLE_STORAGE_TYPE}" -s /bin/bash otrs
       fi
     else
