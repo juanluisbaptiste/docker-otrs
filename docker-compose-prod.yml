@@ -33,7 +33,7 @@ services:
       - './volumes/mysql:/var/lib/mysql'
       - '/etc/localtime:/etc/localtime:ro'
   postfix:
-     image: juanluisbaptiste/postfix:latest
+     image: juanluisbaptiste/postfix:alpine
      expose:
      - "25"
      # See juanluisbaptiste/postfix github page for the contents
