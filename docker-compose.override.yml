@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  otrs:
+    image: juanluisbaptiste/otrs:dev
+    build: otrs
+  mariadb:
+    image: juanluisbaptiste/otrs-mariadb:dev
+    build: mariadb
+  adminer:
+      image: adminer:standalone
+      read_only: true
+      volumes:
+        - /tmp
+      ports:
+        - "8080:8080"
+      # networks:
+      #   - internal
+      #   - proxy
+      depends_on:
+        - mariadb
+      links:
+        - mariadb

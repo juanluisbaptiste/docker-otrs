@@ -75,7 +75,8 @@ if [ ${CLEAN} -eq 1 ]; then
 fi
 
 if [ ${BUILD_IMAGE} -eq 1 ]; then
-  docker-compose -f ${COMPOSE_FILE} build ${BUILD_NOCACHE}
+  docker-compose build ${BUILD_NOCACHE}
+
   if [ $? -gt 0 ]; then
     out=$(echo ${out}|tail -n 10)
     notify-send 'App rebuild failure' "There was an error building the container, see console for build output" -t ${NOTIFY_TIMEOUT} -i dialog-error && \

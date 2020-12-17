@@ -3,7 +3,6 @@ version: '3'
 services:
   otrs:
     image: juanluisbaptiste/otrs:latest
-    build: otrs
     ports:
       - '80:80'
     # If running behind a proxy container, expose the ports instead
@@ -25,7 +24,6 @@ services:
       - '/etc/localtime:/etc/localtime:ro'
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
-    build: mariadb
     expose:
       - "3306"
     env_file: .env
