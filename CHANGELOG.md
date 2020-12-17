@@ -1,5 +1,9 @@
 # docker-otrs Change Log
 
+## 6.0.30-3 - 2020-12-17
+### Changed
+- Fix reinstallation of installed modules on normal start.
+
 ## 6.0.30-2 - 2020-11-04
 ### Changed
 - Upgrade installed addons whe a minor upgrade is needed instead of reinstalling
