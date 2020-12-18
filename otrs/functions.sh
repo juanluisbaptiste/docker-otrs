@@ -77,6 +77,7 @@ OTRS_UPGRADE_SQL_FILES="${OTRS_ROOT}/db_upgrade"
 OTRS_UPGRADE_XML_FILES="${OTRS_UPGRADE_XML_FILES:-no}"
 OTRS_DISABLE_EMAIL_FETCH="${OTRS_DISABLE_EMAIL_FETCH:-no}"
 OTRS_SET_PERMISSIONS="${OTRS_SET_PERMISSIONS:-yes}"
+OTRS_ALLOW_NOT_VERIFIED_PACKAGES="${OTRS_ALLOW_NOT_VERIFIED_PACKAGES:-no}"
 _MINOR_VERSION_UPGRADE=false
 
 [ ! -z "${OTRS_SECRETS_FILE}" ] && apply_docker_secrets
@@ -602,6 +603,20 @@ function disable_email_fetch() {
   print_info "Disabling Email Accounts fetching..."  | tee -a ${upgrade_log}
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Daemon::SchedulerCronTaskManager::Task###MailAccountFetch --valid 0" -s /bin/bash otrs
 
+}
+
+function not_allowed_pkgs_install() {
+  local _allow=0
+  if [ "${OTRS_ALLOW_NOT_VERIFIED_PACKAGES}" == "yes" ]; then
+    print_info "Enabling the installation of Not Allowed Packages..."  | tee -a ${upgrade_log}
+    _allow=1
+  else
+    print_info "Enabling the installation of Not Allowed Packages..."  | tee -a ${upgrade_log}
+  fi
+  su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Package::AllowNotVerifiedPackages --value=${_allow}" -s /bin/bash otrs
+  if [ $? -gt 0  ]; then
+    print_warning "Cannot enable Package::AllowNotVerifiedPackages"  | tee -a ${upgrade_log}
+  fi
 }
 
 function switch_article_storage_type() {

@@ -125,6 +125,7 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_BACKUP_SCRIPT` Path to a custom backup script to be called by cron by default /etc/cron.d/otrs_backup script. The script must be added by custom image. Default value is /otrs_backup.sh.
 * `OTRS_CRON_BACKUP_SCRIPT` Path to a custom backup script to be called by cron. The script must be added by custom image. Default value is /etc/cron.d/otrs_backup.
 * `OTRS_ARTICLE_STORAGE_TYPE` Change the article storage type (attachments), possible values are *ArticleStorageFS* and *ArticleStorageDB*. This feature will also move the articles from the database to the filesystem or vice-versa.
+* `OTRS_ALLOW_NOT_VERIFIED_PACKAGES` Enable the installation of unverified addons. Useful when installing addons downladed form 3rd party sources like [OPAR](https://opar.perl-services.de) at startup.
 * `SHOW_OTRS_LOGO` To disable the OTRS ASCII logo at container startup.
 * `OTRS_SENDMAIL_MODULE` Module OTRS should use to send mails (e.g `SMTP`, `SMTPS`, `Sendmail`).
 * `OTRS_SMTP_SERVER` Server address of the SMTP server to use.
