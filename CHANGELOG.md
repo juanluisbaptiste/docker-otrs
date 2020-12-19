@@ -1,8 +1,11 @@
 # docker-otrs Change Log
 
-## 6.0.30-3 - 2020-12-17
+## 6.0.30-3 - 2020-12-18
 ### Changed
 - Fix reinstallation of installed modules on normal start.
+### Added
+- New feature: Added new variable OTRS_ALLOW_NOT_VERIFIED_PACKAGES to control the
+  installation of unverified addons.
 
 ## 6.0.30-2 - 2020-11-04
 ### Changed
