@@ -224,7 +224,7 @@ You can control the backup behavior with the following variables:
     * _dbonly_: Only the database will be saved.
   * `OTRS_BACKUP_COMPRESSION`: Sets the backup compression method to use, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html) (gzip|bzip2). The default is gzip.
   * `OTRS_BACKUP_ROTATION`: Sets the number of days to keep the backup files. The default is 30 days.
-
+  * `OTRS_BACKUP_STOP_SERVICES`: Controls whether OTRS services should be stopped before doing a backup. The default is _yes_.
 For example, to change the backup time to database only backups, compress them using _bzip2_ and run twice each day set those variables like this:
 
     OTRS_BACKUP_TYPE=dbonly

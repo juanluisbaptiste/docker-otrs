@@ -10,6 +10,7 @@ OTRS_BACKUP_DIR="/var/otrs/backups"
 BACKUP_COMPRESSION_METHOD="${OTRS_BACKUP_COMPRESSION:-gzip}"
 BACKUP_ROTATION_DAYS="${OTRS_BACKUP_ROTATION:-30}"
 BACKUP_TYPE="${OTRS_BACKUP_TYPE:-fullbackup}"
+BACKUP_STOP_SERVICES="${OTRS_BACKUP_STOP_SERVICES:-yes}"
 
 trap cleanup INT
 
@@ -30,7 +31,8 @@ BACKUP_FILE_NAME="otrs-${DATE}-${BACKUP_TYPE}.tar.gz"
 echo -e "[${DATE}] Starting OTRS backup for host ${OTRS_HOSTNAME}..."
 [ ! -e $TEMP_BACKUP_DIR ] && mkdir -p $TEMP_BACKUP_DIR
 
-stop_all_services
+
+[ "${BACKUP_STOP_SERVICES}" == "yes" ] && stop_all_services
 
 /opt/otrs/scripts/backup.pl -d $TEMP_BACKUP_DIR -t $BACKUP_TYPE -r $BACKUP_ROTATION_DAYS -c $BACKUP_COMPRESSION_METHOD
 
@@ -52,5 +54,5 @@ else
   exit 1
 fi
 
-start_all_services
+[ "${BACKUP_STOP_SERVICES}" == "yes" ] && start_all_services
 rm -fr $TEMP_BACKUP_DIR
