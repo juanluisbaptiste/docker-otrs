@@ -607,11 +607,9 @@ function disable_email_fetch() {
 
 function not_allowed_pkgs_install() {
   local _allow=0
+  print_info "Setting the installation of \e[${OTRS_ASCII_COLOR_BLUE}mPackage::AllowNotVerifiedPackages\e[0m to: \e[${OTRS_ASCII_COLOR_RED}m${OTRS_ALLOW_NOT_VERIFIED_PACKAGES}\e[0m"  | tee -a ${upgrade_log}
   if [ "${OTRS_ALLOW_NOT_VERIFIED_PACKAGES}" == "yes" ]; then
-    print_info "Enabling the installation of Not Allowed Packages..."  | tee -a ${upgrade_log}
     _allow=1
-  else
-    print_info "Enabling the installation of Not Allowed Packages..."  | tee -a ${upgrade_log}
   fi
   su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Package::AllowNotVerifiedPackages --value=${_allow}" -s /bin/bash otrs
   if [ $? -gt 0  ]; then
