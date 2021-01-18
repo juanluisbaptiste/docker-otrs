@@ -9,7 +9,7 @@
 
 ## 6.0.30-2 - 2020-11-04
 ### Changed
-- Upgrade installed addons whe a minor upgrade is needed instead of reinstalling
+- Upgrade installed addons when a minor upgrade is needed instead of reinstalling
   them.
 - Save current_version file in ${OTRS_CONFIG_DIR} instead of ${OTRS_ROOT} so it
   persists during redeploys and upgrades.
