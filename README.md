@@ -1,7 +1,7 @@
 ![OTRS Free](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/logo_otrs6free.png)
 
 # ((OTRS)) Community Edition Ticketing System
-[![Docker Build Status](https://img.shields.io/docker/build/juanluisbaptiste/otrs?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/build/)
+[![Docker Build Status](https://img.shields.io/docker/cloud/build/juanluisbaptiste/otrs?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/builds/)
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
@@ -225,6 +225,7 @@ You can control the backup behavior with the following variables:
   * `OTRS_BACKUP_COMPRESSION`: Sets the backup compression method to use, it receives the same values as the [OTRS backup script](http://doc.otrs.com/doc/manual/admin/6.0/en/html/backup-and-restore.html) (gzip|bzip2). The default is gzip.
   * `OTRS_BACKUP_ROTATION`: Sets the number of days to keep the backup files. The default is 30 days.
   * `OTRS_BACKUP_STOP_SERVICES`: Controls whether OTRS services should be stopped before doing a backup. The default is _yes_.
+
 For example, to change the backup time to database only backups, compress them using _bzip2_ and run twice each day set those variables like this:
 
     OTRS_BACKUP_TYPE=dbonly
