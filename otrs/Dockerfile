@@ -1,7 +1,7 @@
 #OTRS ticketing system docker image.
 FROM centos:7
 LABEL maintainer="Juan Luis Baptiste <juan@juanbaptiste.tech>"
-ENV OTRS_VERSION=6.0.30-02
+ENV OTRS_VERSION=6.0.32-02
 ENV OTRS_ROOT "/opt/otrs/"
 ENV OTRS_BACKUP_DIR "/var/otrs/backups"
 ENV OTRS_CONFIG_DIR "${OTRS_ROOT}Kernel"
@@ -26,7 +26,7 @@ RUN yum install -y yum-plugin-fastestmirror && \
     perl-Moo "perl(namespace::clean)" "perl(Crypt::Random::Source)" "perl(Exporter::Tiny)" \
     "perl(Math::Random::ISAAC)" "perl(Math::Random::Secure)" "perl(Module::Find)" \
     "perl(Types::TypeTiny)" rsyslog supervisor tar which && \
-    yum install -y http://ftp.otrs.org/pub/otrs/RPMS/rhel/7/otrs-${OTRS_VERSION}.noarch.rpm && \
+    yum install -y https://download.znuny.org/releases/RPMS/rhel/7/znuny-${OTRS_VERSION}.noarch.rpm && \
     /opt/otrs/bin/otrs.CheckModules.pl && \
     yum clean all
 # Add scripts and function files
