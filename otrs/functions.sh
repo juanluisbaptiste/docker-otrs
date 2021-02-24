@@ -475,9 +475,23 @@ function fix_database_upgrade() {
   fi
 }
 
+function upgrade_cleanup_configuration (){
+  # Remove old, deprecated settings which are not present in any of the install files in Kernel/Config/Files/XML/
+
+  print_info "[*] Cleaning up configuration: Removing old unsupported settings..." | tee -a ${upgrade_log}
+  su -c "${OTRS_ROOT}/bin/otrs.Console.pl Maint::Config::Rebuild --cleanup" -s /bin/bash otrs | tee -a ${upgrade_log}
+  if [ $? -gt 0  ]; then
+    print_error "Cannot cleanup configuration!" | tee -a ${upgrade_log} && exit 1
+  fi
+}
+
 function upgrade_minor_version() {
   # Upgrade database
   print_info "[*] Doing minor version upgrade, running DBUpdate-to-6.pl script..." | tee -a ${upgrade_log}
+
+  # Cleanup configuration
+  upgrade_cleanup_configuration
+
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
   if [ $? -eq 0  ]; then
     su -c "${OTRS_ROOT}/scripts/DBUpdate-to-6.pl --non-interactive" -s /bin/bash otrs | tee -a ${upgrade_log}
@@ -545,6 +559,9 @@ function upgrade () {
   #Update installed packages
   print_info "[*] Updating installed packages..." | tee -a ${upgrade_log}
   upgrade_modules
+
+  # Cleanup configuration
+  upgrade_cleanup_configuration
 
   if [[ "${OTRS_UPGRADE_XML_FILES}" == "yes" ]]; then
     # Upgrade XML config files
