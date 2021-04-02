@@ -3,3 +3,5 @@ otrs/backup
 *~
 config/
 volumes*
+backups/
+.directory

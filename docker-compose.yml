@@ -19,10 +19,10 @@ services:
       # Uncomment if using OTRS_ARTICLE_STORAGE_TYPE=ArticleStorageFS
       #- ./volumes/article:/opt/otrs/var/article
       - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
-      - './volumes/backup:/var/otrs/backups'
-      - './volumes/addons:/opt/otrs/addons'
+      - ./backups:/var/otrs/backups
+      - ./volumes/addons:/opt/otrs/addons
       - ./volumes/db_upgrade:/opt/otrs/db_upgrade
-      - '/etc/localtime:/etc/localtime:ro'
+      - /etc/localtime:/etc/localtime:ro
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:latest
     expose:
