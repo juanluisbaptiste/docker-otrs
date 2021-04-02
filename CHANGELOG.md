@@ -1,5 +1,9 @@
 # docker-otrs Change Log
 
+## 6.0.33-1 - 2021-04-02
+### Changed
+- Switched OTRS release to Znuny OTRS.
+
 ## 6.0.30-3 - 2020-12-18
 ### Changed
 - Fix reinstallation of installed modules on normal start.
