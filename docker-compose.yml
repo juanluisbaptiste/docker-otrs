@@ -11,7 +11,8 @@ services:
     #  - "80"
     depends_on:
       - mariadb
-      - postfix
+      # Uncomment if using the smtp relay
+      # - postfix
     env_file: .env
     volumes:
       - './volumes/config:/opt/otrs/Kernel'
@@ -28,12 +29,13 @@ services:
       - "3306"
     env_file: .env
     volumes:
-      - './volumes/mysql:/var/lib/mysql'
-      - '/etc/localtime:/etc/localtime:ro'
-  postfix:
-    image: juanluisbaptiste/postfix:latest
-    expose:
-      - '25'
-    # See juanluisbaptiste/postfix github page for the contents
-    # and an explanation of credentials-smtp.
-    env_file: .env
+      - ./volumes/mysql:/var/lib/mysql
+      - /etc/localtime:/etc/localtime:ro
+# If you need a SMTP relay you can use this service
+  # postfix:
+  #   image: juanluisbaptiste/postfix:latest
+  #   expose:
+  #     - '25'
+  #   # See juanluisbaptiste/postfix github page for the contents
+  #   # and an explanation of credentials-smtp.
+  #   env_file: .env

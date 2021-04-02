@@ -7,17 +7,15 @@ services:
   mariadb:
     image: juanluisbaptiste/otrs-mariadb:dev
     build: mariadb
-  adminer:
-      image: adminer:standalone
-      read_only: true
-      volumes:
-        - /tmp
-      ports:
-        - "8080:8080"
-      # networks:
-      #   - internal
-      #   - proxy
-      depends_on:
-        - mariadb
-      links:
-        - mariadb
+# If you need access to the database, uncomment this service
+#  adminer:
+#      image: adminer:standalone
+#      read_only: true
+#      volumes:
+#        - /tmp
+#      ports:
+#        - "8080:8080"
+#      depends_on:
+#        - mariadb
+#      links:
+#        - mariadb
