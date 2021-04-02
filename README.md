@@ -77,10 +77,10 @@ The container behavior is controlled by environment variables ([see full list be
 
 If you are running the container remotely, replace *localhost* with the server's hostname. If starting with the default mode (_OTRS__INSTALL=no_), you will need to configure it before starting it. Copy the [`example env file`](https://github.com/juanluisbaptiste/docker-otrs/blob/master/.env.example) as `.env` on the same directory as the `docker-compose` file and configure it as you need (don't forget to configure the [SMTP relay](https://github.com/juanluisbaptiste/docker-postfix) section at the end). You can then test the service with `docker-compose`:
 
-    sudo docker-compose -f docker-compose-prod.yml up
+    sudo docker-compose -f docker-compose.yml up
 
 This will pull and bring up all needed containers, link them and mount volumes according
-to the `docker-compose-prod.yml` configuration file. This is a sample output of the boot up process:
+to the `docker-compose.yml` configuration file. This is a sample output of the boot up process:
 
 ![Container boot](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/otrs6_boot_medium.png)
 
@@ -90,7 +90,7 @@ running `docker-compose`.
 
 To start the containers in production mode the the `-d` parameter to the previous command:
 
-    sudo docker-compose -f docker-compose-prod.yml -p companyotrs up -d
+    sudo docker-compose -f docker-compose.yml -p companyotrs up -d
 
 After the containers finish starting up you can access the OTRS system at the following
 addresses:
