@@ -1,11 +1,23 @@
-![OTRS Free](https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/logo_otrs6free.png)
+<p align="center">
 
-# ((OTRS)) Community Edition Ticketing System
+  <img width="200" src="https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/znuny_logo.png" alt="Znuny OTRS Community Edition Fork">
+
+</p>
+
+# Znuny - The ((OTRS)) Community Edition Ticketing System Fork
 [![Docker Build Status](https://img.shields.io/docker/cloud/build/juanluisbaptiste/otrs?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/builds/)
 [![Docker Stars](https://img.shields.io/docker/stars/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 [![Docker Pulls](https://img.shields.io/docker/pulls/juanluisbaptiste/otrs.svg?style=flat-square)](https://hub.docker.com/r/juanluisbaptiste/otrs/)
 
-**_Unofficial_**  [((OTRS)) Community Edition](https://community.otrs.com/) docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
+> :warning: **NOTICE:**
+
+> **On February 24th OTRS AG announced they would be [discontinuing the OTRS ((Community Edition))](https://corporate.otrs.com/otrs-group-discontinues-its-community-edition-until-further-notice/) until further notice. This means no more security or bug fixes from that day onward. Due to this have switched to the [Znuny](https://www.znuny.org/) release of OTRS ((Community Edition)) as they will continue to provide new releases with their LTS version. Znuny has been providing consulting services for OTRS customers for a long time and runs the [OTRS community forum](https://forums.otterhub.org/). More information about this [here](https://www.znuny.org/why).**
+
+> **There has been a beta image for Znuny 6.0.33 for some weeks now in [juanluisbaptiste/znuny](https://hub.docker.com/r/juanluisbaptiste/znuny) that we have been testing with no issues nor adjustments needed to an existing OTRS install. Migration from OTRS to Znuny should be transparent, just download a version tagged >= 6.0.33 or the _latest_ tag and restart your container.**
+
+> **You can follow the discussion about the migration on [this issue](https://github.com/juanluisbaptiste/docker-otrs/issues/104). Please report any issues you find at the [previous issue](https://github.com/juanluisbaptiste/docker-otrs/issues/104).**
+
+_Znuny - The [((OTRS)) Community Edition](https://community.otrs.com/) Fork_ docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
 
 Current community edition is at version 6.
 
