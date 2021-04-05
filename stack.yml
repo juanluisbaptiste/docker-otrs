@@ -1,0 +1,63 @@
+version: '3.8'
+
+#secrets:
+#my_secret:
+#file: ./my_secret.txt
+#my_other_secret:
+#external: true
+
+services:
+  otrs:
+    image: juanluisbaptiste/otrs:latest
+    deploy:
+      replicas: 1
+      labels:
+        - traefik.enable=true
+        - traefik.http.services.ctecsas_otrs.loadbalancer.server.port=80
+        - traefik.http.routers.ctecsas_otrs.service=ctecsas_otrs
+        - traefik.http.routers.ctecsas_otrs.rule=Host(`support.example.org`)
+        - traefik.http.routers.ctecsas_otrs.entrypoints=https
+        - traefik.http.routers.ctecsas_otrs.tls.certresolver=le
+        - traefik.http.services.ctecsas_otrs.loadbalancer.sticky=true
+        - traefik.http.services.ctecsas_otrs.loadbalancer.sticky.cookie.name=StickyCookie
+        - traefik.http.services.ctecsas_otrs.loadbalancer.sticky.cookie.secure=true
+      update_config:
+        parallelism: 1
+        delay: 10s
+        order: start-first
+        failure_action: rollback
+      restart_policy:
+        condition: on-failure
+      resources:
+        limits:
+          #cpus: "1.5"
+          memory: 2048m
+        reservations:
+          #cpus: "1"
+          memory: 512m
+      placement:
+        constraints:
+          - node.role == worker
+    volumes:
+      - ./volumes/config:/opt/otrs/Kernel
+      - ./volumes/log/TicketCounter.log:/opt/otrs/var/log/TicketCounter.log
+      - ./volumes/article:/opt/otrs/var/article
+      - ./volumes/skins:/opt/otrs/var/httpd/htdocs/skins/
+      - ./backups/ctecsas/otrs:/var/otrs/backups
+      - '/etc/localtime:/etc/localtime:ro'
+    env_file:
+      - .env
+    networks:
+     - traefik_proxy
+    restart: always
+    #  healthcheck:
+    #    test: [CMD, curl, -f, {TRAEFIK_HEALTHCHECK?Healthcheck URL not found}]
+    #    interval: 1m10s
+    #    timeout: 10s
+    #    retries: 3
+    #    start_period: 40s
+
+networks:
+  traefik_proxy:
+    external:
+      name: traefik_proxy
