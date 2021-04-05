@@ -11,7 +11,7 @@
 
 > :warning: **NOTICE:**
 
-> **On February 24th OTRS AG announced they would be [discontinuing the OTRS ((Community Edition))](https://corporate.otrs.com/otrs-group-discontinues-its-community-edition-until-further-notice/) until further notice. This means no more security or bug fixes from that day onward. Due to this have switched to the [Znuny](https://www.znuny.org/) release of OTRS ((Community Edition)) as they will continue to provide new releases with their LTS version. Znuny has been providing consulting services for OTRS customers for a long time and runs the [OTRS community forum](https://forums.otterhub.org/). More information about this [here](https://www.znuny.org/why).**
+> **On February 24th OTRS AG announced they would be [discontinuing the OTRS ((Community Edition))](https://corporate.otrs.com/otrs-group-discontinues-its-community-edition-until-further-notice/) until further notice. This means no more security or bug fixes from that day onward. Due to this we have switched to the [Znuny](https://www.znuny.org/) release of OTRS ((Community Edition)), as they will continue to provide new releases with their LTS version. Znuny has been providing consulting services for OTRS customers for a long time and runs the [OTRS community forum](https://forums.otterhub.org/). More information about this [here](https://www.znuny.org/why).**
 
 > **There has been a beta image for Znuny 6.0.33 for some weeks now in [juanluisbaptiste/znuny](https://hub.docker.com/r/juanluisbaptiste/znuny) that we have been testing with no issues nor adjustments needed to an existing OTRS install. Migration from OTRS to Znuny should be transparent, just download a version tagged >= 6.0.33 or the _latest_ tag and restart your container.**
 
@@ -29,6 +29,7 @@ These images are based on the [official CentOS images](https://registry.hub.dock
 include the latest OTRS version. Older images will be tagged with the OTRS version they run.
 
 _Note:_
+* OTRS 6 image sources are still available in [otrs-6_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-6_0_x).
 * OTRS 5 image sources are still available in [otrs-5_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-5_0_x).
 * OTRS 4 image sources are still available in [otrs-4_0_x branch](https://github.com/juanluisbaptiste/docker-otrs/tree/otrs-4_0_x).
 
