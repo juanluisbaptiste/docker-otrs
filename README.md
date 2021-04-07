@@ -15,7 +15,7 @@
 
 > **There has been a beta image for Znuny 6.0.33 for some weeks now in [juanluisbaptiste/znuny](https://hub.docker.com/r/juanluisbaptiste/znuny) that we have been testing with no issues nor adjustments needed to an existing OTRS install. Migration from OTRS to Znuny should be transparent, just download a version tagged >= 6.0.33 or the _latest_ tag and restart your container.**
 
-> **You can follow the discussion about the migration on [this issue](https://github.com/juanluisbaptiste/docker-otrs/issues/104). Please report any issues you find at the [previous issue](https://github.com/juanluisbaptiste/docker-otrs/issues/104).**
+> **You can follow the discussion about the migration process, report any bugs you find or do any suggestion on [this issue](https://github.com/juanluisbaptiste/docker-otrs/issues/104).**
 
 _Znuny - The [((OTRS)) Community Edition](https://community.otrs.com/) Fork_ docker image. This repository contains the *Dockerfiles* and all other files needed to build and run the container.
 
