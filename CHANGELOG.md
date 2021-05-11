@@ -1,5 +1,9 @@
 # docker-otrs Change Log
 
+## 6.0.34 - 2021-05-11
+### Changed
+- Updated to latest Znuny OTRS version 6.0.34.
+
 ## 6.0.33-1 - 2021-04-02
 ### Changed
 - Switched OTRS release to Znuny OTRS.
