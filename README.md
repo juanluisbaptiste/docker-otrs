@@ -143,8 +143,8 @@ There are also some other environment variables that can be set to customize the
 * `OTRS_SENDMAIL_MODULE` Module OTRS should use to send mails (e.g `SMTP`, `SMTPS`, `Sendmail`).
 * `OTRS_SMTP_SERVER` Server address of the SMTP server to use.
 * `OTRS_SMTP_PORT` Port of the SMTP server to use.
-* `OTRS_SMTP_USERNAME` Username to authenticate with.
-* `OTRS_SMTP_PASSWORD` Password to authenticate with.
+* `OTRS_SMTP_USERNAME` Username to authenticate with. Not needed when using the local postfix docker-container.
+* `OTRS_SMTP_PASSWORD` Password to authenticate with. Not needed when using the local postfix docker-container.
 
 Those environment variables is what you can configure by running the installer for a default install, plus other useful ones.
 
