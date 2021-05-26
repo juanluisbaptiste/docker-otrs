@@ -120,7 +120,7 @@ addresses:
 
 There are also some other environment variables that can be set to customize the default install:
 
-* `OTRS_HOSTNAME` Sets the container's hostname (auto-generated if not defined).
+* `OTRS_HOSTNAME` Sets the container's hostname (auto-generated if not defined). Should be defined manually when using local postfix docker-container.
 * `OTRS_DB_NAME` Name of database to use. Default is `otrs`.
 * `OTRS_DB_HOST` Hostname or IP address of the database server. Default is `mariadb`.
 * `OTRS_DB_PORT` Port of the database server. Default is `3306`.
