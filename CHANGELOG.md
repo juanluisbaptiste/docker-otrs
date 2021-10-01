@@ -1,5 +1,14 @@
 # docker-otrs Change Log
 
+## 6.0.37 - 2021-09-30
+### Changed
+- Updated to latest Znuny OTRS version 6.0.37.
+- Allow enabling back of email fetching when disabled (issue #116)
+
+## 6.0.36 - 2021-08-10
+### Changed
+- Updated to latest Znuny OTRS version 6.0.36.
+
 ## 6.0.35 - 2021-06-02
 ### Changed
 - Updated to latest Znuny OTRS version 6.0.35.
