@@ -622,6 +622,11 @@ function disable_email_fetch() {
 
 }
 
+function enable_email_fetch() {
+  print_info "Enabling Email Accounts fetching..."  | tee -a ${upgrade_log}
+  su -c "${OTRS_ROOT}bin/otrs.Console.pl Admin::Config::Update --setting-name Daemon::SchedulerCronTaskManager::Task###MailAccountFetch --valid 1" -s /bin/bash otrs
+}
+
 function not_allowed_pkgs_install() {
   local _allow=0
   print_info "Setting the installation of \e[${OTRS_ASCII_COLOR_BLUE}mPackage::AllowNotVerifiedPackages\e[0m to: \e[${OTRS_ASCII_COLOR_RED}m${OTRS_ALLOW_NOT_VERIFIED_PACKAGES}\e[0m"  | tee -a ${upgrade_log}

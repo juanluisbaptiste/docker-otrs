@@ -80,6 +80,8 @@ if [ "${OTRS_INSTALL}" != "yes" ]; then
 
   if [ "${OTRS_DISABLE_EMAIL_FETCH}" == "yes" ]; then
     disable_email_fetch
+  else
+    enable_email_fetch
   fi
 
 else
