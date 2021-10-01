@@ -15,7 +15,7 @@ RUN yum install -y yum-plugin-fastestmirror && \
     yum install -y epel-release && \
     yum -y install https://harbottle.gitlab.io/epmel/7/x86_64/epmel-release.rpm && \
     yum update -y && \
-    yum -y install bzip2 cronie httpd mysql mod_perl \
+    yum -y install bzip2 cronie httpd mysql mod_perl rsync \
     perl-core "perl(Crypt::SSLeay)" "perl(Net::LDAP)" "perl(URI)" \
     procmail "perl(Date::Format)" "perl(LWP::UserAgent)" \
     "perl(Net::DNS)" "perl(IO::Socket::SSL)" "perl(XML::Parser)" \
