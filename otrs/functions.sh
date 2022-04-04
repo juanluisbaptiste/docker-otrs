@@ -270,7 +270,6 @@ function load_defaults() {
   else
     current_version=$(cat ${OTRS_ROOT}/RELEASE |grep VERSION|cut -d'=' -f2)
     current_version="${current_version## }"
-    echo ${current_version} > ${OTRS_ROOT}/current_version
   fi
 
   #Check if a host-mounted volume for configuration storage was added to this
@@ -279,6 +278,7 @@ function load_defaults() {
   check_custom_skins_dir
   #Setup OTRS configuration
   setup_otrs_config
+  echo "${current_version}" > "${OTRS_CONFIG_DIR}/current_version"
 
   #Check if database doesn't exists yet (it could if this is a container redeploy)
   $mysqlcmd -e "use ${OTRS_DB_NAME}"
