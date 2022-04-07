@@ -5,6 +5,7 @@ OTRS_LATEST="${OTRS_DOWNLOAD_PREFIX}/znuny-latest.tar.gz"
 OTRS_GIT_URL="git@github.com:juanluisbaptiste/docker-otrs.git"
 OTRS_GIT_BRANCH="${OTRS_GIT_BRANCH:-master}"
 BUILD_LOG="../build.out"
+_image_updated=0
 
 # Create a temp dir
 tempdir="$(mktemp -d --suffix -docker-otrs)"
@@ -86,6 +87,7 @@ function update_image(){
   if [ $? -gt 0 ];then
     echo "ERROR: Could not commit changes !: ${out}" ${ERROR_CODE} && exit 1
   fi
+  _image_updated=1
 }
 
 function build_image(){    
@@ -103,10 +105,12 @@ function build_image(){
 
 function push_changes(){
   # If the image builds ok, commit and push
-  echo "  - Push changes..."
-  out="$(git push origin ${OTRS_GIT_BRANCH} 2>&1)"
-  if [ $? -gt 0 ];then
-    echo "ERROR: Could not push changes !: ${out}" && exit 1
+  if [ ${_image_updated} -eq 1 ]; then
+    echo "  - Push changes..."
+    out="$(git push origin ${OTRS_GIT_BRANCH} 2>&1)"
+    if [ $? -gt 0 ];then
+      echo "ERROR: Could not push changes !: ${out}" && exit 1
+    fi
+    echo "[*] SUCESS !! docker image updated."
   fi
-echo "[*] SUCESS !! docker image updated."
 }
