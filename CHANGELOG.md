@@ -1,7 +1,11 @@
 # docker-otrs Change Log
+## 6.0.40-3 - 2022-05-31
+### Changed
+- Undo last fix of issue #118, only fix current_version file path  (issue #118)
+
 ## 6.0.40-2 - 2022-04-04
 ### Changed
-- Create current_version file later after setup_otrs_config (issue #114)
+- Create current_version file later after setup_otrs_config (issue #118)
 
 ## 6.0.40 - 2022-03-22
 ### Changed
