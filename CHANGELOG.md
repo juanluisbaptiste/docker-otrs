@@ -1,4 +1,24 @@
 # docker-otrs Change Log
+## 6.0.45 - 2022-08-16
+### Changed
+- Updated to latest Znuny OTRS version 6.0.45.
+
+## 6.0.44 - 2022-08-16
+### Changed
+- Updated to latest Znuny OTRS version 6.0.44.
+
+## 6.0.43 - 2022-08-16
+### Changed
+- Updated to latest Znuny OTRS version 6.0.43.
+
+## 6.0.42 - 2022-08-16
+### Changed
+- Updated to latest Znuny OTRS version 6.0.42.
+
+## 6.0.41 - 2022-08-16
+### Changed
+- Updated to latest Znuny OTRS version 6.0.41.
+
 ## 6.0.40-3 - 2022-05-31
 ### Changed
 - Undo last fix of issue #118, only fix current_version file path  (issue #118)
