@@ -589,10 +589,7 @@ function setup_backup_cron() {
   if [ "${OTRS_BACKUP_TIME}" != "" ] && [ "${OTRS_BACKUP_TIME}" != "disable" ]; then
 
     # Store in a file env vars so they can be sourced from the backup cronjob
-    printenv | sed 's/^\(.*\)$/export \1/g' | grep -E "^export OTRS_" > /.backup.env
-    # Remove string quotes
-    OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME%\"}"
-    OTRS_BACKUP_TIME="${OTRS_BACKUP_TIME#\"}"
+    export -p | sed -e "s/\"/'/g" | grep -E "^declare -x OTRS_" > /.backup.env
 
     # Set cron entry
     print_info "Setting backup time to: ${OTRS_BACKUP_TIME}"
