@@ -1,3 +1,8 @@
+<P><h1 align="center">THIS REPORITORY IS NOT LONGER MAINTAINED!</P></BR>
+</br>If you are interested in helping maintaining ths project, drop me a line!
+</br>
+</h1>
+</br>
 <p align="center">
 
   <img width="200" src="https://raw.githubusercontent.com/juanluisbaptiste/docker-otrs/master/img/znuny_logo.png" alt="Znuny OTRS Community Edition Fork">
