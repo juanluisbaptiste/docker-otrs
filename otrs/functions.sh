@@ -288,14 +288,14 @@ function load_defaults() {
     #Check that a backup isn't being restored
     if [ "$OTRS_INSTALL" == "no" ]; then
       print_info "Loading default db schemas..."
-      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-schema.mysql.sql
-      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load otrs-schema.mysql.sql schema !!\n" && exit 1
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/schema.mysql.sql
+      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load schema.mysql.sql schema !!\n" && exit 1
       print_info "Loading initial db inserts..."
-      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-initial_insert.mysql.sql
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/initial_insert.mysql.sql
       [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load OTRS database initial inserts !!\n" && exit 1
       print_info "Loading initial schema constraints..."
-      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/otrs-schema-post.mysql.sql
-      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load otrs-schema-post.mysql.sql schema !!\n" && exit 1
+      $mysqlcmd ${OTRS_DB_NAME} < ${OTRS_ROOT}scripts/database/schema-post.mysql.sql
+      [ $? -gt 0 ] && print_error "\n\e[1;31mERROR:\e[0m Couldn't load schema-post.mysql.sql schema !!\n" && exit 1
     fi
   else
     print_warning "otrs database already exists, Ok."
